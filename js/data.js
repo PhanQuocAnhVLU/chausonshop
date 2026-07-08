@@ -1,4 +1,4 @@
-﻿// ================================================================
+// ================================================================
 // data.js — Mock Data cho Châu Sơn Shop
 // ================================================================
 
@@ -38,38 +38,38 @@ const CATEGORIES = [
 const NEWS = [
   {
     id: 1,
-    title: "Review thuốc diệt ký sinh trùng an toàn và được",
-    image: "images/exact-1.jpg",
-    time: "2 tháng trước, lúc 15:59",
-    slug: "review-thuoc-diet-ky-sinh-trung"
+    title: "Bí quyết chọn mua Collagen Nhật Bản chính hãng, an toàn và hiệu quả",
+    image: "images/exact-2.jpg",
+    time: "2 ngày trước, lúc 15:59",
+    slug: "bi-quyet-chon-mua-collagen-nhat-ban"
   },
   {
     id: 2,
-    title: "Táo vàng có tác dụng gì? Bí mật ít người biết",
-    image: "images/exact-2.jpg",
-    time: "4 tháng trước, lúc 20:02",
-    slug: "tao-vang-co-tac-dung-gi"
+    title: "Omega-3: Công dụng thần kỳ cho tim mạch và cách dùng chuẩn chuyên gia",
+    image: "images/exact-3.jpg",
+    time: "4 ngày trước, lúc 20:02",
+    slug: "omega-3-cong-dung-than-ky"
   },
   {
     id: 3,
-    title: "Bổ sung magie như thế nào cho đúng, tránh dư",
-    image: "images/exact-3.jpg",
-    time: "4 tháng trước, lúc 14:58",
-    slug: "bo-sung-magie-nhu-the-nao"
+    title: "Cao hồng sâm Hàn Quốc: Món quà sức khỏe vô giá cho người lớn tuổi",
+    image: "images/bing2-prod-26.jpg",
+    time: "1 tuần trước, lúc 14:58",
+    slug: "cao-hong-sam-han-quoc-qua-suc-khoe"
   },
   {
     id: 4,
-    title: "Bầu ăn đông trùng hạ thảo được không? Điều mẹ bầu cần biết",
-    image: "images/exact-4.jpg",
-    time: "5 tháng trước, lúc 09:19",
-    slug: "bau-an-dong-trung-ha-thao"
+    title: "Phục hồi sụn khớp hiệu quả với viên uống Schiff Move Free Advanced",
+    image: "images/bing2-prod-18.jpg",
+    time: "2 tuần trước, lúc 09:19",
+    slug: "phuc-hoi-sun-khop-schiff-move-free"
   },
   {
     id: 5,
-    title: "Omega-3 có tốt cho phụ nữ mang thai không?",
-    image: "images/exact-5.jpg",
-    time: "6 tháng trước, lúc 11:30",
-    slug: "omega-3-cho-phu-nu-mang-thai"
+    title: "Review chi tiết kem dưỡng vùng cổ Medi-Peel: Có thực sự tốt như lời đồn?",
+    image: "images/bing2-prod-20.jpg",
+    time: "1 tháng trước, lúc 11:30",
+    slug: "review-kem-duong-co-medi-peel"
   }
 ];
 
