@@ -412,20 +412,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const cat = CATEGORIES.find(c => c.id === p.categoryId);
 
-  // Thumbs (reuse same image for demo)
-  const thumbImages = [p.image, 'images/product-1.png', 'images/product-2.png', 'images/product-3.png'];
-
   document.getElementById('productDetailLayout').innerHTML = `
     <!-- Gallery -->
     <div class="product-gallery">
-      <div class="main-image" id="mainImage">
+      <div class="main-image" id="mainImage" style="margin-bottom: 0; height: 420px;">
         <img src="${p.image}" id="mainImg" alt="${p.name}" onerror="this.src='images/product-1.png'">
-      </div>
-      <div class="thumb-list">
-        ${thumbImages.map((img,i) => `
-          <div class="thumb ${i===0?'active':''}" onclick="changeMainImg('${img}', this)">
-            <img src="${img}" alt="" onerror="this.src='images/product-1.png'">
-          </div>`).join('')}
       </div>
     </div>
 
