@@ -1541,3 +1541,6 @@ img { border: 0; max-width: 100%; }
   color: #888;
   text-align: center;
 }
+
+.float-btn.facebook { background: #0866ff; }
+.float-btn.facebook:hover { background: #0056d6; }
