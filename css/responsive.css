@@ -1,0 +1,225 @@
+/* ================================================================
+   responsive.css — Mobile & Tablet Responsive
+   ================================================================ */
+
+/* ================================================================
+   TABLET (max 1200px)
+   ================================================================ */
+@media (max-width: 1200px) {
+  :root {
+    --sidebar-width: 200px;
+    --news-width: 220px;
+  }
+
+  .products-grid { grid-template-columns: repeat(4, 1fr); }
+  .bestseller-card { min-width: calc(25% - 9px); }
+}
+
+/* ================================================================
+   TABLET (max 1024px)
+   ================================================================ */
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: var(--sidebar-width) 1fr;
+  }
+
+  .hero-area {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar-right { display: none; }
+  .news-sidebar-inline { display: block; }
+
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+  }
+
+  .products-grid { grid-template-columns: repeat(3, 1fr); }
+  .bestseller-card { min-width: calc(33.333% - 8px); }
+}
+
+/* ================================================================
+   TABLET SMALL (max 768px)
+   ================================================================ */
+@media (max-width: 768px) {
+  :root {
+    --header-height: 64px;
+    --navbar-height: 0px;
+  }
+
+  /* Hide desktop sidebar */
+  .sidebar-left { display: none; }
+
+  /* Show mobile menu button */
+  .mobile-menu-btn { display: flex !important; }
+
+  .main-layout {
+    grid-template-columns: 1fr;
+    margin: 12px auto;
+    padding: 0 10px;
+    gap: 12px;
+  }
+
+  .header-inner { padding: 0 12px; gap: 10px; }
+
+  .topbar { display: none; }
+
+  .navbar { display: none; }
+
+  .logo-text { display: none; }
+
+  .logo-icon { width: 44px; height: 44px; font-size: 1.3rem; }
+
+  .search-wrapper { max-width: 100%; }
+
+  .header-action-btn span { display: none; }
+  .header-action-btn { padding: 8px; }
+
+  /* Hero */
+  .hero-area { grid-template-columns: 1fr; }
+  .slider-container { height: 200px; }
+  .slide { padding: 16px 20px; }
+  .slide-title { font-size: 0.85rem; }
+  .slide-image { width: 130px; height: 130px; }
+  .discount-badge { font-size: 1.1rem; }
+  .price-sale { font-size: 1.1rem; }
+  .price-original { font-size: 0.8rem; }
+  .slide-cta { padding: 7px 14px; font-size: 0.75rem; }
+
+  /* Products */
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .products-grid-4 { grid-template-columns: repeat(2, 1fr); }
+
+  /* Bestseller */
+  .bestseller-card { min-width: calc(50% - 6px); }
+
+  /* Footer */
+  .footer-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .footer-top { padding: 28px 0 20px; }
+
+  /* Mini cart */
+  .mini-cart { width: 100%; right: -100%; }
+
+  /* Floating btns */
+  .floating-btns { right: 12px; bottom: 70px; }
+  .float-btn { width: 44px; height: 44px; font-size: 1.2rem; }
+  .float-btn .tooltip { display: none; }
+
+  /* Flash sale */
+  .flash-sale-bar { flex-wrap: wrap; gap: 8px; }
+
+  /* Section header */
+  .section-tags { display: none; }
+  .section-title { font-size: 0.95rem; }
+
+  /* Product card */
+  .product-add-cart { opacity: 1; transform: none; }
+  .product-actions { display: none; }
+}
+
+/* ================================================================
+   MOBILE (max 480px)
+   ================================================================ */
+@media (max-width: 480px) {
+  .products-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .bestseller-card { min-width: calc(50% - 6px); }
+
+  .product-info { padding: 8px; }
+  .product-name { font-size: 0.73rem; }
+  .price-current { font-size: 0.85rem; }
+
+  .slider-container { height: 170px; }
+  .slide { padding: 12px 14px; }
+  .slide-image { width: 100px; height: 100px; }
+  .slide-title { font-size: 0.75rem; margin-bottom: 6px; }
+  .discount-badge { font-size: 0.9rem; padding: 3px 10px; }
+  .price-sale { font-size: 0.95rem; }
+  .slide-cta { padding: 5px 10px; font-size: 0.68rem; }
+  .slide-badge { display: none; }
+
+  .section-header { gap: 6px; }
+  .section-title::before { height: 18px; }
+  .product-section { padding: 14px; }
+  .bestseller-section { padding: 14px; }
+
+  .footer-grid { gap: 16px; }
+  .footer-col h4 { font-size: 0.82rem; }
+  .footer-links a { font-size: 0.75rem; }
+  .hotline-number { font-size: 1rem; }
+}
+
+/* ================================================================
+   MOBILE MENU VISIBLE STYLES
+   ================================================================ */
+.mobile-menu-btn {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--primary);
+  font-size: 1.2rem;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background var(--transition-fast);
+}
+
+.mobile-menu-btn:hover { background: var(--primary-xlight); }
+
+.mobile-menu-content { padding: 8px 0; }
+
+.mobile-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 20px;
+  border-bottom: 1px solid var(--border-light);
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  color: var(--text-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.mobile-nav-item:hover {
+  background: var(--primary-xlight);
+  color: var(--primary);
+}
+
+.mobile-nav-item .nav-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: white;
+  flex-shrink: 0;
+}
+
+.mobile-nav-divider {
+  padding: 10px 20px 4px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-top: 1px solid var(--border-light);
+  margin-top: 4px;
+}
+
+/* ================================================================
+   PRINT
+   ================================================================ */
+@media print {
+  .header, .navbar, .sidebar-left, .floating-btns,
+  .scroll-top-btn, .footer, .mini-cart, .mini-cart-overlay { display: none; }
+  .main-layout { grid-template-columns: 1fr; }
+}

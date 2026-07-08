@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sản Phẩm - Châu Sơn Shop | Hàng Ngoại Nhập Chính Hãng</title>
+  <meta name="description" content="Xem toàn bộ sản phẩm hàng ngoại nhập chính hãng: Collagen, Vitamin, Sữa ong chúa, Mỹ phẩm Nhật, Úc, Hàn Quốc tại Châu Sơn Shop.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <style>
+    /* Page-specific styles */
+    .products-page-layout {
+      display: grid;
+      grid-template-columns: 230px 1fr;
+      gap: 15px;
+      align-items: start;
+    }
+    .filter-sidebar {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+      position: sticky;
+      top: 80px;
+    }
+    .filter-section { border-bottom: 1px solid #f0f0f0; padding: 15px; }
+    .filter-section:last-child { border-bottom: none; }
+    .filter-section h3 { font-size: 13px; font-weight: 700; color: #333; margin-bottom: 12px; text-transform: uppercase; }
+    .filter-item { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; cursor: pointer; }
+    .filter-item input[type=checkbox] { accent-color: var(--primary); width: 15px; height: 15px; cursor: pointer; }
+    .filter-item label { font-size: 12.5px; color: #555; cursor: pointer; flex: 1; }
+    .filter-item .count { font-size: 11px; color: #aaa; margin-left: auto; }
+    .price-range { display: flex; gap: 8px; align-items: center; }
+    .price-range input { flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+    .btn-filter { width: 100%; background: var(--primary); color: #fff; border: none; padding: 9px; font-weight: 700; font-family: inherit; cursor: pointer; border-radius: 4px; font-size: 13px; margin-top: 10px; }
+
+    .products-main { min-width: 0; }
+    .products-toolbar {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .toolbar-left { font-size: 13px; color: #666; }
+    .toolbar-left strong { color: var(--primary); }
+    .toolbar-right { display: flex; align-items: center; gap: 10px; }
+    .sort-select {
+      padding: 7px 12px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 12.5px;
+      font-family: inherit;
+      color: #333;
+      cursor: pointer;
+    }
+    .view-toggle { display: flex; gap: 5px; }
+    .view-btn {
+      width: 32px; height: 32px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: #888;
+      font-size: 14px;
+      transition: var(--transition);
+    }
+    .view-btn.active, .view-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    .page-btn {
+      min-width: 36px; height: 36px;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 10px;
+      transition: var(--transition);
+      font-family: inherit;
+    }
+    .page-btn:hover { background: var(--primary-light); color: #fff; border-color: var(--primary-light); }
+    .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+    .breadcrumb {
+      font-size: 12.5px;
+      color: #888;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .breadcrumb a { color: var(--primary); }
+    .breadcrumb span { color: #bbb; }
+
+    /* Active filter tags */
+    .active-filters { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+    .filter-tag {
+      background: #e8f5e9; color: var(--primary); border: 1px solid #c8e6c9;
+      padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;
+      display: flex; align-items: center; gap: 6px; cursor: pointer;
+    }
+    .filter-tag i { font-size: 11px; opacity: 0.7; }
+    .filter-tag:hover i { opacity: 1; color: var(--sale-red); }
+
+    @media (max-width: 768px) {
+      .products-page-layout { grid-template-columns: 1fr; }
+      .filter-sidebar { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-shipping-fast"></i> Giao hàng toàn quốc 2–4 ngày</span>
+      <span><i class="fas fa-shield-alt"></i> Hàng chính hãng 100%</span>
+      <span><i class="fas fa-undo-alt"></i> Đổi trả 30 ngày</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="lien-he.html"><i class="fas fa-envelope"></i> chausonshop@gmail.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon">🌿</div>
+          <div class="logo-text">
+            <h1>CHÂU SƠN</h1>
+            <span>Chuyên hàng nhập</span>
+          </div>
+        </a>
+      </div>
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text">
+            <strong>0935.033.039</strong>
+            <small>Hotline bán hàng</small>
+          </div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="cat-all">
+        <i class="fas fa-bars"></i>
+        <span>DANH MỤC SẢN PHẨM</span>
+        <i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="san-pham.html" class="active">Sản phẩm</a>
+        <a href="tin-tuc.html">Tin tức & Tư vấn</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- PAGE BODY -->
+<div class="page-wrapper">
+
+  <!-- Breadcrumb -->
+  <div class="breadcrumb">
+    <a href="index.html">Trang chủ</a>
+    <span>›</span>
+    <span id="breadcrumbCat">Tất cả sản phẩm</span>
+  </div>
+
+  <!-- Active Filters -->
+  <div class="active-filters" id="activeFilters"></div>
+
+  <div class="products-page-layout">
+
+    <!-- FILTER SIDEBAR -->
+    <aside class="filter-sidebar">
+      <div class="sidebar-title">
+        <i class="fas fa-filter"></i> Bộ lọc sản phẩm
+      </div>
+
+      <!-- Categories -->
+      <div class="filter-section">
+        <h3>Danh mục</h3>
+        <div id="catFilterList"></div>
+      </div>
+
+      <!-- Price Range -->
+      <div class="filter-section">
+        <h3>Khoảng giá</h3>
+        <div class="price-range">
+          <input type="number" id="priceMin" placeholder="Từ" min="0">
+          <span>—</span>
+          <input type="number" id="priceMax" placeholder="Đến" min="0">
+        </div>
+        <button class="btn-filter" onclick="applyFilters()">Áp dụng</button>
+      </div>
+
+      <!-- Origin -->
+      <div class="filter-section">
+        <h3>Xuất xứ</h3>
+        <div class="filter-item">
+          <input type="checkbox" id="orig_jp" class="orig-filter" value="Nhật Bản">
+          <label for="orig_jp">🇯🇵 Nhật Bản</label>
+          <span class="count">12</span>
+        </div>
+        <div class="filter-item">
+          <input type="checkbox" id="orig_au" class="orig-filter" value="Úc">
+          <label for="orig_au">🇦🇺 Úc</label>
+          <span class="count">8</span>
+        </div>
+        <div class="filter-item">
+          <input type="checkbox" id="orig_us" class="orig-filter" value="Mỹ">
+          <label for="orig_us">🇺🇸 Mỹ</label>
+          <span class="count">9</span>
+        </div>
+        <div class="filter-item">
+          <input type="checkbox" id="orig_kr" class="orig-filter" value="Hàn Quốc">
+          <label for="orig_kr">🇰🇷 Hàn Quốc</label>
+          <span class="count">7</span>
+        </div>
+        <div class="filter-item">
+          <input type="checkbox" id="orig_de" class="orig-filter" value="Đức">
+          <label for="orig_de">🇩🇪 Đức</label>
+          <span class="count">3</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- PRODUCTS MAIN -->
+    <div class="products-main">
+      <div class="products-toolbar">
+        <div class="toolbar-left">
+          Hiển thị <strong id="productCount">0</strong> sản phẩm
+        </div>
+        <div class="toolbar-right">
+          <select class="sort-select" id="sortSelect" onchange="applyFilters()">
+            <option value="default">Nổi bật</option>
+            <option value="price-asc">Giá tăng dần</option>
+            <option value="price-desc">Giá giảm dần</option>
+            <option value="sold">Bán chạy nhất</option>
+            <option value="rating">Đánh giá cao</option>
+            <option value="new">Mới nhất</option>
+          </select>
+          <div class="view-toggle">
+            <button class="view-btn active" id="gridViewBtn" onclick="setView('grid')" title="Dạng lưới"><i class="fas fa-th"></i></button>
+            <button class="view-btn" id="listViewBtn" onclick="setView('list')" title="Dạng danh sách"><i class="fas fa-list"></i></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="section-block" style="overflow:hidden;">
+        <div class="product-grid" id="productsGrid" style="padding:0;"></div>
+      </div>
+
+      <!-- Pagination -->
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="footer-logo-text">🌿 CHÂU SƠN SHOP</div>
+        <div class="footer-logo-sub">Chuyên hàng ngoại nhập</div>
+        <p>Chuyên cung cấp thực phẩm chức năng và mỹ phẩm nhập khẩu chính hãng từ Nhật, Úc, Mỹ, Hàn Quốc.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Danh mục</h4>
+        <ul id="footerCatList"></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách đổi trả</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Hướng dẫn mua hàng</a></li>
+          <li><a href="lien-he.html"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <div class="footer-contact-item"><i class="fas fa-phone-alt"></i><span>0935.033.039</span></div>
+        <div class="footer-contact-item"><i class="fas fa-envelope"></i><span>chausonshop@gmail.com</span></div>
+        <div class="social-links" style="margin-top:12px">
+          <a href="#" class="social-link fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link yt"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-link zl"><i class="fas fa-comment-dots"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- MINI CART -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng Của Bạn</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row">
+      <span>Tổng tiền:</span>
+      <span class="cart-total-price" id="cartTotalPrice">0đ</span>
+    </div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'">
+      <i class="fas fa-credit-card"></i> TIẾN HÀNH THANH TOÁN
+    </button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<div class="float-btns">
+  <a href="tel:0935033039" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const catParam = params.get('cat') || '';
+  const qParam = params.get('q') || '';
+
+  const ITEMS_PER_PAGE = 15;
+  let currentPage = 1;
+  let filteredProducts = [];
+  let currentView = 'grid';
+
+  // ── MEGA DROPDOWN ──
+  const megaDrop = document.getElementById('megaDropdown');
+  if (megaDrop) {
+    megaDrop.innerHTML = CATEGORIES.map(c => `
+      <li><a href="san-pham.html?cat=${c.id}">
+        <i class="fas ${c.icon}" style="color:${c.color}"></i>${c.name}
+        <i class="fas fa-chevron-right angle"></i>
+      </a></li>`).join('');
+  }
+
+  // ── CATEGORY FILTERS ──
+  const catFilterList = document.getElementById('catFilterList');
+  CATEGORIES.forEach(c => {
+    const count = PRODUCTS.filter(p => p.categoryId === c.id).length;
+    catFilterList.innerHTML += `
+      <div class="filter-item">
+        <input type="checkbox" id="cat_${c.id}" class="cat-filter" value="${c.id}" ${catParam === c.id ? 'checked' : ''}>
+        <label for="cat_${c.id}">${c.name}</label>
+        <span class="count">${count}</span>
+      </div>`;
+  });
+
+  // Footer cat list
+  const footerCatList = document.getElementById('footerCatList');
+  if (footerCatList) {
+    footerCatList.innerHTML = CATEGORIES.slice(0, 6).map(c =>
+      `<li><a href="san-pham.html?cat=${c.id}"><i class="fas fa-angle-right"></i> ${c.name}</a></li>`
+    ).join('');
+  }
+
+  // ── BREADCRUMB ──
+  const breadcrumbCat = document.getElementById('breadcrumbCat');
+  if (catParam) {
+    const cat = CATEGORIES.find(c => c.id === catParam);
+    if (cat && breadcrumbCat) breadcrumbCat.textContent = cat.name;
+  } else if (qParam) {
+    if (breadcrumbCat) breadcrumbCat.textContent = `Tìm kiếm: "${qParam}"`;
+    document.getElementById('searchInput').value = qParam;
+  }
+
+  // ── ACTIVE FILTER TAGS ──
+  function renderActiveFilters() {
+    const af = document.getElementById('activeFilters');
+    af.innerHTML = '';
+    if (catParam) {
+      const cat = CATEGORIES.find(c => c.id === catParam);
+      if (cat) af.innerHTML += `<div class="filter-tag"><i class="fas fa-tag"></i>${cat.name}<i class="fas fa-times" onclick="window.location.href='san-pham.html'"></i></div>`;
+    }
+    if (qParam) {
+      af.innerHTML += `<div class="filter-tag"><i class="fas fa-search"></i>Tìm: "${qParam}"<i class="fas fa-times" onclick="window.location.href='san-pham.html'"></i></div>`;
+    }
+  }
+  renderActiveFilters();
+
+  // ── FILTER & SORT ──
+  window.applyFilters = function() {
+    const checkedCats = [...document.querySelectorAll('.cat-filter:checked')].map(el => el.value);
+    const priceMin = parseFloat(document.getElementById('priceMin').value) || 0;
+    const priceMax = parseFloat(document.getElementById('priceMax').value) || Infinity;
+    const sort = document.getElementById('sortSelect').value;
+
+    let products = PRODUCTS;
+
+    if (catParam && checkedCats.length === 0) {
+      products = products.filter(p => p.categoryId === catParam);
+    } else if (checkedCats.length > 0) {
+      products = products.filter(p => checkedCats.includes(p.categoryId));
+    }
+
+    if (qParam) {
+      const q = qParam.toLowerCase();
+      products = products.filter(p => p.name.toLowerCase().includes(q) || p.tag?.toLowerCase().includes(q));
+    }
+
+    if (priceMin > 0) products = products.filter(p => p.price >= priceMin);
+    if (priceMax < Infinity) products = products.filter(p => p.price <= priceMax);
+
+    switch(sort) {
+      case 'price-asc': products.sort((a,b) => a.price - b.price); break;
+      case 'price-desc': products.sort((a,b) => b.price - a.price); break;
+      case 'sold': products.sort((a,b) => (b.sold||0) - (a.sold||0)); break;
+      case 'rating': products.sort((a,b) => (b.rating||0) - (a.rating||0)); break;
+      case 'new': products = [...products].reverse(); break;
+    }
+
+    filteredProducts = products;
+    currentPage = 1;
+    renderPage();
+  };
+
+  // ── RENDER PAGE ──
+  function renderPage() {
+    const start = (currentPage - 1) * ITEMS_PER_PAGE;
+    const paginated = filteredProducts.slice(start, start + ITEMS_PER_PAGE);
+    const grid = document.getElementById('productsGrid');
+    const count = document.getElementById('productCount');
+
+    if (count) count.textContent = filteredProducts.length;
+
+    if (paginated.length === 0) {
+      grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:#aaa;">
+        <i class="fas fa-search" style="font-size:48px;margin-bottom:15px;display:block;"></i>
+        <p style="font-size:16px;">Không tìm thấy sản phẩm phù hợp</p>
+      </div>`;
+    } else {
+      grid.innerHTML = paginated.map(p => buildCard(p)).join('');
+    }
+
+    renderPagination();
+  }
+
+  function buildCard(p) {
+    const disc = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
+    const stars = '★'.repeat(Math.floor(p.rating||4)) + '☆'.repeat(5 - Math.floor(p.rating||4));
+    const badgeColors = { HOT:'hot', SALE:'sale', 'MỚI':'new', BEST:'best', PREMIUM:'premium' };
+    const badgeClass = p.badge ? (badgeColors[p.badge] || 'hot') : '';
+    return `
+      <div class="product-card">
+        <div class="product-img-wrap">
+          ${p.badge ? `<span class="p-badge ${badgeClass}">${p.badge}</span>` : ''}
+          ${disc > 0 ? `<div class="discount-badge">-${disc}%</div>` : ''}
+          <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+          <div class="product-actions">
+            <button class="action-btn add-cart" onclick="addToCart(${p.id})">
+              <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+            </button>
+            <button class="action-btn view-detail" onclick="window.location.href='chi-tiet-san-pham.html?id=${p.id}'">
+              <i class="fas fa-eye"></i> Xem
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <a href="chi-tiet-san-pham.html?id=${p.id}" class="product-name">${p.name}</a>
+          <div class="product-stars">
+            <span style="color:#FFC107;font-size:11px;">${stars}</span>
+            <span class="product-reviews">(${p.reviews||0})</span>
+          </div>
+          <div class="product-price-wrap">
+            <span class="product-price">${p.price.toLocaleString('vi-VN')}đ</span>
+            ${p.originalPrice ? `<span class="product-original">${p.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+          </div>
+          <div class="product-sold">Đã bán: ${(p.sold||0).toLocaleString('vi-VN')}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderPagination() {
+    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    const pg = document.getElementById('pagination');
+    if (!pg || totalPages <= 1) { if (pg) pg.innerHTML = ''; return; }
+
+    let html = `<button class="page-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+    for (let i = 1; i <= totalPages; i++) {
+      if (i === 1 || i === totalPages || (i >= currentPage-2 && i <= currentPage+2)) {
+        html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+      } else if (i === currentPage-3 || i === currentPage+3) {
+        html += `<span class="page-btn" style="cursor:default;">…</span>`;
+      }
+    }
+    html += `<button class="page-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+    pg.innerHTML = html;
+  }
+
+  window.goPage = function(n) {
+    const totalPages = Math.ceil(filteredProducts.length / ITEMS_PER_PAGE);
+    if (n < 1 || n > totalPages) return;
+    currentPage = n;
+    renderPage();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.setView = function(view) {
+    currentView = view;
+    document.getElementById('gridViewBtn').classList.toggle('active', view === 'grid');
+    document.getElementById('listViewBtn').classList.toggle('active', view === 'list');
+    const grid = document.getElementById('productsGrid');
+    grid.style.gridTemplateColumns = view === 'grid' ? '' : '1fr';
+  };
+
+  window.doSearch = function(e) {
+    e.preventDefault();
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) window.location.href = `san-pham.html?q=${encodeURIComponent(q)}`;
+  };
+
+  // Init
+  applyFilters();
+
+  // Listen to cat filter changes
+  document.querySelectorAll('.cat-filter').forEach(el =>
+    el.addEventListener('change', applyFilters)
+  );
+});
+</script>
+</body>
+</html>

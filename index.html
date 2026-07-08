@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Châu Sơn Shop - Chuyên Hàng Ngoại Nhập | Collagen | Vitamin | Mỹ Phẩm</title>
+  <meta name="description" content="Châu Sơn Shop chuyên phân phối hàng ngoại nhập chính hãng: Collagen, Sữa ong chúa, Nhau thai cừu, Vitamin, Mỹ phẩm Nhật Bản, Úc, Hàn Quốc. Giá đại lý, giao hàng toàn quốc.">
+  <meta name="keywords" content="hàng ngoại nhập, collagen, sữa ong chúa, nhau thai cừu, vitamin C, glucosamine, mỹ phẩm nhật, châu sơn shop">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-shipping-fast"></i> Giao hàng toàn quốc 2–4 ngày</span>
+      <span><i class="fas fa-shield-alt"></i> Hàng chính hãng 100%</span>
+      <span><i class="fas fa-undo-alt"></i> Đổi trả 30 ngày</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="lien-he.html"><i class="fas fa-envelope"></i> chausonshop@gmail.com</a>
+      <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="#"><i class="fab fa-tiktok"></i> TikTok</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+
+      <!-- Logo -->
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon">🌿</div>
+          <div class="logo-text">
+            <h1>CHÂU SƠN</h1>
+            <span>Chuyên hàng nhập</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Search -->
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm: collagen, vitamin C, sữa ong chúa...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+
+      <!-- Header Info -->
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text">
+            <strong>0935.033.039</strong>
+            <small>Hotline bán hàng</small>
+          </div>
+        </div>
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-clock"></i></div>
+          <div class="info-item-text">
+            <strong>8h00–21h30</strong>
+            <small>Giờ làm việc</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cart Button -->
+      <button class="cart-btn" id="cartToggleBtn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+
+    </div>
+  </div>
+</header>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+
+      <!-- Category Dropdown -->
+      <div class="cat-all" id="catAllBtn">
+        <i class="fas fa-bars"></i>
+        <span>DANH MỤC SẢN PHẨM</span>
+        <i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="nav-links">
+        <a href="index.html" class="active">Trang chủ</a>
+        <a href="san-pham.html">Sản phẩm</a>
+        <a href="tin-tuc.html">Tin tức & Tư vấn</a>
+        <a href="#flash">Flash Sale 🔥</a>
+        <a href="#bestsellers">Bán chạy</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN PAGE WRAPPER -->
+<div class="page-wrapper">
+
+  <!-- HERO: 3 Columns -->
+  <div class="hero-grid">
+
+    <!-- LEFT: Category Sidebar -->
+    <aside class="sidebar-left">
+      <div class="sidebar-title">
+        <i class="fas fa-list"></i> Danh mục
+      </div>
+      <ul class="cat-menu" id="catMenuLeft"></ul>
+    </aside>
+
+    <!-- CENTER: Slider -->
+    <div class="banner-wrap">
+      <div class="slider-track" id="sliderTrack"></div>
+      <button class="slider-prev" id="sliderPrev"><i class="fas fa-chevron-left"></i></button>
+      <button class="slider-next" id="sliderNext"><i class="fas fa-chevron-right"></i></button>
+      <div class="slider-dots" id="sliderDots"></div>
+    </div>
+
+    <!-- RIGHT: News Widget -->
+    <aside class="sidebar-right">
+      <div class="news-widget">
+        <div class="widget-title">
+          <i class="fas fa-newspaper"></i> Tin tức mới
+          <a href="tin-tuc.html">Xem tất cả »</a>
+        </div>
+        <div id="newsWidgetList"></div>
+      </div>
+    </aside>
+
+  </div>
+
+  <!-- TRUST BADGES -->
+  <div class="trust-strip">
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-medal"></i></div>
+      <div class="trust-text">
+        <strong>Hàng chính hãng 100%</strong>
+        <span>Cam kết hoàn tiền nếu hàng giả</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-shipping-fast"></i></div>
+      <div class="trust-text">
+        <strong>Giao hàng toàn quốc</strong>
+        <span>Nhận hàng trong 2–4 ngày làm việc</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-undo-alt"></i></div>
+      <div class="trust-text">
+        <strong>Đổi trả 30 ngày</strong>
+        <span>Miễn phí đổi hàng lỗi từ nhà sản xuất</span>
+      </div>
+    </div>
+    <div class="trust-item">
+      <div class="trust-icon"><i class="fas fa-headset"></i></div>
+      <div class="trust-text">
+        <strong>Hỗ trợ 24/7</strong>
+        <span>Tư vấn miễn phí: 0935.033.039</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURED CATEGORIES -->
+  <div class="featured-cats" id="featuredCats"></div>
+
+  <!-- FLASH SALE -->
+  <div class="flash-sale-wrap" id="flash">
+    <div class="flash-sale-header">
+      <div class="flash-sale-title">
+        <span class="fire">🔥</span>
+        <div>
+          <h2>FLASH SALE</h2>
+          <span>Giá ưu đãi - Số lượng có hạn</span>
+        </div>
+      </div>
+      <div class="countdown-wrap">
+        <span class="countdown-label">Kết thúc sau:</span>
+        <div class="countdown-box" id="cdHours">00</div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-box" id="cdMins">00</div>
+        <span class="countdown-sep">:</span>
+        <div class="countdown-box" id="cdSecs">00</div>
+      </div>
+    </div>
+    <div class="flash-sale-products" id="flashSaleProducts"></div>
+  </div>
+
+  <!-- BEST SELLERS -->
+  <div class="section-block" id="bestsellers">
+    <div class="section-header">
+      <h2><i class="fas fa-fire-alt"></i> SẢN PHẨM BÁN CHẠY</h2>
+      <a href="san-pham.html" class="see-all">Xem tất cả »</a>
+    </div>
+    <div class="product-grid product-grid-4" id="bestsellerGrid" style="padding:0;"></div>
+  </div>
+
+  <!-- THỰC PHẨM CHỨC NĂNG -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2><i class="fas fa-leaf"></i> THỰC PHẨM CHỨC NĂNG</h2>
+      <a href="san-pham.html?cat=thuc-pham-chuc-nang" class="see-all">Xem tất cả »</a>
+    </div>
+    <div class="cat-tabs" id="tpcnTabs"></div>
+    <div class="product-grid" id="tpcnGrid" style="padding:0;"></div>
+  </div>
+
+  <!-- CHỐNG LÃO HÓA -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2><i class="fas fa-spa"></i> CHỐNG LÃO HÓA - LÀM ĐẸP</h2>
+      <a href="san-pham.html?cat=chong-lao-hoa" class="see-all">Xem tất cả »</a>
+    </div>
+    <div class="product-grid" id="clhGrid" style="padding:0;"></div>
+  </div>
+
+  <!-- MỸ PHẨM -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2><i class="fas fa-magic"></i> MỸ PHẨM NHẬP KHẨU</h2>
+      <a href="san-pham.html?cat=my-pham" class="see-all">Xem tất cả »</a>
+    </div>
+    <div class="product-grid" id="myphamGrid" style="padding:0;"></div>
+  </div>
+
+  <!-- HỖ TRỢ XƯƠNG KHỚP -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2><i class="fas fa-bone"></i> HỖ TRỢ XƯƠNG KHỚP</h2>
+      <a href="san-pham.html?cat=ho-tro-xuong-khop" class="see-all">Xem tất cả »</a>
+    </div>
+    <div class="product-grid" id="xuongkhopGrid" style="padding:0;"></div>
+  </div>
+
+  <!-- MẸ VÀ BÉ -->
+  <div class="section-block">
+    <div class="section-header">
+      <h2><i class="fas fa-baby"></i> MẸ VÀ BÉ</h2>
+      <a href="san-pham.html?cat=me-va-be" class="see-all">Xem tất cả »</a>
+    </div>
+    <div class="product-grid" id="mebeGrid" style="padding:0;"></div>
+  </div>
+
+</div><!-- end page-wrapper -->
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="footer-logo-text">🌿 CHÂU SƠN SHOP</div>
+        <div class="footer-logo-sub">Chuyên hàng ngoại nhập</div>
+        <p>Chuyên cung cấp thực phẩm chức năng, mỹ phẩm nhập khẩu chính hãng từ Nhật Bản, Úc, Mỹ, Hàn Quốc với giá đại lý tốt nhất.</p>
+        <div class="social-links" style="margin-top: 15px;">
+          <a href="#" class="social-link fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link yt"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-link zl"><i class="fas fa-comment-dots"></i></a>
+          <a href="#" class="social-link ig"><i class="fab fa-instagram"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h4>Danh mục sản phẩm</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Thực phẩm chức năng</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chống lão hóa</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Hỗ trợ xương khớp</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Mỹ phẩm nhập khẩu</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Sâm, Nấm, Cao</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Mẹ và Bé</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Bánh kẹo nhập khẩu</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Chính sách</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách đổi trả</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách vận chuyển</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách bảo mật</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Hướng dẫn mua hàng</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Hướng dẫn thanh toán</a></li>
+          <li><a href="lien-he.html"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h4>Thông tin liên hệ</h4>
+        <div class="footer-contact-item">
+          <i class="fas fa-phone-alt"></i>
+          <span>Hotline: <strong style="color:#fff">0935.033.039</strong></span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-phone-alt"></i>
+          <span>CSKH: <strong style="color:#fff">0843.323.550</strong></span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-envelope"></i>
+          <span>chausonshop@gmail.com</span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Đà Nẵng: 01 Nguyễn Hữu Thọ, Hòa Thuận Nam, Hải Châu</span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>TP.HCM: Sky Garden 1, Đại Lộ Nguyễn Văn Linh, Q.7</span>
+        </div>
+        <div class="footer-contact-item">
+          <i class="fas fa-clock"></i>
+          <span>Làm việc: 8h00 – 21h30 mỗi ngày</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng. Thiết kế bởi Châu Sơn Team.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- MINI CART DRAWER -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng Của Bạn</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList">
+    <div class="cart-empty" id="cartEmpty">
+      <i class="fas fa-shopping-basket"></i>
+      <p>Giỏ hàng trống</p>
+      <small>Hãy thêm sản phẩm vào giỏ hàng</small>
+    </div>
+  </div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row">
+      <span>Tổng tiền:</span>
+      <span class="cart-total-price" id="cartTotalPrice">0đ</span>
+    </div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'">
+      <i class="fas fa-credit-card"></i> TIẾN HÀNH THANH TOÁN
+    </button>
+  </div>
+</aside>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <i class="fas fa-check-circle"></i>
+  <span id="toastMsg">Thêm vào giỏ hàng thành công!</span>
+</div>
+
+<!-- FLOATING BUTTONS -->
+<div class="float-btns">
+  <a href="tel:0935033039" class="float-btn phone" title="Gọi ngay">
+    <i class="fas fa-phone-alt"></i>
+  </a>
+  <a href="https://zalo.me/0935033039" target="_blank" class="float-btn zalo" title="Zalo">
+    <i class="fas fa-comment-dots"></i>
+  </a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})" title="Lên đầu trang">
+    <i class="fas fa-chevron-up"></i>
+  </button>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script>
+// ================================================
+// INDEX.HTML — Main Page Logic
+// ================================================
+document.addEventListener('DOMContentLoaded', () => {
+
+  // ── RENDER CATEGORY MEGA DROPDOWN ──
+  const megaDropdown = document.getElementById('megaDropdown');
+  if (megaDropdown && typeof CATEGORIES !== 'undefined') {
+    megaDropdown.innerHTML = CATEGORIES.map(c => `
+      <li>
+        <a href="san-pham.html?cat=${c.id}">
+          <i class="fas ${c.icon}" style="color:${c.color}"></i>
+          ${c.name}
+          <i class="fas fa-chevron-right angle"></i>
+        </a>
+      </li>`).join('');
+  }
+
+  // ── RENDER LEFT SIDEBAR CATEGORIES ──
+  const catMenuLeft = document.getElementById('catMenuLeft');
+  if (catMenuLeft && typeof CATEGORIES !== 'undefined') {
+    catMenuLeft.innerHTML = CATEGORIES.map((c, i) => `
+      <li class="${c.id === 'big-sale' ? 'hot-cat' : ''}">
+        <a href="san-pham.html?cat=${c.id}">
+          <i class="fas ${c.icon}" style="color:${c.color}"></i>
+          ${c.name}
+          <i class="fas fa-chevron-right arrow"></i>
+        </a>
+      </li>`).join('');
+  }
+
+  // ── FEATURED CATEGORY CARDS ──
+  const featuredCats = document.getElementById('featuredCats');
+  if (featuredCats && typeof CATEGORIES !== 'undefined') {
+    featuredCats.innerHTML = CATEGORIES.slice(0, 5).map(c => `
+      <a href="san-pham.html?cat=${c.id}" class="featured-cat-card">
+        <div class="featured-cat-icon" style="background:${c.color}">
+          <i class="fas ${c.icon}"></i>
+        </div>
+        <div class="featured-cat-name">${c.name}</div>
+      </a>`).join('');
+  }
+
+  // ── BANNER SLIDER ──
+  const sliderTrack = document.getElementById('sliderTrack');
+  const sliderDots = document.getElementById('sliderDots');
+  let currentSlide = 0;
+  let slideTimer;
+
+  const bannerImages = [
+    { src: 'images/banner-1.png', fallbackBg: 'linear-gradient(135deg, #ffa726 0%, #fb8c00 50%, #e65100 100%)' },
+    { src: 'images/banner-2.png', fallbackBg: 'linear-gradient(135deg, #ce93d8 0%, #9c27b0 50%, #6a1b9a 100%)' },
+    { src: 'images/banner-3.png', fallbackBg: 'linear-gradient(135deg, #a5d6a7 0%, #43a047 50%, #1b5e20 100%)' }
+  ];
+
+  if (sliderTrack && typeof BANNERS !== 'undefined') {
+    sliderTrack.innerHTML = BANNERS.map((b, i) => `
+      <div class="slide" style="background:${bannerImages[i]?.fallbackBg || b.bgColor}">
+        <img src="${bannerImages[i]?.src}" alt="${b.productName}" onerror="this.style.display='none'">
+        <div class="slide-overlay">
+          <div class="slide-badge">${b.badge}</div>
+          <div class="slide-name">${b.productName}</div>
+          <div class="slide-prices">
+            <div class="slide-sale-price">${b.salePrice.toLocaleString('vi-VN')}đ</div>
+            <div class="slide-original-price">${b.originalPrice.toLocaleString('vi-VN')}đ</div>
+            <div class="slide-discount">-${b.discount}%</div>
+          </div>
+        </div>
+      </div>`).join('');
+
+    // Dots
+    sliderDots.innerHTML = BANNERS.map((_, i) => `<div class="dot ${i===0?'active':''}" onclick="goToSlide(${i})"></div>`).join('');
+  }
+
+  function goToSlide(n) {
+    currentSlide = n;
+    sliderTrack.style.transform = `translateX(-${n * 100}%)`;
+    document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === n));
+  }
+
+  function nextSlide() {
+    goToSlide((currentSlide + 1) % BANNERS.length);
+  }
+  function prevSlide() {
+    goToSlide((currentSlide - 1 + BANNERS.length) % BANNERS.length);
+  }
+
+  document.getElementById('sliderNext')?.addEventListener('click', () => { clearInterval(slideTimer); nextSlide(); startTimer(); });
+  document.getElementById('sliderPrev')?.addEventListener('click', () => { clearInterval(slideTimer); prevSlide(); startTimer(); });
+
+  function startTimer() { slideTimer = setInterval(nextSlide, 4500); }
+  startTimer();
+  window.goToSlide = goToSlide;
+
+  // ── NEWS WIDGET ──
+  const newsWidgetList = document.getElementById('newsWidgetList');
+  if (newsWidgetList && typeof NEWS !== 'undefined') {
+    newsWidgetList.innerHTML = NEWS.map(n => `
+      <div class="news-item">
+        <img class="news-item-img" src="${n.image}" alt="${n.title}" onerror="this.src='images/product-1.png'">
+        <div class="news-item-content">
+          <a href="tin-tuc.html" class="news-item-title">${n.title}</a>
+          <div class="news-item-time"><i class="fas fa-clock"></i> ${n.time}</div>
+        </div>
+      </div>`).join('');
+  }
+
+  // ── FLASH SALE (5 products) ──
+  const flashEl = document.getElementById('flashSaleProducts');
+  if (flashEl && typeof PRODUCTS !== 'undefined') {
+    const flashProds = PRODUCTS.filter(p => p.isSale).slice(0, 5);
+    flashEl.innerHTML = flashProds.map(p => {
+      const disc = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
+      const sold = Math.min(p.sold, 600);
+      const pct = Math.round((sold / 600) * 100);
+      return `
+        <div class="flash-product-card" onclick="addToCart(${p.id})">
+          <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+          <div class="fp-name">${p.name}</div>
+          <div class="fp-price">${p.price.toLocaleString('vi-VN')}đ</div>
+          ${p.originalPrice ? `<div class="fp-original">${p.originalPrice.toLocaleString('vi-VN')}đ</div>` : ''}
+          <div class="fp-discount">-${disc}%</div>
+          <div class="fp-progress-wrap">
+            <div class="fp-progress-label">Đã bán ${sold}</div>
+            <div class="fp-progress-bar"><div class="fp-progress" style="width:${pct}%"></div></div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  // ── COUNTDOWN TIMER ──
+  function setCountdown() {
+    const end = new Date();
+    end.setHours(23, 59, 59, 0);
+    function tick() {
+      const now = new Date();
+      let diff = Math.floor((end - now) / 1000);
+      if (diff < 0) diff = 0;
+      const h = Math.floor(diff / 3600);
+      const m = Math.floor((diff % 3600) / 60);
+      const s = diff % 60;
+      document.getElementById('cdHours').textContent = String(h).padStart(2,'0');
+      document.getElementById('cdMins').textContent = String(m).padStart(2,'0');
+      document.getElementById('cdSecs').textContent = String(s).padStart(2,'0');
+    }
+    tick();
+    setInterval(tick, 1000);
+  }
+  setCountdown();
+
+  // ── PRODUCT CARD BUILDER ──
+  function buildProductCard(p) {
+    const disc = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
+    const stars = '★'.repeat(Math.floor(p.rating || 4)) + '☆'.repeat(5 - Math.floor(p.rating || 4));
+    const badgeColors = { HOT:'hot', SALE:'sale', 'MỚI':'new', BEST:'best', PREMIUM:'premium' };
+    const badgeClass = p.badge ? (badgeColors[p.badge] || 'hot') : '';
+    return `
+      <div class="product-card" onclick="addToCart(${p.id})">
+        <div class="product-img-wrap">
+          ${p.badge ? `<span class="p-badge ${badgeClass}">${p.badge}</span>` : ''}
+          ${disc > 0 ? `<div class="discount-badge">-${disc}%</div>` : ''}
+          <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+          <div class="product-actions">
+            <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart(${p.id})">
+              <i class="fas fa-cart-plus"></i> Thêm vào giỏ
+            </button>
+            <button class="action-btn view-detail" onclick="event.stopPropagation();window.location.href='chi-tiet-san-pham.html?id=${p.id}'">
+              <i class="fas fa-eye"></i> Xem
+            </button>
+          </div>
+        </div>
+        <div class="product-info">
+          <a href="chi-tiet-san-pham.html?id=${p.id}" class="product-name">${p.name}</a>
+          <div class="product-stars">
+            <span style="color:#FFC107;font-size:11px;">${stars}</span>
+            <span class="product-reviews">(${p.reviews || 0})</span>
+          </div>
+          <div class="product-price-wrap">
+            <span class="product-price">${p.price.toLocaleString('vi-VN')}đ</span>
+            ${p.originalPrice ? `<span class="product-original">${p.originalPrice.toLocaleString('vi-VN')}đ</span>` : ''}
+          </div>
+          <div class="product-sold">Đã bán: ${(p.sold||0).toLocaleString('vi-VN')}</div>
+        </div>
+      </div>`;
+  }
+
+  // ── RENDER GRIDS ──
+  function renderGrid(elId, products) {
+    const el = document.getElementById(elId);
+    if (el) el.innerHTML = products.map(buildProductCard).join('');
+  }
+
+  if (typeof PRODUCTS !== 'undefined') {
+    // Best sellers
+    renderGrid('bestsellerGrid', PRODUCTS.filter(p => p.isBestSeller).slice(0, 8));
+    // Categories
+    renderGrid('tpcnGrid', PRODUCTS.filter(p => p.categoryId === 'thuc-pham-chuc-nang').slice(0, 5));
+    renderGrid('clhGrid', PRODUCTS.filter(p => p.categoryId === 'chong-lao-hoa').slice(0, 5));
+    renderGrid('myphamGrid', PRODUCTS.filter(p => p.categoryId === 'my-pham').slice(0, 5));
+    renderGrid('xuongkhopGrid', PRODUCTS.filter(p => p.categoryId === 'ho-tro-xuong-khop').slice(0, 5));
+    renderGrid('mebeGrid', PRODUCTS.filter(p => p.categoryId === 'me-va-be').slice(0, 5));
+  }
+
+  // ── TPCN TABS ──
+  const tpcnTabs = document.getElementById('tpcnTabs');
+  if (tpcnTabs && typeof CATEGORIES !== 'undefined') {
+    const tpcn = CATEGORIES.find(c => c.id === 'thuc-pham-chuc-nang');
+    if (tpcn && tpcn.subTags) {
+      tpcnTabs.innerHTML = ['Tất cả', ...tpcn.subTags].map((t, i) =>
+        `<div class="cat-tab ${i===0?'active':''}" onclick="filterTpcn('${t}', this)">${t}</div>`
+      ).join('');
+    }
+  }
+
+  window.filterTpcn = function(tag, el) {
+    document.querySelectorAll('#tpcnTabs .cat-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+    const filtered = tag === 'Tất cả'
+      ? PRODUCTS.filter(p => p.categoryId === 'thuc-pham-chuc-nang').slice(0, 5)
+      : PRODUCTS.filter(p => p.categoryId === 'thuc-pham-chuc-nang' && p.tag === tag).slice(0, 5);
+    renderGrid('tpcnGrid', filtered.length ? filtered : PRODUCTS.filter(p => p.categoryId === 'thuc-pham-chuc-nang').slice(0, 5));
+  };
+
+  // ── SEARCH ──
+  window.doSearch = function(e) {
+    e.preventDefault();
+    const q = document.getElementById('searchInput').value.trim();
+    if (q) window.location.href = `san-pham.html?q=${encodeURIComponent(q)}`;
+  };
+
+}); // end DOMContentLoaded
+</script>
+</body>
+</html>

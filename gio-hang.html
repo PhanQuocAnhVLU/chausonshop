@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giỏ Hàng - Châu Sơn Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .cart-page-layout {
+      display: grid;
+      grid-template-columns: 1fr 360px;
+      gap: 20px;
+      align-items: start;
+    }
+    .cart-page-table {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .cart-table-header {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+      gap: 10px;
+      padding: 12px 18px;
+      background: #f9f9f9;
+      border-bottom: 1px solid #eee;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #555;
+      text-transform: uppercase;
+    }
+    .cart-page-item {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 40px;
+      gap: 10px;
+      padding: 16px 18px;
+      border-bottom: 1px solid #f0f0f0;
+      align-items: center;
+    }
+    .cart-page-item:last-child { border-bottom: none; }
+    .cart-page-product { display: flex; align-items: center; gap: 12px; }
+    .cart-page-product img { width: 70px; height: 70px; object-fit: contain; border: 1px solid #eee; border-radius: 4px; padding: 4px; }
+    .cart-page-product-name { font-size: 13px; font-weight: 600; color: #333; }
+    .cart-page-product-cat { font-size: 11px; color: #aaa; margin-top: 3px; }
+    .cart-page-price { font-size: 14px; color: var(--sale-red); font-weight: 700; }
+    .cart-page-qty { display: flex; align-items: center; gap: 6px; }
+    .cart-page-qty button { width: 28px; height: 28px; border: 1px solid #ddd; background: #f5f5f5; border-radius: 3px; cursor: pointer; font-size: 14px; transition: var(--transition); }
+    .cart-page-qty button:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+    .cart-page-qty span { font-weight: 700; min-width: 28px; text-align: center; font-size: 14px; }
+    .cart-page-subtotal { font-size: 15px; font-weight: 800; color: var(--sale-red); }
+    .cart-page-del { background: none; border: none; color: #ccc; cursor: pointer; font-size: 18px; transition: color 0.2s; }
+    .cart-page-del:hover { color: var(--sale-red); }
+
+    .cart-summary {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      position: sticky;
+      top: 80px;
+    }
+    .cart-summary h3 { font-size: 16px; font-weight: 800; color: #222; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px solid #f0f0f0; }
+    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13.5px; }
+    .summary-row.total { font-size: 16px; font-weight: 800; padding-top: 12px; border-top: 2px solid #f0f0f0; }
+    .summary-row.total span:last-child { color: var(--sale-red); font-size: 22px; }
+    .promo-input { display: flex; gap: 8px; margin: 15px 0; }
+    .promo-input input { flex: 1; padding: 9px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 12.5px; font-family: inherit; }
+    .promo-input button { background: var(--primary); color: #fff; border: none; padding: 9px 15px; border-radius: 4px; cursor: pointer; font-weight: 700; font-size: 12.5px; font-family: inherit; }
+    .btn-checkout-big {
+      width: 100%;
+      background: var(--sale-orange);
+      color: #fff;
+      border: none;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .btn-checkout-big:hover { background: #d66000; transform: translateY(-1px); }
+    .btn-continue { width: 100%; background: #f5f5f5; color: #555; border: 1px solid #ddd; padding: 12px; font-size: 13.5px; font-weight: 600; font-family: inherit; cursor: pointer; border-radius: 6px; transition: var(--transition); }
+    .btn-continue:hover { background: #eee; }
+
+    .payment-methods { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 15px; padding-top: 15px; border-top: 1px solid #f0f0f0; }
+    .pm-badge { background: #f5f5f5; border: 1px solid #eee; border-radius: 4px; padding: 5px 10px; font-size: 11px; font-weight: 600; color: #555; }
+
+    .cart-empty-page { text-align: center; padding: 80px 40px; color: #aaa; }
+    .cart-empty-page i { font-size: 64px; margin-bottom: 20px; display: block; color: #ddd; }
+    .cart-empty-page h3 { font-size: 20px; color: #999; margin-bottom: 10px; }
+    .cart-empty-page p { font-size: 14px; margin-bottom: 20px; }
+    .btn-shop { display: inline-block; background: var(--primary); color: #fff; padding: 12px 30px; border-radius: 6px; font-weight: 700; font-size: 14px; }
+    .btn-shop:hover { background: var(--primary-dark); color: #fff; }
+
+    @media (max-width: 900px) { .cart-page-layout { grid-template-columns: 1fr; } }
+    @media (max-width: 600px) {
+      .cart-table-header { display: none; }
+      .cart-page-item { grid-template-columns: 1fr auto; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-shipping-fast"></i> Miễn phí vận chuyển đơn từ 500k</span>
+      <span><i class="fas fa-shield-alt"></i> Hàng chính hãng 100%</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="tel:0935033039"><i class="fas fa-phone-alt"></i> 0935.033.039</a>
+    </div>
+  </div>
+</div>
+
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon">🌿</div>
+          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
+        </a>
+      </div>
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text"><strong>0935.033.039</strong><small>Hotline</small></div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i><span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="cat-all">
+        <i class="fas fa-bars"></i><span>DANH MỤC</span><i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="san-pham.html">Sản phẩm</a>
+        <a href="tin-tuc.html">Tin tức</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="page-wrapper">
+  <div class="breadcrumb">
+    <a href="index.html">Trang chủ</a><span>›</span>
+    <span>Giỏ hàng</span>
+  </div>
+
+  <h1 style="font-size:22px;font-weight:800;color:#222;margin-bottom:18px;display:flex;align-items:center;gap:10px;">
+    <i class="fas fa-shopping-cart" style="color:var(--primary)"></i>
+    Giỏ hàng của bạn
+    <span style="font-size:14px;color:#aaa;font-weight:400;" id="cartCountLabel">(0 sản phẩm)</span>
+  </h1>
+
+  <div id="cartPageContent"></div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom"><p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p></div>
+  </div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row">
+      <span>Tổng tiền:</span>
+      <span class="cart-total-price" id="cartTotalPrice">0đ</span>
+    </div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'">
+      <i class="fas fa-credit-card"></i> TIẾN HÀNH THANH TOÁN
+    </button>
+  </div>
+</aside>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<div class="float-btns">
+  <a href="tel:0935033039" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/cart.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Mega dropdown
+  const megaDrop = document.getElementById('megaDropdown');
+  if (megaDrop) {
+    megaDrop.innerHTML = CATEGORIES.map(c => `
+      <li><a href="san-pham.html?cat=${c.id}">
+        <i class="fas ${c.icon}" style="color:${c.color}"></i>${c.name}
+        <i class="fas fa-chevron-right angle"></i>
+      </a></li>`).join('');
+  }
+
+  renderCartPage();
+});
+
+function renderCartPage() {
+  const content = document.getElementById('cartPageContent');
+  const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+  const label = document.getElementById('cartCountLabel');
+
+  if (label) label.textContent = `(${cartData.reduce((s,i)=>s+i.qty,0)} sản phẩm)`;
+
+  if (cartData.length === 0) {
+    content.innerHTML = `
+      <div class="cart-page-table">
+        <div class="cart-empty-page">
+          <i class="fas fa-shopping-cart"></i>
+          <h3>Giỏ hàng trống</h3>
+          <p>Bạn chưa thêm sản phẩm nào vào giỏ hàng</p>
+          <a href="san-pham.html" class="btn-shop"><i class="fas fa-store"></i> Tiếp tục mua sắm</a>
+        </div>
+      </div>`;
+    return;
+  }
+
+  const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  const shipping = subtotal >= 500000 ? 0 : 30000;
+  const total = subtotal + shipping;
+
+  const itemsHtml = cartData.map(item => `
+    <div class="cart-page-item" id="cpitem_${item.id}">
+      <div class="cart-page-product">
+        <img src="${item.image}" alt="${item.name}" onerror="this.src='images/product-1.png'">
+        <div>
+          <div class="cart-page-product-name"><a href="chi-tiet-san-pham.html?id=${item.id}">${item.name}</a></div>
+          <div class="cart-page-product-cat">Hàng ngoại nhập chính hãng</div>
+        </div>
+      </div>
+      <div class="cart-page-price">${item.price.toLocaleString('vi-VN')}đ</div>
+      <div class="cart-page-qty">
+        <button onclick="pageChangeQty(${item.id}, -1)">−</button>
+        <span>${item.qty}</span>
+        <button onclick="pageChangeQty(${item.id}, 1)">+</button>
+      </div>
+      <div class="cart-page-subtotal">${(item.price * item.qty).toLocaleString('vi-VN')}đ</div>
+      <button class="cart-page-del" onclick="pageRemove(${item.id})" title="Xóa"><i class="fas fa-times"></i></button>
+    </div>`).join('');
+
+  content.innerHTML = `
+    <div class="cart-page-layout">
+      <div>
+        <div class="cart-page-table">
+          <div class="cart-table-header">
+            <span>Sản phẩm</span>
+            <span>Đơn giá</span>
+            <span>Số lượng</span>
+            <span>Thành tiền</span>
+            <span></span>
+          </div>
+          ${itemsHtml}
+          <div style="padding:12px 18px; display:flex; justify-content:space-between; align-items:center; background:#fafafa; border-top:1px solid #f0f0f0;">
+            <a href="san-pham.html" style="font-size:13px;color:var(--primary);font-weight:600;">
+              <i class="fas fa-arrow-left"></i> Tiếp tục mua sắm
+            </a>
+            <button onclick="clearAllCart()" style="font-size:13px;color:var(--sale-red);background:none;border:none;cursor:pointer;font-weight:600;">
+              <i class="fas fa-trash"></i> Xóa tất cả
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary -->
+      <div class="cart-summary">
+        <h3><i class="fas fa-receipt"></i> Tóm tắt đơn hàng</h3>
+        <div class="summary-row">
+          <span>Tạm tính:</span>
+          <span style="font-weight:700;">${subtotal.toLocaleString('vi-VN')}đ</span>
+        </div>
+        <div class="summary-row">
+          <span>Phí vận chuyển:</span>
+          <span style="color:${shipping===0?'#43a047':'#333'};font-weight:700;">
+            ${shipping === 0 ? '<i class="fas fa-check-circle"></i> Miễn phí' : shipping.toLocaleString('vi-VN') + 'đ'}
+          </span>
+        </div>
+        ${shipping > 0 ? `<div style="font-size:11.5px;color:#888;margin-bottom:10px;"><i class="fas fa-info-circle"></i> Mua thêm ${(500000 - subtotal).toLocaleString('vi-VN')}đ để được miễn phí vận chuyển</div>` : ''}
+        <div class="promo-input">
+          <input type="text" placeholder="Nhập mã giảm giá...">
+          <button onclick="showToast('Mã không hợp lệ hoặc đã hết hạn')">Áp dụng</button>
+        </div>
+        <div class="summary-row total">
+          <span>Tổng cộng:</span>
+          <span>${total.toLocaleString('vi-VN')}đ</span>
+        </div>
+        <button class="btn-checkout-big" onclick="checkout()">
+          <i class="fas fa-credit-card"></i> ĐẶT HÀNG NGAY
+        </button>
+        <button class="btn-continue" onclick="window.location.href='san-pham.html'">
+          <i class="fas fa-store"></i> Tiếp tục mua sắm
+        </button>
+        <div class="payment-methods">
+          <span style="font-size:11px;color:#aaa;width:100%;">Phương thức thanh toán:</span>
+          <span class="pm-badge">💵 COD</span>
+          <span class="pm-badge">🏦 Chuyển khoản</span>
+          <span class="pm-badge">💳 Thẻ ATM</span>
+          <span class="pm-badge">📱 MoMo</span>
+          <span class="pm-badge">💚 ZaloPay</span>
+        </div>
+      </div>
+    </div>`;
+}
+
+window.pageChangeQty = function(id, delta) {
+  changeQty(id, delta);
+  renderCartPage();
+};
+
+window.pageRemove = function(id) {
+  removeFromCart(id);
+  renderCartPage();
+};
+
+window.clearAllCart = function() {
+  if (confirm('Bạn có chắc muốn xóa tất cả sản phẩm khỏi giỏ hàng?')) {
+    cart = [];
+    saveCart();
+    updateCartUI();
+    renderCartPage();
+  }
+};
+
+window.checkout = function() {
+  showToast('🎉 Chức năng đặt hàng đang được phát triển. Vui lòng gọi 0935.033.039!', 'success');
+};
+
+window.doSearch = function(e) {
+  e.preventDefault();
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.location.href = `san-pham.html?q=${encodeURIComponent(q)}`;
+};
+</script>
+</body>
+</html>
