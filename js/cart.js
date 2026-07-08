@@ -146,6 +146,62 @@ function showToast(msg, type = '') {
 // Initialize on load
 document.addEventListener('DOMContentLoaded', () => {
   updateCartUI();
+
+  // Search Suggestions Logic
+  const searchWrap = document.querySelector('.search-wrap');
+  const searchInput = document.getElementById('searchInput');
+  
+  if (searchWrap && searchInput) {
+    const suggestBox = document.createElement('div');
+    suggestBox.className = 'search-suggestions';
+    suggestBox.id = 'searchSuggestions';
+    searchWrap.appendChild(suggestBox);
+
+    searchInput.addEventListener('input', function(e) {
+      const q = e.target.value.trim().toLowerCase();
+      if (!q) {
+        suggestBox.classList.remove('show');
+        return;
+      }
+      if (typeof PRODUCTS === 'undefined') return;
+      
+      const results = PRODUCTS.filter(p => 
+        p.name.toLowerCase().includes(q) || 
+        (p.tag && p.tag.toLowerCase().includes(q))
+      ).slice(0, 5);
+      
+      if (results.length === 0) {
+        suggestBox.innerHTML = '<div class="suggest-empty">Không tìm thấy sản phẩm...</div>';
+        suggestBox.classList.add('show');
+        return;
+      }
+
+      suggestBox.innerHTML = results.map(p => `
+        <a href="chi-tiet-san-pham.html?id=${p.id}" class="suggest-item">
+          <img src="${p.image}" alt="">
+          <div class="suggest-info">
+            <div class="suggest-name">${p.name}</div>
+            <div class="suggest-price">${p.price.toLocaleString('vi-VN')}đ</div>
+          </div>
+        </a>
+      `).join('');
+      suggestBox.classList.add('show');
+    });
+
+    // Hide when clicking outside
+    document.addEventListener('click', function(e) {
+      if (!searchWrap.contains(e.target)) {
+        suggestBox.classList.remove('show');
+      }
+    });
+    
+    // Show again when focusing input if there's text
+    searchInput.addEventListener('focus', function() {
+      if (this.value.trim() && suggestBox.innerHTML) {
+        suggestBox.classList.add('show');
+      }
+    });
+  }
 });
 
 // Expose globally
