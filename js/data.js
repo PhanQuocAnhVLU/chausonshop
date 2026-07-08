@@ -5,12 +5,12 @@
 const SHOP_INFO = {
   name: "Châu Sơn Shop",
   tagline: "Chuyên Hàng Nhập",
-  hotline: "0935.033.039",
+  hotline: "0987.153.876",
   hotlineKS: "0843.323.550",
   address1: "Đà Nẵng: 01 Nguyễn Hữu Thọ, Hòa Thuận Nam, Hải Châu",
   address2: "TP.HCM: Sky Garden 1 - Đại Lộ Nguyễn Văn Linh, Q.7",
   email: "chausonshop@gmail.com",
-  zalo: "https://zalo.me/0935033039",
+  zalo: "https://zalo.me/0987153876",
   facebook: "https://facebook.com/chausonshop",
   workingHours: "8h00–21h30",
   deliveryTime: "2–4 ngày"
