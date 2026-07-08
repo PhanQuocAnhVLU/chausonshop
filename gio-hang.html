@@ -360,7 +360,12 @@ window.clearAllCart = function() {
 };
 
 window.checkout = function() {
-  showToast('🎉 Chức năng đặt hàng đang được phát triển. Vui lòng gọi 0987.153.876!', 'success');
+  const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+  if (cartData.length === 0) {
+    showToast('Giỏ hàng trống, vui lòng thêm sản phẩm!');
+    return;
+  }
+  window.location.href = 'thanh-toan.html';
 };
 
 window.doSearch = function(e) {
