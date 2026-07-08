@@ -394,6 +394,27 @@
     }
 
     /* Filter bar */
+    .tag-pill {
+      padding: 6px 14px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      font-size: 13px;
+      background: #f9f9f9;
+      color: #555;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tag-pill:hover {
+      background: #e8f5e9;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .tag-pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
     .news-filter-bar {
       background: white;
       border-radius: 10px;
@@ -427,59 +448,68 @@
 </head>
 <body>
 
-<div class="topbar">
-  <div style="display:flex;justify-content:space-between;align-items:center;width:100%;max-width:1280px;margin:0 auto;padding:0 16px;">
-    <div class="topbar-left"><i class="fas fa-truck"></i><span>Giao hàng toàn quốc • Nhận hàng 2–4 ngày</span></div>
-    <div class="topbar-right">
-      <a href="tel:0987153876" style="color:white;display:flex;align-items:center;gap:6px;"><i class="fas fa-phone-alt"></i><span class="hotline-number">0987.153.876</span></a>
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-phone-alt"></i> Hotline: 0987.153.876</span>
+      <span><i class="fas fa-clock"></i> 8h00 – 21h30</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="index.html">Trang chủ</a>
     </div>
   </div>
 </div>
 
-<header class="header">
-  <div class="header-inner">
-    <button class="mobile-menu-btn" id="mobileMenuBtn"><i class="fas fa-bars"></i></button>
-    <a href="index.html" class="logo-link">
-      <div class="logo-icon"><i class="fas fa-leaf"></i></div>
-      <div class="logo-text">
-        <span class="logo-name">Châu Sơn Shop</span>
-        <span class="logo-tagline">✦ Chuyên Hàng Nhập Khẩu ✦</span>
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
+        </a>
       </div>
-    </a>
-    <div class="search-wrapper">
-      <form class="search-form" id="searchForm">
-        <input type="search" id="searchInput" class="search-input" placeholder="Tìm kiếm sản phẩm..." autocomplete="off">
-        <button type="submit" class="search-btn"><i class="fas fa-search"></i></button>
-      </form>
-      <div class="search-suggestions" id="searchSuggestions"></div>
-    </div>
-    <div class="header-actions">
-      <a href="san-pham.html" class="header-action-btn"><i class="fas fa-th-large"></i><span>Sản phẩm</span></a>
-      <button class="header-action-btn" id="cartBtn" style="position:relative;">
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text"><strong>0987.153.876</strong><small>Hotline</small></div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
         <i class="fas fa-shopping-cart"></i><span>Giỏ hàng</span>
-        <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+        <span class="cart-badge" id="cartBadge">0</span>
       </button>
     </div>
   </div>
 </header>
 
 <nav class="navbar">
-  <div class="navbar-inner">
-    <div class="nav-all-categories" onclick="window.location.href='san-pham.html'"><i class="fas fa-th-list"></i><span>DANH MỤC SẢN PHẨM</span></div>
-    <ul class="nav-links">
-      <li><a href="index.html">Trang Chủ</a></li>
-      <li><a href="tin-tuc.html" class="active">Tin Tức</a></li>
-      <li><a href="san-pham.html">Sản Phẩm</a></li>
-      <li><a href="lien-he.html">Liên Hệ</a></li>
-    </ul>
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="cat-all">
+        <i class="fas fa-bars"></i><span>DANH MỤC</span><i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="san-pham.html">Sản phẩm</a>
+        <a href="tin-tuc.html" class="active">Tin tức</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+    </div>
   </div>
 </nav>
 
-<nav class="breadcrumb">
-  <a href="index.html">Trang chủ</a>
-  <i class="fas fa-chevron-right"></i>
+<div class="breadcrumb" style="max-width: 1280px; margin: 12px auto 0; padding: 0 16px;">
+  <a href="index.html">Trang chủ</a><span>›</span>
   <span>Tin tức</span>
-</nav>
+</div>
 
 <div class="news-layout">
   <!-- Main Content -->
@@ -558,64 +588,86 @@
   </aside>
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
-  <div class="footer-top">
-    <div class="footer-grid">
+  <div class="container">
+    <div class="footer-top">
       <div class="footer-col">
-        <div class="footer-logo" style="margin-bottom:10px;">
-          <div class="footer-logo-icon"><i class="fas fa-leaf"></i></div>
-          <div><div class="footer-logo-name">Châu Sơn Shop</div><div class="footer-logo-sub">CHUYÊN HÀNG NHẬP KHẨU</div></div>
-        </div>
-        <p class="footer-desc">Hàng ngoại nhập chính hãng. Cam kết chất lượng.</p>
+        <div class="footer-logo-text">🌿 CHÂU SƠN SHOP</div>
+        <div class="footer-logo-sub">Chuyên hàng ngoại nhập</div>
+        <p>Chuyên cung cấp thực phẩm chức năng và mỹ phẩm nhập khẩu chính hãng từ Nhật, Úc, Mỹ, Hàn Quốc.</p>
       </div>
       <div class="footer-col">
-        <h4><i class="fas fa-book-open"></i>Hướng Dẫn</h4>
-        <div class="footer-links"><a href="lien-he.html">Thanh toán</a><a href="lien-he.html">Giao hàng</a></div>
+        <h4>Danh mục</h4>
+        <ul id="footerCatList"></ul>
       </div>
       <div class="footer-col">
-        <h4><i class="fas fa-shield-alt"></i>Chính Sách</h4>
-        <div class="footer-links"><a href="lien-he.html">Đổi trả</a><a href="lien-he.html">Liên hệ</a></div>
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách đổi trả</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Hướng dẫn mua hàng</a></li>
+          <li><a href="lien-he.html"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+        </ul>
       </div>
       <div class="footer-col">
-        <h4><i class="fas fa-phone-volume"></i>Hotline</h4>
-        <div class="footer-hotline">
-          <div class="hotline-item">
-            <div class="hotline-label">Khách lẻ</div>
-            <a href="tel:0987153876" class="hotline-number"><i class="fas fa-phone-alt"></i> 0987.153.876</a>
-          </div>
-        </div>
-        <div class="footer-social">
-          <a href="#" class="social-btn social-fb"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" class="social-btn social-zalo"><i class="fas fa-comment-dots"></i></a>
+        <h4>Liên hệ</h4>
+        <div class="footer-contact-item"><i class="fas fa-phone-alt"></i><span>0987.153.876</span></div>
+        <div class="footer-contact-item"><i class="fas fa-envelope"></i><span>nhutu5556@gmail.com</span></div>
+        <div class="social-links" style="margin-top:12px">
+          <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="social-link fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link yt"><i class="fab fa-youtube"></i></a>
+          <a href="#" class="social-link zl"><i class="fas fa-comment-dots"></i></a>
         </div>
       </div>
     </div>
+    <div class="footer-bottom">
+      <p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p>
+    </div>
   </div>
-  <div class="footer-bottom"><p>© 2025 Châu Sơn Shop. Bản quyền thuộc về Châu Sơn Shop.</p></div>
 </footer>
 
-<div class="floating-btns">
-  <a href="https://zalo.me/0987153876" class="float-btn float-zalo" target="_blank"><i class="fas fa-comment-dots"></i><span class="tooltip">Chat Zalo</span></a>
-  <a href="https://m.me/chausonshop" class="float-btn float-messenger" target="_blank"><i class="fab fa-facebook-messenger"></i><span class="tooltip">Messenger</span></a>
-</div>
-<button class="scroll-top-btn" id="scrollTopBtn"><i class="fas fa-chevron-up"></i></button>
-
-<div class="mini-cart-overlay" id="miniCartOverlay"></div>
-<aside class="mini-cart" id="miniCart">
-  <div class="mini-cart-header"><h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng</h3><button class="mini-cart-close" id="miniCartClose"><i class="fas fa-times"></i></button></div>
-  <div class="mini-cart-items" id="cartItemsContainer"></div>
-  <div class="mini-cart-footer">
-    <div class="cart-total-row"><span class="cart-total-label">Tổng cộng:</span><span class="cart-total-amount" id="cartTotal">0đ</span></div>
-    <a href="gio-hang.html" class="cart-checkout-btn"><i class="fas fa-credit-card"></i> Thanh Toán</a>
-    <button class="cart-continue-btn" onclick="toggleCart()">← Tiếp tục mua sắm</button>
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row"><span>Tổng tiền:</span><span class="cart-total-price" id="cartTotalPrice">0đ</span></div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'"><i class="fas fa-credit-card"></i> THANH TOÁN</button>
   </div>
 </aside>
-<div class="toast-container" id="toastContainer"></div>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<div class="float-btns">
+  <a href="tel:0987153876" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+  <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="float-btn facebook" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="https://zalo.me/0987153876" target="_blank" class="float-btn zalo"><i class="fas fa-comment-dots"></i></a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+</div>
 
 <script src="js/data.js"></script>
-<script src="js/main.js"></script>
+<script src="js/cart.js"></script>
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+  const megaDrop = document.getElementById('megaDropdown');
+  if (megaDrop) {
+    megaDrop.innerHTML = CATEGORIES.map(c => `
+      <li><a href="san-pham.html?cat=${c.id}">
+        <i class="fas ${c.icon}" style="color:${c.color}"></i>${c.name}
+        <i class="fas fa-chevron-right angle"></i>
+      </a></li>`).join('');
+  }
+});
+
+window.doSearch = function(e) {
+  e.preventDefault();
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.location.href = `san-pham.html?q=${encodeURIComponent(q)}`;
+};
+
 const allNews = [
   { cat: 'lam-dep', catLabel: 'Làm Đẹp', catColor: '#fce4ec', catTextColor: '#c62828',
     title: 'Bí quyết chọn mua Collagen Nhật Bản chính hãng, an toàn và hiệu quả',
