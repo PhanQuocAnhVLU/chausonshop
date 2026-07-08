@@ -148,7 +148,13 @@ const PRODUCTS = [
   { id: 29, categoryId: "banh-keo", name: "Socola rượu Anthon Berg Since 1884 Chocolate 64 chai của Mỹ", price: 494000, originalPrice: 787000, image: "images/bing2-prod-29.jpg", badge: null, rating: 5.0, reviews: 207, sold: 1076, tag: "Socola", isNew: false, isSale: true, isBestSeller: true },
   { id: 30, categoryId: "banh-keo", name: "Kẹo socola Hershey's Nuggets Assortment 1.47kg 145 viên Mỹ", price: 386000, originalPrice: 811000, image: "images/bing2-prod-30.jpg", badge: "HOT", rating: 4.9, reviews: 91, sold: 1133, tag: "Socola", isNew: false, isSale: false, isBestSeller: true },
   { id: 31, categoryId: "banh-keo", name: "Kẹo dẻo gấu Haribo Goldbears 1kg Đức chính hãng", price: 320000, originalPrice: 420000, image: "images/bing2-prod-31.jpg", badge: null, rating: 4.8, reviews: 165, sold: 780, tag: "Kẹo dẻo", isNew: false, isSale: true, isBestSeller: false },
-  { id: 32, categoryId: "banh-keo", name: "Bánh quy Oreo Mega Stuf Double 482g Mỹ", price: 185000, originalPrice: 250000, image: "images/bing2-prod-32.jpg", badge: null, rating: 4.7, reviews: 230, sold: 1450, tag: "Bánh quy", isNew: false, isSale: true, isBestSeller: true }
+  { id: 32, categoryId: "banh-keo", name: "Bánh quy Oreo Mega Stuf Double 482g Mỹ", price: 185000, originalPrice: 250000, image: "images/bing2-prod-32.jpg", badge: null, rating: 4.7, reviews: 230, sold: 1450, tag: "Bánh quy", isNew: false, isSale: true, isBestSeller: true },
+
+  // ===== HÀNG GIA DỤNG =====
+  { id: 33, categoryId: "hang-gia-dung", name: "Viên giặt xả Gel Ball 3D nội địa Nhật Bản (46 viên)", price: 299000, originalPrice: 400000, image: "images/bing-prod-33.jpg", badge: "HOT", rating: 4.8, reviews: 210, sold: 980, tag: "Vệ sinh", isNew: false, isSale: true, isBestSeller: true },
+  { id: 34, categoryId: "hang-gia-dung", name: "Bình giữ nhiệt Thermos JNL-504 500ml cao cấp Nhật Bản", price: 590000, originalPrice: 850000, image: "images/bing-prod-34.jpg", badge: null, rating: 4.9, reviews: 154, sold: 420, tag: "Phòng ngủ", isNew: true, isSale: true, isBestSeller: false },
+  { id: 35, categoryId: "hang-gia-dung", name: "Nồi chiên không dầu Philips HD9252/90 4.1L Đức", price: 2150000, originalPrice: 2890000, image: "images/bing-prod-35.jpg", badge: "SALE", rating: 4.8, reviews: 325, sold: 1100, tag: "Nhà bếp", isNew: false, isSale: true, isBestSeller: true },
+  { id: 36, categoryId: "hang-gia-dung", name: "Nước tẩy lồng giặt Rocket Nhật Bản chai 550g", price: 65000, originalPrice: 95000, image: "images/bing-prod-36.jpg", badge: null, rating: 4.6, reviews: 88, sold: 340, tag: "Vệ sinh", isNew: false, isSale: false, isBestSeller: false }
 ];
 
 // Helper functions
