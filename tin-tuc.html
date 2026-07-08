@@ -346,30 +346,51 @@
     .news-pagination {
       display: flex;
       justify-content: center;
-      gap: 6px;
-      padding: 10px 0 20px;
+      gap: 10px;
+      padding: 24px 0 40px;
     }
 
     .np-btn {
-      width: 36px;
-      height: 36px;
+      width: 42px;
+      height: 42px;
       border: 1px solid #e0e0e0;
       border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.82rem;
+      font-size: 1rem;
+      color: #333;
       cursor: pointer;
       background: white;
       font-family: inherit;
-      font-weight: 500;
-      transition: all 0.2s;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
     }
 
-    .np-btn:hover, .np-btn.active {
-      background: var(--primary);
-      color: white;
+    .np-btn:hover:not([disabled]) {
+      background: #f4faeb;
+      color: var(--primary);
       border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(104,159,56,0.15);
+    }
+
+    .np-btn.active {
+      background: var(--primary) !important;
+      color: #ffffff !important;
+      border-color: var(--primary) !important;
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(104,159,56,0.3);
+      text-shadow: none;
+    }
+
+    .np-btn[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f9f9f9;
+      color: #999;
+      box-shadow: none;
     }
 
     /* Filter bar */
@@ -494,14 +515,7 @@
     <div class="news-grid" id="newsGrid"></div>
 
     <!-- Pagination -->
-    <div class="news-pagination">
-      <button class="np-btn"><i class="fas fa-chevron-left"></i></button>
-      <button class="np-btn active">1</button>
-      <button class="np-btn">2</button>
-      <button class="np-btn">3</button>
-      <button class="np-btn">4</button>
-      <button class="np-btn"><i class="fas fa-chevron-right"></i></button>
-    </div>
+    <div class="news-pagination" id="newsPagination"></div>
   </div>
 
   <!-- Sidebar -->
@@ -636,12 +650,16 @@ const allNews = [
 ];
 
 let activeNewsCat = 'all';
+let currentNewsPage = 1;
+const newsPerPage = 4;
 
 function filterNews(cat, btn) {
   activeNewsCat = cat;
+  currentNewsPage = 1;
   document.querySelectorAll('.news-filter-bar .tag-pill').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   renderNewsGrid();
+  renderNewsPagination();
 }
 
 function renderNewsGrid() {
@@ -656,7 +674,10 @@ function renderNewsGrid() {
     return;
   }
 
-  grid.innerHTML = filtered.map(n => `
+  const startIdx = (currentNewsPage - 1) * newsPerPage;
+  const paginated = filtered.slice(startIdx, startIdx + newsPerPage);
+
+  grid.innerHTML = paginated.map(n => `
     <div class="news-card" onclick="window.location.href='tin-tuc.html'">
       <div class="news-card-img-wrap">
         <img src="${n.image}" alt="${n.title}" class="news-card-img" onerror="this.src='https://via.placeholder.com/400x170/e8f5e9/2e7d32?text=Tin+Tức'">
@@ -674,6 +695,42 @@ function renderNewsGrid() {
       </div>
     </div>
   `).join('');
+}
+
+function renderNewsPagination() {
+  const filtered = activeNewsCat === 'all' ? allNews : allNews.filter(n => n.cat === activeNewsCat);
+  const totalPages = Math.ceil(filtered.length / newsPerPage);
+  const paginationContainer = document.getElementById('newsPagination');
+  
+  if (!paginationContainer) return;
+  if (totalPages <= 1) {
+    paginationContainer.style.display = 'none';
+    return;
+  }
+  
+  paginationContainer.style.display = 'flex';
+  let html = `<button class="np-btn" onclick="changeNewsPage(${currentNewsPage - 1})" ${currentNewsPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+  
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="np-btn ${i === currentNewsPage ? 'active' : ''}" onclick="changeNewsPage(${i})">${i}</button>`;
+  }
+  
+  html += `<button class="np-btn" onclick="changeNewsPage(${currentNewsPage + 1})" ${currentNewsPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+  
+  paginationContainer.innerHTML = html;
+}
+
+function changeNewsPage(page) {
+  const filtered = activeNewsCat === 'all' ? allNews : allNews.filter(n => n.cat === activeNewsCat);
+  const totalPages = Math.ceil(filtered.length / newsPerPage);
+  if (page < 1 || page > totalPages) return;
+  
+  currentNewsPage = page;
+  renderNewsGrid();
+  renderNewsPagination();
+  
+  // Optional: scroll up to filter bar smoothly
+  document.querySelector('.news-filter-bar').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function renderSidebar() {
@@ -715,6 +772,7 @@ function subscribeNewsletter() {
 
 document.addEventListener('DOMContentLoaded', () => {
   renderNewsGrid();
+  renderNewsPagination();
   renderSidebar();
 });
 </script>
