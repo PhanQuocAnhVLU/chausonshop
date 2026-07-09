@@ -106,7 +106,7 @@ const BANNERS = [
   }
 ];
 
-const PRODUCTS = [
+const PRODUCTS_FALLBACK = [
   // ===== THỰC PHẨM CHỨC NĂNG =====
   { id: 1, categoryId: "thuc-pham-chuc-nang", name: "Viên uống hỗ trợ tiêu hóa dạ dày Tinh Chất Hàu Tươi Tỏi Nghệ Orihiro Nhật 180 Viên", price: 405000, originalPrice: 1186000, image: "images/bing3-prod-1.jpg", badge: null, rating: 4.7, reviews: 204, sold: 466, tag: "Hỗ trợ tiêu hóa, dạ dày", isNew: false, isSale: true, isBestSeller: true },
   { id: 2, categoryId: "thuc-pham-chuc-nang", name: "Viên uống Nattokinase 2000FU Orihiro của Nhật Bản hỗ trợ tim mạch", price: 621000, originalPrice: 1327000, image: "images/bing3-prod-2.jpg", badge: "HOT", rating: 4.7, reviews: 92, sold: 1180, tag: "Hỗ trợ tim mạch", isNew: false, isSale: false, isBestSeller: true },

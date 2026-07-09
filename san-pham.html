@@ -391,10 +391,15 @@
 <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+onProductsReady(() => {
   const params = new URLSearchParams(window.location.search);
   const catParam = params.get('cat') || '';
   const qParam = params.get('q') || '';
@@ -547,7 +552,7 @@ document.addEventListener('DOMContentLoaded', () => {
           ${disc > 0 ? `<div class="discount-badge">-${disc}%</div>` : ''}
           <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
           <div class="product-actions">
-            <button class="action-btn add-cart" onclick="addToCart(${p.id})">
+            <button class="action-btn add-cart" onclick="addToCart('${p.id}')">
               <i class="fas fa-cart-plus"></i> Thêm vào giỏ
             </button>
             <button class="action-btn view-detail" onclick="window.location.href='chi-tiet-san-pham.html?id=${p.id}'">
@@ -620,6 +625,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // Listen to enter key on price inputs
   document.getElementById('priceMin').addEventListener('keypress', e => { if (e.key === 'Enter') applyFilters(); });
   document.getElementById('priceMax').addEventListener('keypress', e => { if (e.key === 'Enter') applyFilters(); });
+}); // end onProductsReady
 });
 </script>
 </body>

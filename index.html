@@ -379,8 +379,12 @@
   </button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
 <script>
 // ================================================
 // INDEX.HTML — Main Page Logic
@@ -498,7 +502,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const sold = Math.min(p.sold, 600);
       const pct = Math.round((sold / 600) * 100);
       return `
-        <div class="flash-product-card" onclick="addToCart(${p.id})">
+        <div class="flash-product-card" onclick="addToCart('${p.id}')">
           <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
           <div class="fp-name">${p.name}</div>
           <div class="fp-price">${p.price.toLocaleString('vi-VN')}đ</div>
@@ -539,13 +543,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const badgeColors = { HOT:'hot', SALE:'sale', 'MỚI':'new', BEST:'best', PREMIUM:'premium' };
     const badgeClass = p.badge ? (badgeColors[p.badge] || 'hot') : '';
     return `
-      <div class="product-card" onclick="addToCart(${p.id})">
+      <div class="product-card" onclick="addToCart('${p.id}')">
         <div class="product-img-wrap">
           ${p.badge ? `<span class="p-badge ${badgeClass}">${p.badge}</span>` : ''}
           ${disc > 0 ? `<div class="discount-badge">-${disc}%</div>` : ''}
           <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
           <div class="product-actions">
-            <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart(${p.id})">
+            <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart('${p.id}')">
               <i class="fas fa-cart-plus"></i> Thêm vào giỏ
             </button>
             <button class="action-btn view-detail" onclick="event.stopPropagation();window.location.href='chi-tiet-san-pham.html?id=${p.id}'">

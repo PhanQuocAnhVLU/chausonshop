@@ -383,16 +383,21 @@
 <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
 <script>
 let detailQty = 1;
 let currentProduct = null;
 
 document.addEventListener('DOMContentLoaded', () => {
+onProductsReady(() => {
   const params = new URLSearchParams(window.location.search);
-  const id = parseInt(params.get('id') || '1');
-  currentProduct = PRODUCTS.find(p => p.id === id) || PRODUCTS[0];
+  const id = params.get('id') || '';
+  currentProduct = PRODUCTS.find(p => String(p.id) === id) || PRODUCTS[0];
 
   // Mega dropdown
   const megaDrop = document.getElementById('megaDropdown');
@@ -566,7 +571,7 @@ document.addEventListener('DOMContentLoaded', () => {
             ${rdisc > 0 ? `<div class="discount-badge">-${rdisc}%</div>` : ''}
             <img src="${rp.image}" alt="${rp.name}" onerror="this.src='images/product-1.png'">
             <div class="product-actions">
-              <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart(${rp.id})">
+              <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart('${rp.id}')">
                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ
               </button>
             </div>
@@ -581,6 +586,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>`;
     }).join('');
   }
+}); // end onProductsReady
 });
 
 window.changeMainImg = function(src, el) {

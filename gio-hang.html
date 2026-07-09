@@ -217,8 +217,12 @@
 <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   // Mega dropdown
@@ -269,12 +273,12 @@ function renderCartPage() {
       </div>
       <div class="cart-page-price">${item.price.toLocaleString('vi-VN')}đ</div>
       <div class="cart-page-qty">
-        <button onclick="pageChangeQty(${item.id}, -1)">−</button>
+        <button onclick="pageChangeQty('${item.id}', -1)">−</button>
         <span>${item.qty}</span>
-        <button onclick="pageChangeQty(${item.id}, 1)">+</button>
+        <button onclick="pageChangeQty('${item.id}', 1)">+</button>
       </div>
       <div class="cart-page-subtotal">${(item.price * item.qty).toLocaleString('vi-VN')}đ</div>
-      <button class="cart-page-del" onclick="pageRemove(${item.id})" title="Xóa"><i class="fas fa-times"></i></button>
+      <button class="cart-page-del" onclick="pageRemove('${item.id}')" title="Xóa"><i class="fas fa-times"></i></button>
     </div>`).join('');
 
   content.innerHTML = `

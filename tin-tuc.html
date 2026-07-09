@@ -647,8 +647,12 @@
   <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
 <script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
 <script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
   const megaDrop = document.getElementById('megaDropdown');
@@ -801,7 +805,7 @@ function renderSidebar() {
   const hotProds = document.getElementById('sidebarHotProducts');
   const sellers = getBestSellers(4);
   hotProds.innerHTML = sellers.map(p => `
-    <div class="widget-news-item" onclick="goToProduct(${p.id})">
+    <div class="widget-news-item" onclick="goToProduct('${p.id}')">
       <img src="${p.image}" alt="${p.name}" class="widget-news-thumb" onerror="this.src='https://via.placeholder.com/58x48/f5f5f5/bdbdbd?text=SP'">
       <div>
         <div class="widget-news-title">${p.name}</div>
@@ -824,7 +828,7 @@ function subscribeNewsletter() {
 document.addEventListener('DOMContentLoaded', () => {
   renderNewsGrid();
   renderNewsPagination();
-  renderSidebar();
+  onProductsReady(() => renderSidebar());
 });
 </script>
 </body>

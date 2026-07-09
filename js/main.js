@@ -7,14 +7,19 @@ document.addEventListener('DOMContentLoaded', () => {
   renderCategories();
   renderBanners();
   renderNews();
-  renderBestSellers();
-  renderProductSections();
   initSearch();
   initCart();
   initScrollTop();
   initMobileMenu();
   initCountdown();
   highlightActiveNav();
+
+  // renderBestSellers/renderProductSections phụ thuộc PRODUCTS (Supabase),
+  // đợi tải xong để tránh hiển thị rỗng
+  onProductsReady(() => {
+    renderBestSellers();
+    renderProductSections();
+  });
 });
 
 // ========================= CATEGORIES =========================
@@ -162,7 +167,7 @@ function renderBestSellers() {
 function createBestsellerCard(p) {
   const discountPercent = p.originalPrice ? getDiscountPercent(p.originalPrice, p.price) : 0;
   return `
-    <div class="bestseller-card" onclick="goToProduct(${p.id})">
+    <div class="bestseller-card" onclick="goToProduct('${p.id}')">
       <div class="product-img-wrap">
         <img src="${p.image}" alt="${p.name}" loading="lazy"
              onerror="this.src='https://via.placeholder.com/240x240/f5f5f5/bdbdbd?text=Sản+phẩm'">
@@ -276,7 +281,7 @@ function createProductCard(p) {
   const stars = Math.round(p.rating || 4.5);
 
   return `
-    <div class="product-card" onclick="goToProduct(${p.id})">
+    <div class="product-card" onclick="goToProduct('${p.id}')">
       <div class="product-img-wrap">
         <img src="${p.image}" alt="${p.name}" loading="lazy"
              onerror="this.src='https://via.placeholder.com/240x240/f5f5f5/bdbdbd?text=Sản+phẩm'">
@@ -354,7 +359,7 @@ function initSearch() {
       }
 
       suggestions.innerHTML = results.map(p => `
-        <div class="suggestion-item" onclick="goToProduct(${p.id})">
+        <div class="suggestion-item" onclick="goToProduct('${p.id}')">
           <img src="${p.image}" alt="${p.name}"
                onerror="this.src='https://via.placeholder.com/40x40/f5f5f5/bdbdbd?text=?'">
           <div class="suggestion-info">
@@ -509,12 +514,12 @@ function renderCartItems() {
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-price">${formatPrice(item.price)}</div>
         <div class="cart-item-qty">
-          <button class="qty-btn" onclick="updateQty(${item.id}, -1)"><i class="fas fa-minus"></i></button>
+          <button class="qty-btn" onclick="updateQty('${item.id}', -1)"><i class="fas fa-minus"></i></button>
           <div class="qty-display">${item.qty}</div>
-          <button class="qty-btn" onclick="updateQty(${item.id}, 1)"><i class="fas fa-plus"></i></button>
+          <button class="qty-btn" onclick="updateQty('${item.id}', 1)"><i class="fas fa-plus"></i></button>
         </div>
       </div>
-      <button class="cart-item-remove" onclick="removeFromCart(${item.id})" title="Xóa">
+      <button class="cart-item-remove" onclick="removeFromCart('${item.id}')" title="Xóa">
         <i class="fas fa-times"></i>
       </button>
     </div>

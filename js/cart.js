@@ -60,12 +60,12 @@ function renderCartItems() {
         <div class="cart-item-name">${item.name}</div>
         <div class="cart-item-price">${item.price.toLocaleString('vi-VN')}đ</div>
         <div class="cart-item-qty">
-          <button class="qty-btn" onclick="changeQty(${item.id}, -1)">−</button>
+          <button class="qty-btn" onclick="changeQty('${item.id}', -1)">−</button>
           <span class="qty-count">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+          <button class="qty-btn" onclick="changeQty('${item.id}', 1)">+</button>
         </div>
       </div>
-      <button class="cart-item-del" onclick="removeFromCart(${item.id})" title="Xóa">
+      <button class="cart-item-del" onclick="removeFromCart('${item.id}')" title="Xóa">
         <i class="fas fa-times"></i>
       </button>
     </div>`).join('');

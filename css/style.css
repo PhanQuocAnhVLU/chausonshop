@@ -1481,6 +1481,78 @@ img { border: 0; max-width: 100%; }
 }
 
 /* ===========================
+   MOBILE FIX (phone screens)
+   Chỉ áp dụng cho màn hình <=600px,
+   không ảnh hưởng giao diện máy tính
+=========================== */
+@media (max-width: 600px) {
+
+  /* Chặn tràn ngang toàn trang */
+  html, body { overflow-x: hidden; max-width: 100%; }
+
+  /* TOP BAR: ẩn hẳn dòng email/facebook/tiktok để không bị tràn */
+  .top-bar-right { display: none; }
+
+  /* HEADER: cho logo/search/cart co lại vừa màn hình nhỏ */
+  .header-inner { gap: 8px; flex-wrap: nowrap; }
+
+  .logo-wrap { width: auto; }
+  .logo-link { gap: 6px; }
+  .logo-icon { width: 40px; height: 40px; font-size: 20px; border-radius: 8px; }
+  .logo-text h1 { font-size: 14px; }
+  .logo-text span { display: none; }
+
+  .search-wrap { max-width: none; flex: 1; min-width: 0; }
+  .search-form input { padding: 8px 10px; font-size: 12px; }
+  .search-form button { padding: 8px 12px; }
+
+  /* Nút giỏ hàng: chỉ hiện icon + số lượng, ẩn chữ "Giỏ hàng" */
+  .cart-btn { padding: 8px 10px; gap: 0; }
+  .cart-btn > span:not(.cart-badge) { display: none; }
+
+  /* NAVBAR: menu danh mục thu gọn, danh sách link cuộn ngang thay vì tràn trang */
+  .navbar-inner { align-items: center; }
+
+  .cat-all {
+    width: auto;
+    padding: 0 10px;
+    gap: 6px;
+    font-size: 11px;
+    height: 38px;
+  }
+  .cat-all span { display: none; }
+  .mega-dropdown { width: 240px; }
+
+  .nav-links {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .nav-links::-webkit-scrollbar { display: none; }
+  .nav-links a { padding: 0 12px; height: 38px; line-height: 38px; font-size: 11.5px; }
+
+  /* BANNER/SLIDER: giảm chiều cao, chữ vừa màn hình nhỏ */
+  .banner-wrap { height: 190px; }
+  .slide-overlay { padding: 16px 14px 12px; }
+  .slide-name { font-size: 13px; margin-bottom: 6px; }
+  .slide-sale-price { font-size: 17px; }
+  .slide-original-price { font-size: 12px; }
+
+  /* FLASH SALE: không để tiêu đề + đồng hồ đếm ngược đẩy tràn ngang */
+  .flash-sale-header { flex-wrap: wrap; gap: 8px; padding: 10px 12px; }
+  .flash-sale-title h2 { font-size: 15px; }
+  .countdown-wrap { margin-left: 0; }
+  .countdown-box { width: 34px; height: 34px; font-size: 15px; }
+
+  /* GIỎ HÀNG MINI (drawer): full width trên điện thoại */
+  .mini-cart-drawer { width: 100%; right: -100%; }
+
+  /* NÚT NỔI (Zalo/FB/Điện thoại): thu nhỏ, tránh đè nội dung */
+  .float-btns { right: 10px; bottom: 76px; gap: 8px; }
+  .float-btn { width: 42px; height: 42px; font-size: 18px; }
+}
+
+/* ===========================
    SEARCH SUGGESTIONS
 =========================== */
 .search-wrap { position: relative; }
