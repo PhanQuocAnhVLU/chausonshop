@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tin tức sức khỏe, làm đẹp và mẹo vặt gia đình từ Châu Sơn Shop - Chuyên Hàng Nhập.">
+  <title>Tin Tức | Châu Sơn Shop - Chuyên Hàng Nhập</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .news-layout {
+      max-width: 1280px;
+      margin: 16px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 20px;
+    }
+
+    .breadcrumb {
+      max-width: 1280px;
+      margin: 12px auto 0;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-light);
+    }
+    .breadcrumb a { color: var(--primary); }
+    .breadcrumb i { font-size: 0.6rem; color: var(--text-muted); }
+
+    /* Featured post */
+    .featured-post {
+      background: white;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: var(--shadow-md);
+      margin-bottom: 20px;
+      cursor: pointer;
+      transition: box-shadow 0.3s;
+    }
+
+    .featured-post:hover { box-shadow: var(--shadow-lg); }
+
+    .featured-img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+    }
+
+    .featured-content {
+      padding: 24px;
+    }
+
+    .post-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .post-cat-badge {
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .post-date {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .post-read-time {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .featured-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.4;
+      margin-bottom: 10px;
+      transition: color 0.2s;
+    }
+
+    .featured-post:hover .featured-title { color: var(--primary); }
+
+    .featured-excerpt {
+      font-size: 0.88rem;
+      color: var(--text-body);
+      line-height: 1.7;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 16px;
+    }
+
+    .post-read-more {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary);
+      font-weight: 600;
+      font-size: 0.85rem;
+      transition: gap 0.2s;
+    }
+
+    .featured-post:hover .post-read-more { gap: 10px; }
+
+    /* News grid */
+    .news-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 14px;
+      margin-bottom: 20px;
+    }
+
+    .news-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-card-hover);
+    }
+
+    .news-card-img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      transition: transform 0.4s;
+    }
+
+    .news-card:hover .news-card-img { transform: scale(1.05); }
+
+    .news-card-img-wrap {
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .news-card-body {
+      padding: 14px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .news-card-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.4;
+      margin-bottom: 8px;
+      flex: 1;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      transition: color 0.2s;
+    }
+
+    .news-card:hover .news-card-title { color: var(--primary); }
+
+    .news-card-excerpt {
+      font-size: 0.78rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+
+    .news-card-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      border-top: 1px solid #f0f0f0;
+      padding-top: 8px;
+      margin-top: auto;
+    }
+
+    /* Sidebar */
+    .news-sidebar-widget {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .widget-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      padding: 12px 16px;
+      color: white;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .widget-body { padding: 12px 0; }
+
+    .widget-news-item {
+      display: flex;
+      gap: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+      transition: background 0.2s;
+      border-bottom: 1px solid #f5f5f5;
+    }
+
+    .widget-news-item:last-child { border-bottom: none; }
+    .widget-news-item:hover { background: #f9f9f9; }
+
+    .widget-news-thumb {
+      width: 58px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+
+    .widget-news-title {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .widget-news-item:hover .widget-news-title { color: var(--primary); }
+
+    .widget-news-date {
+      font-size: 0.65rem;
+      color: var(--text-muted);
+      margin-top: 3px;
+    }
+
+    .widget-cat-list { padding: 8px 14px; }
+
+    .widget-cat-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #f5f5f5;
+      cursor: pointer;
+      transition: color 0.2s;
+      font-size: 0.82rem;
+    }
+
+    .widget-cat-item:last-child { border-bottom: none; }
+    .widget-cat-item:hover { color: var(--primary); }
+
+    .widget-cat-count {
+      background: #f0f0f0;
+      color: var(--text-muted);
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 600;
+    }
+
+    /* Newsletter */
+    .newsletter-widget {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      border-radius: 12px;
+      padding: 20px 16px;
+      color: white;
+      margin-bottom: 16px;
+    }
+
+    .newsletter-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .newsletter-sub {
+      font-size: 0.78rem;
+      opacity: 0.85;
+      margin-bottom: 14px;
+    }
+
+    .newsletter-form { display: flex; flex-direction: column; gap: 8px; }
+
+    .newsletter-input {
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      outline: none;
+      font-family: inherit;
+    }
+
+    .newsletter-btn {
+      padding: 10px;
+      background: #ffeb3b;
+      color: var(--primary-dark);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.2s;
+    }
+
+    .newsletter-btn:hover { background: white; }
+
+    /* Pagination */
+    .news-pagination {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 24px 0 40px;
+    }
+
+    .np-btn {
+      width: 42px;
+      height: 42px;
+      border: 1px solid #e0e0e0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      color: #333;
+      cursor: pointer;
+      background: white;
+      font-family: inherit;
+      font-weight: 600;
+      transition: all 0.25s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+    }
+
+    .np-btn:hover:not([disabled]) {
+      background: #f4faeb;
+      color: var(--primary);
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(104,159,56,0.15);
+    }
+
+    .np-btn.active {
+      background: var(--primary) !important;
+      color: #ffffff !important;
+      border-color: var(--primary) !important;
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(104,159,56,0.3);
+      text-shadow: none;
+    }
+
+    .np-btn[disabled] {
+      opacity: 0.4;
+      cursor: not-allowed;
+      background: #f9f9f9;
+      color: #999;
+      box-shadow: none;
+    }
+
+    /* Filter bar */
+    .tag-pill {
+      padding: 6px 14px;
+      border: 1px solid #ddd;
+      border-radius: 999px;
+      font-size: 13px;
+      background: #f9f9f9;
+      color: #555;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .tag-pill:hover {
+      background: #e8f5e9;
+      color: var(--primary);
+      border-color: var(--primary);
+    }
+    .tag-pill.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
+    .news-filter-bar {
+      background: white;
+      border-radius: 10px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 16px;
+    }
+
+    .news-filter-label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-right: 4px;
+    }
+
+    @media (max-width: 900px) {
+      .news-layout { grid-template-columns: 1fr; }
+      .news-grid { grid-template-columns: 1fr; }
+      .featured-img { height: 220px; }
+    }
+
+    @media (max-width: 600px) {
+      .news-grid { grid-template-columns: 1fr; }
+      .featured-title { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-phone-alt"></i> Hotline: 0987.153.876</span>
+      <span><i class="fas fa-clock"></i> 8h00 – 21h30</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="index.html">Trang chủ</a>
+    </div>
+  </div>
+</div>
+
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
+        </a>
+      </div>
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text"><strong>0987.153.876</strong><small>Hotline</small></div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i><span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="cat-all">
+        <i class="fas fa-bars"></i><span>DANH MỤC</span><i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="san-pham.html">Sản phẩm</a>
+        <a href="tin-tuc.html" class="active">Tin tức</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="breadcrumb" style="max-width: 1280px; margin: 12px auto 0; padding: 0 16px;">
+  <a href="index.html">Trang chủ</a><span>›</span>
+  <span>Tin tức</span>
+</div>
+
+<div class="news-layout">
+  <!-- Main Content -->
+  <div>
+    <!-- Filter bar -->
+    <div class="news-filter-bar">
+      <span class="news-filter-label">Chuyên mục:</span>
+      <button class="tag-pill active" onclick="filterNews('all', this)">Tất cả</button>
+      <button class="tag-pill" onclick="filterNews('suc-khoe', this)">Sức khỏe</button>
+      <button class="tag-pill" onclick="filterNews('lam-dep', this)">Làm đẹp</button>
+      <button class="tag-pill" onclick="filterNews('dinh-duong', this)">Dinh dưỡng</button>
+      <button class="tag-pill" onclick="filterNews('meo-vat', this)">Mẹo vặt</button>
+    </div>
+
+    <!-- Featured Post -->
+    <div class="featured-post" onclick="window.location.href='tin-tuc.html'">
+      <img src="images/health-banner.png" alt="Featured News" class="featured-img">
+      <div class="featured-content">
+        <div class="post-meta">
+          <span class="post-cat-badge" style="background:#fce4ec;color:#c62828;">Làm Đẹp</span>
+          <span class="post-date"><i class="far fa-calendar-alt"></i> 08/07/2026</span>
+          <span class="post-read-time"><i class="far fa-clock"></i> 5 phút đọc</span>
+        </div>
+        <h2 class="featured-title">Bí quyết chọn mua Collagen Nhật Bản chính hãng, an toàn và hiệu quả</h2>
+        <p class="featured-excerpt">
+          Thị trường collagen hiện nay rất đa dạng khiến người tiêu dùng khó lựa chọn. Làm sao để phân biệt The Collagen Shiseido thật giả? Độ tuổi nào nên bắt đầu uống collagen và liệu trình như thế nào để đạt hiệu quả trẻ hóa da tốt nhất? Hãy cùng tìm hiểu chi tiết qua bài viết này...
+        </p>
+        <span class="post-read-more">Đọc tiếp <i class="fas fa-arrow-right"></i></span>
+      </div>
+    </div>
+
+    <!-- News grid -->
+    <div class="news-grid" id="newsGrid"></div>
+
+    <!-- Pagination -->
+    <div class="news-pagination" id="newsPagination"></div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside>
+    <!-- Recent news -->
+    <div class="news-sidebar-widget">
+      <div class="widget-header"><i class="fas fa-fire"></i> Tin Mới Nhất</div>
+      <div class="widget-body" id="sidebarNewsList"></div>
+    </div>
+
+    <!-- Categories -->
+    <div class="news-sidebar-widget">
+      <div class="widget-header"><i class="fas fa-tags"></i> Chuyên Mục</div>
+      <div class="widget-cat-list">
+        <div class="widget-cat-item"><span><i class="fas fa-heartbeat" style="color:#e53935;margin-right:6px;"></i>Sức khỏe</span><span class="widget-cat-count">24</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-spa" style="color:#9c27b0;margin-right:6px;"></i>Làm đẹp</span><span class="widget-cat-count">18</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-carrot" style="color:#ff6f00;margin-right:6px;"></i>Dinh dưỡng</span><span class="widget-cat-count">15</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-lightbulb" style="color:#ffc107;margin-right:6px;"></i>Mẹo vặt</span><span class="widget-cat-count">12</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-baby" style="color:#0288d1;margin-right:6px;"></i>Mẹ và bé</span><span class="widget-cat-count">9</span></div>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <div class="newsletter-widget">
+      <div class="newsletter-title"><i class="fas fa-envelope"></i> Đăng Ký Nhận Tin</div>
+      <p class="newsletter-sub">Nhận ngay ưu đãi độc quyền và tin tức sức khỏe hàng tuần</p>
+      <div class="newsletter-form">
+        <input type="email" class="newsletter-input" placeholder="Email của bạn...">
+        <button class="newsletter-btn" onclick="subscribeNewsletter()">
+          <i class="fas fa-paper-plane"></i> Đăng Ký Ngay
+        </button>
+      </div>
+    </div>
+
+    <!-- Hot products -->
+    <div class="news-sidebar-widget">
+      <div class="widget-header"><i class="fas fa-fire-alt"></i> Sản Phẩm Nổi Bật</div>
+      <div class="widget-body" id="sidebarHotProducts"></div>
+    </div>
+  </aside>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="footer-logo-text">🌿 CHÂU SƠN SHOP</div>
+        <div class="footer-logo-sub">Chuyên hàng ngoại nhập</div>
+        <p>Chuyên cung cấp thực phẩm chức năng và mỹ phẩm nhập khẩu chính hãng từ Nhật, Úc, Mỹ, Hàn Quốc.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Danh mục</h4>
+        <ul id="footerCatList"></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Chính sách đổi trả</a></li>
+          <li><a href="#"><i class="fas fa-angle-right"></i> Hướng dẫn mua hàng</a></li>
+          <li><a href="lien-he.html"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <div class="footer-contact-item"><i class="fas fa-phone-alt"></i><span>0987.153.876</span></div>
+        <div class="footer-contact-item"><i class="fas fa-envelope"></i><span>nhutu5556@gmail.com</span></div>
+        <div class="social-links" style="margin-top:12px">
+          <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="social-link fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link zl"><i class="fas fa-comment-dots"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row"><span>Tổng tiền:</span><span class="cart-total-price" id="cartTotalPrice">0đ</span></div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'"><i class="fas fa-credit-card"></i> THANH TOÁN</button>
+  </div>
+</aside>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<div class="float-btns">
+  <a href="tel:0987153876" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+  <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="float-btn facebook" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="https://zalo.me/0987153876" target="_blank" class="float-btn zalo"><i class="fas fa-comment-dots"></i></a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const megaDrop = document.getElementById('megaDropdown');
+  if (megaDrop) {
+    megaDrop.innerHTML = CATEGORIES.map(c => `
+      <li><a href="san-pham.html?cat=${c.id}">
+        <i class="fas ${c.icon}" style="color:${c.color}"></i>${c.name}
+        <i class="fas fa-chevron-right angle"></i>
+      </a></li>`).join('');
+  }
+});
+
+window.doSearch = function(e) {
+  e.preventDefault();
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.location.href = `san-pham.html?q=${encodeURIComponent(q)}`;
+};
+
+const allNews = [
+  { cat: 'lam-dep', catLabel: 'Làm Đẹp', catColor: '#fce4ec', catTextColor: '#c62828',
+    title: 'Bí quyết chọn mua Collagen Nhật Bản chính hãng, an toàn và hiệu quả',
+    excerpt: 'Thị trường collagen hiện nay rất đa dạng khiến người tiêu dùng khó lựa chọn. Bài viết hướng dẫn chi tiết cách phân biệt Collagen Shiseido thật giả và cách uống hiệu quả nhất.',
+    image: 'images/exact-2.jpg',
+    date: '2 ngày trước, 15:59', readTime: '5 phút' },
+  { cat: 'suc-khoe', catLabel: 'Sức Khỏe', catColor: '#e8f5e9', catTextColor: '#2e7d32',
+    title: 'Omega-3: Công dụng thần kỳ cho tim mạch và cách dùng chuẩn chuyên gia',
+    excerpt: 'Omega-3 là axit béo thiết yếu cơ thể không tự tổng hợp được. Cùng tìm hiểu cách chọn viên uống Dầu cá Nature Made Fish Oil tốt nhất cho tim mạch.',
+    image: 'images/exact-3.jpg',
+    date: '4 ngày trước, 20:02', readTime: '4 phút' },
+  { cat: 'dinh-duong', catLabel: 'Dinh Dưỡng', catColor: '#fff3e0', catTextColor: '#e65100',
+    title: 'Cao hồng sâm Hàn Quốc: Món quà sức khỏe vô giá cho người lớn tuổi',
+    excerpt: 'Cao hồng sâm 365 chứa hàm lượng Saponin cao, giúp bồi bổ cơ thể, tăng cường sức đề kháng và cải thiện trí nhớ. Phù hợp làm quà tặng ý nghĩa cho ông bà, cha mẹ.',
+    image: 'images/bing2-prod-26.jpg',
+    date: '1 tuần trước, 14:58', readTime: '6 phút' },
+  { cat: 'suc-khoe', catLabel: 'Sức Khỏe', catColor: '#e8f5e9', catTextColor: '#2e7d32',
+    title: 'Phục hồi sụn khớp hiệu quả với viên uống Schiff Move Free Advanced',
+    excerpt: 'Đau nhức xương khớp ở người già có thể được cải thiện đáng kể với Glucosamine và Chondroitin. Tìm hiểu cơ chế tác động của Schiff Move Free.',
+    image: 'images/bing2-prod-18.jpg',
+    date: '2 tuần trước, 09:19', readTime: '4 phút' },
+  { cat: 'lam-dep', catLabel: 'Làm Đẹp', catColor: '#fce4ec', catTextColor: '#c62828',
+    title: 'Review chi tiết kem dưỡng vùng cổ Medi-Peel: Có thực sự tốt như lời đồn?',
+    excerpt: 'Vùng cổ rất dễ tố cáo tuổi tác thật của bạn nếu không được chăm sóc đúng cách. Cùng review hiệu quả nâng cơ, chống nhăn của kem cổ Medi-Peel Naite Thread.',
+    image: 'images/bing2-prod-20.jpg',
+    date: '1 tháng trước, 11:30', readTime: '5 phút' },
+  { cat: 'meo-vat', catLabel: 'Mẹo vặt', catColor: '#fff8e1', catTextColor: '#f57f17',
+    title: 'Top 10 thực phẩm chức năng ngoại nhập bán chạy nhất đáng để thử',
+    excerpt: 'Với hàng trăm sản phẩm trên thị trường, đâu là những sản phẩm được tin tưởng nhất? Danh sách top 10 được tổng hợp từ đánh giá của chuyên gia và khách hàng.',
+    image: 'images/exact-1.jpg',
+    date: '2 tháng trước, 10:00', readTime: '7 phút' },
+];
+
+let activeNewsCat = 'all';
+let currentNewsPage = 1;
+const newsPerPage = 4;
+
+function filterNews(cat, btn) {
+  activeNewsCat = cat;
+  currentNewsPage = 1;
+  document.querySelectorAll('.news-filter-bar .tag-pill').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderNewsGrid();
+  renderNewsPagination();
+}
+
+function renderNewsGrid() {
+  const grid = document.getElementById('newsGrid');
+  const filtered = activeNewsCat === 'all' ? allNews : allNews.filter(n => n.cat === activeNewsCat);
+
+  if (filtered.length === 0) {
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted);">
+      <i class="fas fa-newspaper" style="font-size:2rem;margin-bottom:12px;display:block;"></i>
+      Chưa có bài viết trong chuyên mục này
+    </div>`;
+    return;
+  }
+
+  const startIdx = (currentNewsPage - 1) * newsPerPage;
+  const paginated = filtered.slice(startIdx, startIdx + newsPerPage);
+
+  grid.innerHTML = paginated.map(n => `
+    <div class="news-card" onclick="window.location.href='tin-tuc.html'">
+      <div class="news-card-img-wrap">
+        <img src="${n.image}" alt="${n.title}" class="news-card-img" onerror="this.src='https://via.placeholder.com/400x170/e8f5e9/2e7d32?text=Tin+Tức'">
+      </div>
+      <div class="news-card-body">
+        <div class="post-meta" style="margin-bottom:8px;">
+          <span class="post-cat-badge" style="background:${n.catColor};color:${n.catTextColor};">${n.catLabel}</span>
+        </div>
+        <h3 class="news-card-title">${n.title}</h3>
+        <p class="news-card-excerpt">${n.excerpt}</p>
+        <div class="news-card-footer">
+          <span><i class="far fa-clock"></i> ${n.date}</span>
+          <span><i class="fas fa-book-open"></i> ${n.readTime}</span>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function renderNewsPagination() {
+  const filtered = activeNewsCat === 'all' ? allNews : allNews.filter(n => n.cat === activeNewsCat);
+  const totalPages = Math.ceil(filtered.length / newsPerPage);
+  const paginationContainer = document.getElementById('newsPagination');
+  
+  if (!paginationContainer) return;
+  if (totalPages <= 1) {
+    paginationContainer.style.display = 'none';
+    return;
+  }
+  
+  paginationContainer.style.display = 'flex';
+  let html = `<button class="np-btn" onclick="changeNewsPage(${currentNewsPage - 1})" ${currentNewsPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+  
+  for (let i = 1; i <= totalPages; i++) {
+    html += `<button class="np-btn ${i === currentNewsPage ? 'active' : ''}" onclick="changeNewsPage(${i})">${i}</button>`;
+  }
+  
+  html += `<button class="np-btn" onclick="changeNewsPage(${currentNewsPage + 1})" ${currentNewsPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+  
+  paginationContainer.innerHTML = html;
+}
+
+function changeNewsPage(page) {
+  const filtered = activeNewsCat === 'all' ? allNews : allNews.filter(n => n.cat === activeNewsCat);
+  const totalPages = Math.ceil(filtered.length / newsPerPage);
+  if (page < 1 || page > totalPages) return;
+  
+  currentNewsPage = page;
+  renderNewsGrid();
+  renderNewsPagination();
+  
+  // Optional: scroll up to filter bar smoothly
+  document.querySelector('.news-filter-bar').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function renderSidebar() {
+  // Sidebar news
+  const sidebarList = document.getElementById('sidebarNewsList');
+  sidebarList.innerHTML = NEWS.map(n => `
+    <div class="widget-news-item" onclick="window.location.href='tin-tuc.html'">
+      <img src="${n.image}" alt="${n.title}" class="widget-news-thumb" onerror="this.src='https://via.placeholder.com/58x48/e8f5e9/2e7d32?text=T'">
+      <div>
+        <div class="widget-news-title">${n.title}</div>
+        <div class="widget-news-date"><i class="far fa-clock"></i> ${n.time}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Hot products
+  const hotProds = document.getElementById('sidebarHotProducts');
+  const sellers = getBestSellers(4);
+  hotProds.innerHTML = sellers.map(p => `
+    <div class="widget-news-item" onclick="goToProduct('${p.id}')">
+      <img src="${p.image}" alt="${p.name}" class="widget-news-thumb" onerror="this.src='https://via.placeholder.com/58x48/f5f5f5/bdbdbd?text=SP'">
+      <div>
+        <div class="widget-news-title">${p.name}</div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--sale-red);margin-top:2px;">${formatPrice(p.price)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function subscribeNewsletter() {
+  const input = document.querySelector('.newsletter-input');
+  if (!input.value || !input.value.includes('@')) {
+    showToast('Vui lòng nhập email hợp lệ!', 'error');
+    return;
+  }
+  showToast('✅ Đăng ký thành công! Chúng tôi sẽ gửi tin tức đến email của bạn.', 'success');
+  input.value = '';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  renderNewsGrid();
+  renderNewsPagination();
+  onProductsReady(() => renderSidebar());
+});
+</script>
+</body>
+</html>

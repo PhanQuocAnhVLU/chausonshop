@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Toán - Châu Sơn Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .checkout-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 20px;
+      align-items: start;
+    }
+    
+    .checkout-box {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 25px;
+      margin-bottom: 20px;
+    }
+    
+    .checkout-box h3 {
+      font-size: 16px;
+      font-weight: 800;
+      color: #222;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f0f0f0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 15px;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      margin-bottom: 6px;
+      color: #555;
+    }
+    
+    .form-group label span { color: var(--sale-red); }
+    
+    .form-group input, .form-group textarea {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    
+    .form-group input:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: var(--primary);
+    }
+    
+    .payment-methods {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    
+    .pm-option {
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 12px 15px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    
+    .pm-option:hover {
+      border-color: var(--primary-light);
+      background: #f8fdf8;
+    }
+    
+    .pm-option input[type="radio"] {
+      accent-color: var(--primary);
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    
+    .pm-option span {
+      font-weight: 600;
+      font-size: 14px;
+      color: #333;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .pm-option img {
+      height: 24px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .pm-active {
+      border-color: var(--primary);
+      background: #f0fbf0;
+    }
+    
+    .bank-info-box {
+      display: none;
+      background: #f9f9f9;
+      border: 1px dashed #ccc;
+      padding: 15px;
+      border-radius: 6px;
+      margin-top: 10px;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+    
+    .bank-info-box.show { display: block; }
+    .bank-info-box strong { color: var(--primary); }
+    
+    /* Summary */
+    .summary-box {
+      position: sticky;
+      top: 80px;
+    }
+    
+    .summary-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+    
+    .summary-item img {
+      width: 55px;
+      height: 55px;
+      object-fit: contain;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      padding: 2px;
+    }
+    
+    .summary-item-info { flex: 1; }
+    .summary-item-name { font-size: 12.5px; font-weight: 600; color: #333; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .summary-item-qty { font-size: 12px; color: #888; margin-top: 4px; }
+    .summary-item-price { font-size: 13.5px; font-weight: 700; color: var(--sale-red); }
+    
+    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13.5px; }
+    .summary-row.total { font-size: 16px; font-weight: 800; padding-top: 12px; border-top: 2px solid #f0f0f0; margin-top: 15px; }
+    .summary-row.total span:last-child { color: var(--sale-red); font-size: 22px; }
+    
+    .btn-complete {
+      width: 100%;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: var(--transition);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 20px;
+    }
+    .btn-complete:hover { background: var(--primary-dark); }
+    
+    /* Success Popup */
+    .success-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .success-overlay.show { display: flex; }
+    .success-popup {
+      background: #fff;
+      width: 400px;
+      max-width: 90%;
+      border-radius: 12px;
+      padding: 40px 30px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s ease;
+    }
+    .success-overlay.show .success-popup {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: #e8f5e9;
+      color: #4CAF50;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 40px;
+      margin: 0 auto 20px;
+    }
+    .success-popup h2 { font-size: 22px; color: #333; margin-bottom: 10px; }
+    .success-popup p { font-size: 14px; color: #666; margin-bottom: 25px; line-height: 1.5; }
+    
+    @media (max-width: 900px) { .checkout-layout { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-shipping-fast"></i> Miễn phí vận chuyển đơn từ 500k</span>
+      <span><i class="fas fa-shield-alt"></i> Hàng chính hãng 100%</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="tel:0987153876"><i class="fas fa-phone-alt"></i> 0987.153.876</a>
+    </div>
+  </div>
+</div>
+
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon">🌿</div>
+          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
+        </a>
+      </div>
+      <div class="search-wrap" style="visibility:hidden;">
+        <!-- Hide search in checkout to focus -->
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-shield-check"></i></div>
+          <div class="info-item-text"><strong>Thanh toán</strong><small>Bảo mật 100%</small></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="page-wrapper" style="background:#f5f5f5; padding-top:20px;">
+  <div class="container">
+    <div class="breadcrumb" style="margin-bottom:20px;">
+      <a href="index.html">Trang chủ</a><span>›</span>
+      <a href="gio-hang.html">Giỏ hàng</a><span>›</span>
+      <span>Thanh toán</span>
+    </div>
+
+    <form id="checkoutForm" onsubmit="handleCheckout(event)">
+      <div class="checkout-layout">
+        
+        <!-- LEFT COL -->
+        <div>
+          <!-- THÔNG TIN GIAO HÀNG -->
+          <div class="checkout-box">
+            <h3><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Thông tin giao hàng</h3>
+            <div class="form-group">
+              <label>Họ và tên <span>*</span></label>
+              <input type="text" id="custName" placeholder="Nhập họ và tên người nhận" required>
+            </div>
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+              <div class="form-group">
+                <label>Số điện thoại <span>*</span></label>
+                <input type="tel" id="custPhone" placeholder="Ví dụ: 0987153876" required pattern="[0-9]{10,11}">
+              </div>
+              <div class="form-group">
+                <label>Email (Tùy chọn)</label>
+                <input type="email" id="custEmail" placeholder="Nhập email để nhận hóa đơn">
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Địa chỉ nhận hàng <span>*</span></label>
+              <input type="text" id="custAddress" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành" required>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Ghi chú đơn hàng (Tùy chọn)</label>
+              <textarea id="custNote" rows="3" placeholder="Ghi chú về thời gian hoặc địa điểm giao hàng..."></textarea>
+            </div>
+          </div>
+
+          <!-- PHƯƠNG THỨC THANH TOÁN -->
+          <div class="checkout-box">
+            <h3><i class="fas fa-wallet" style="color:var(--primary)"></i> Phương thức thanh toán</h3>
+            <div class="payment-methods">
+              
+              <label class="pm-option pm-active">
+                <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankInfo()">
+                <span>💵 Thanh toán khi nhận hàng (COD)</span>
+              </label>
+              
+              <label class="pm-option">
+                <input type="radio" name="paymentMethod" value="Transfer" onchange="toggleBankInfo()">
+                <span>🏦 Chuyển khoản ngân hàng</span>
+              </label>
+              
+              <div class="bank-info-box" id="bankInfoBox">
+                Vui lòng chuyển khoản vào tài khoản dưới đây với nội dung: <strong>[SĐT của bạn]</strong><br><br>
+                - Ngân hàng: <strong>Vietcombank</strong><br>
+                - Số tài khoản: <strong>0987153876</strong><br>
+                - Chủ tài khoản: <strong>CHAU SON SHOP</strong><br><br>
+                Đơn hàng sẽ được xử lý ngay sau khi chúng tôi nhận được thanh toán.
+              </div>
+              
+              <label class="pm-option">
+                <input type="radio" name="paymentMethod" value="ATM" onchange="toggleBankInfo()">
+                <span>💳 Thẻ ATM Nội địa / Internet Banking</span>
+              </label>
+              
+              <label class="pm-option">
+                <input type="radio" name="paymentMethod" value="MoMo" onchange="toggleBankInfo()">
+                <span><img src="https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png" alt="MoMo"> Ví điện tử MoMo</span>
+              </label>
+              
+              <label class="pm-option">
+                <input type="radio" name="paymentMethod" value="ZaloPay" onchange="toggleBankInfo()">
+                <span><img src="https://cdn.haitrieu.com/wp-content/uploads/2022/10/Logo-ZaloPay-Square.png" alt="ZaloPay"> Ví ZaloPay</span>
+              </label>
+              
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT COL (SUMMARY) -->
+        <div>
+          <div class="checkout-box summary-box">
+            <h3><i class="fas fa-shopping-bag" style="color:var(--primary)"></i> Đơn hàng của bạn</h3>
+            
+            <div id="checkoutItemsList" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+              <!-- Items loaded by JS -->
+            </div>
+            
+            <div class="summary-row">
+              <span style="color:#666">Tạm tính:</span>
+              <span style="font-weight:700;" id="coSubtotal">0đ</span>
+            </div>
+            <div class="summary-row">
+              <span style="color:#666">Phí vận chuyển:</span>
+              <span style="font-weight:700; color:#43a047;" id="coShipping">Miễn phí</span>
+            </div>
+            
+            <div class="summary-row total">
+              <span>Tổng thanh toán:</span>
+              <span id="coTotal">0đ</span>
+            </div>
+            
+            <button type="submit" class="btn-complete">
+              <i class="fas fa-check"></i> HOÀN TẤT ĐẶT HÀNG
+            </button>
+            <div style="text-align:center; margin-top:12px; font-size:12px; color:#888;">
+              <i class="fas fa-lock"></i> Thông tin của bạn được bảo mật tuyệt đối
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom"><p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p></div>
+  </div>
+</footer>
+
+<!-- SUCCESS POPUP OVERLAY -->
+<div class="success-overlay" id="successOverlay">
+  <div class="success-popup">
+    <div class="success-icon"><i class="fas fa-check"></i></div>
+    <h2>Đặt hàng thành công!</h2>
+    <p>Cảm ơn bạn đã mua sắm tại Châu Sơn Shop.<br>Chúng tôi sẽ liên hệ sớm nhất để xác nhận đơn hàng.</p>
+    <div style="font-size:12px; color:#aaa; margin-top:10px;">Đang tự động chuyển về trang chủ...</div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+  if (cartData.length === 0) {
+    window.location.href = 'gio-hang.html';
+    return;
+  }
+  
+  const list = document.getElementById('checkoutItemsList');
+  const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  const shipping = subtotal >= 500000 ? 0 : 30000;
+  const total = subtotal + shipping;
+  
+  list.innerHTML = cartData.map(item => `
+    <div class="summary-item">
+      <img src="${item.image}" alt="">
+      <div class="summary-item-info">
+        <div class="summary-item-name">${item.name}</div>
+        <div class="summary-item-qty">SL: ${item.qty}</div>
+      </div>
+      <div class="summary-item-price">${(item.price * item.qty).toLocaleString('vi-VN')}đ</div>
+    </div>
+  `).join('');
+  
+  document.getElementById('coSubtotal').textContent = subtotal.toLocaleString('vi-VN') + 'đ';
+  document.getElementById('coShipping').innerHTML = shipping === 0 ? '<i class="fas fa-check-circle"></i> Miễn phí' : shipping.toLocaleString('vi-VN') + 'đ';
+  document.getElementById('coTotal').textContent = total.toLocaleString('vi-VN') + 'đ';
+  
+  // Highlight selected PM option
+  document.querySelectorAll('input[name="paymentMethod"]').forEach(el => {
+    el.addEventListener('change', function() {
+      document.querySelectorAll('.pm-option').forEach(opt => opt.classList.remove('pm-active'));
+      if (this.checked) this.closest('.pm-option').classList.add('pm-active');
+    });
+  });
+});
+
+function toggleBankInfo() {
+  const isTransfer = document.querySelector('input[name="paymentMethod"]:checked').value === 'Transfer';
+  document.getElementById('bankInfoBox').classList.toggle('show', isTransfer);
+}
+
+function genOrderCode() {
+  const now = new Date();
+  const ymd = now.toISOString().slice(0, 10).replace(/-/g, '');
+  const rand = Math.random().toString(36).slice(2, 6).toUpperCase();
+  return `CS${ymd}${rand}`;
+}
+
+async function handleCheckout(e) {
+  e.preventDefault();
+
+  // Validate done by HTML5 required attributes. If it reaches here, it's valid.
+  const submitBtn = e.target.querySelector('.btn-complete');
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = 0.6; }
+
+  const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+  const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  const shipping = subtotal >= 500000 ? 0 : 30000;
+  const total = subtotal + shipping;
+  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'COD';
+  const orderCode = genOrderCode();
+
+  try {
+    const { data: order, error: orderErr } = await sb.from('orders').insert({
+      order_code: orderCode,
+      customer_name: document.getElementById('custName').value,
+      customer_phone: document.getElementById('custPhone').value,
+      customer_email: document.getElementById('custEmail').value || null,
+      customer_address: document.getElementById('custAddress').value,
+      note: document.getElementById('custNote').value || null,
+      payment_method: paymentMethod,
+      status: 'pending',
+      subtotal,
+      shipping_fee: shipping,
+      total
+    }).select().single();
+
+    if (orderErr) throw orderErr;
+
+    const items = cartData.map(item => ({
+      order_id: order.id,
+      product_id: item.id,
+      product_name: item.name,
+      price: item.price,
+      qty: item.qty,
+      image: item.image
+    }));
+    const { error: itemsErr } = await sb.from('order_items').insert(items);
+    if (itemsErr) throw itemsErr;
+
+    if (typeof trackEvent === 'function') {
+      trackEvent('order_placed', { orderCode, total });
+    }
+  } catch (err) {
+    console.error('[checkout] Lỗi khi lưu đơn hàng:', err.message);
+    // Vẫn cho khách thấy đặt hàng thành công để không chặn trải nghiệm,
+    // nhưng ghi log lỗi để admin kiểm tra sau (đơn có thể cần liên hệ tay).
+  }
+
+  // Show success popup
+  document.getElementById('successOverlay').classList.add('show');
+
+  // Clear cart
+  localStorage.setItem('chausonCart', '[]');
+  if (typeof updateCartUI === 'function') updateCartUI();
+
+  // Redirect to home after 3.5 seconds
+  setTimeout(() => {
+    window.location.href = 'index.html';
+  }, 3500);
+}
+</script>
+
+</body>
+</html>

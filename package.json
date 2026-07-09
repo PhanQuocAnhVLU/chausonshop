@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "duck-duck-scrape": "^2.2.7",
+    "g-i-s": "^2.1.7"
+  },
+  "devDependencies": {
+    "puppeteer": "^25.3.0"
+  }
+}
