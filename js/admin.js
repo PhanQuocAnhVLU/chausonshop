@@ -13,6 +13,14 @@ const STATUS_LABELS = {
 let revenueChart = null;
 let visitsChart = null;
 let allProductsCache = [];
+const PRODUCT_IMAGE_BUCKET = 'product-images';
+
+// Trả về URL ảnh hiển thị được, dù ảnh là link Storage (http...) hay đường dẫn cũ (images/...)
+function resolveImageUrl(path) {
+  if (!path) return 'https://via.placeholder.com/80?text=No+Image';
+  if (/^https?:\/\//i.test(path)) return path;
+  return '../' + path;
+}
 
 // ========================= AUTH =========================
 async function initAuth() {
@@ -323,7 +331,7 @@ function renderProductsTable() {
       <tbody>
         ${filtered.map(p => `
           <tr>
-            <td><img src="../${p.image}" onerror="this.src='https://via.placeholder.com/40'" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></td>
+            <td><img src="${resolveImageUrl(p.image)}" onerror="this.src='https://via.placeholder.com/40'" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></td>
             <td style="max-width:280px;">${p.name}</td>
             <td>${p.category_id}</td>
             <td>${Number(p.price).toLocaleString('vi-VN')}đ</td>
@@ -356,8 +364,15 @@ function openProductForm(productId) {
         <div><label>Danh mục (id)</label><input type="text" id="pf_category" required value="${p ? p.category_id : ''}"></div>
         <div><label>Tồn kho</label><input type="number" id="pf_stock" value="${p && p.stock != null ? p.stock : 100}"></div>
       </div>
-      <label>Đường dẫn ảnh</label>
-      <input type="text" id="pf_image" value="${p ? escapeHtml(p.image || '') : ''}" placeholder="images/ten-anh.jpg">
+      <label>Ảnh sản phẩm</label>
+      <div class="image-upload-box">
+        <img id="pf_image_preview" src="${resolveImageUrl(p ? p.image : '')}" onerror="this.src='https://via.placeholder.com/80?text=No+Image'">
+        <div class="image-upload-controls">
+          <input type="file" id="pf_image_file" accept="image/png,image/jpeg,image/webp,image/gif">
+          <div id="pf_image_status" class="upload-hint">Chọn ảnh từ máy tính — ảnh sẽ tự động tải lên.</div>
+          <input type="text" id="pf_image" value="${p ? escapeHtml(p.image || '') : ''}" placeholder="Hoặc dán link ảnh trực tiếp (https://...)">
+        </div>
+      </div>
       <label>Nhãn (tag)</label>
       <input type="text" id="pf_tag" value="${p ? escapeHtml(p.tag || '') : ''}">
       <label><input type="checkbox" id="pf_active" ${!p || p.is_active ? 'checked' : ''} style="width:auto;display:inline-block;"> Hiện trên web</label>
@@ -367,6 +382,40 @@ function openProductForm(productId) {
       </div>
     </form>
   `);
+
+  const fileInput = document.getElementById('pf_image_file');
+  const statusEl = document.getElementById('pf_image_status');
+  const submitBtn = document.querySelector('#productForm button[type="submit"]');
+
+  fileInput.addEventListener('change', async () => {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    // Preview ngay lập tức trong lúc chờ tải lên
+    document.getElementById('pf_image_preview').src = URL.createObjectURL(file);
+    statusEl.textContent = '⏳ Đang tải ảnh lên...';
+    submitBtn.disabled = true;
+
+    try {
+      const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+      const safeExt = /^[a-z0-9]+$/.test(ext) ? ext : 'jpg';
+      const path = `products/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${safeExt}`;
+
+      const { error: uploadError } = await sb.storage
+        .from(PRODUCT_IMAGE_BUCKET)
+        .upload(path, file, { cacheControl: '3600', upsert: false });
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicData } = sb.storage.from(PRODUCT_IMAGE_BUCKET).getPublicUrl(path);
+      document.getElementById('pf_image').value = publicData.publicUrl;
+      statusEl.textContent = '✅ Tải ảnh lên thành công.';
+    } catch (err) {
+      statusEl.textContent = '❌ Lỗi tải ảnh: ' + (err.message || err);
+    } finally {
+      submitBtn.disabled = false;
+    }
+  });
 
   document.getElementById('productForm').addEventListener('submit', async (e) => {
     e.preventDefault();
