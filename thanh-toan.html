@@ -221,6 +221,75 @@
     .bank-info-box.show { display: block; animation: slideDown 0.3s ease; }
     .bank-info-box strong { color: var(--primary-dark); font-weight: 700; }
 
+    /* Bank Selection Grid */
+    .bank-list {
+      display: none;
+      background: linear-gradient(135deg, #f0fbf8 0%, #ecfdf5 100%);
+      border: 1px solid var(--primary-light);
+      padding: 16px;
+      border-radius: 10px;
+      margin-top: 12px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 10px;
+    }
+
+    .bank-list.show { display: grid; animation: slideDown 0.3s ease; }
+
+    .bank-option {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .bank-option:hover {
+      border-color: var(--primary);
+      background: #f0fbf8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+    }
+
+    .bank-option.selected {
+      border-color: var(--primary);
+      background: var(--primary-light);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+    }
+
+    .bank-icon {
+      font-size: 24px;
+      line-height: 1;
+    }
+
+    .bank-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+    }
+
+    .atm-info-box {
+      display: none;
+      background: linear-gradient(135deg, #f0fbf8 0%, #ecfdf5 100%);
+      border: 1px solid var(--primary-light);
+      padding: 16px 18px;
+      border-radius: 10px;
+      margin-top: 12px;
+      font-size: 13.5px;
+      line-height: 1.7;
+      color: var(--text-muted);
+    }
+
+    .atm-info-box.show { display: block; animation: slideDown 0.3s ease; }
+    .atm-info-box strong { color: var(--primary-dark); font-weight: 700; }
+
     @keyframes slideDown {
       from { opacity: 0; transform: translateY(-10px); }
       to { opacity: 1; transform: translateY(0); }
@@ -502,7 +571,7 @@
                 </div>
                 <div style="text-align: center; padding-top: 15px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
                   <div style="font-weight: 600; margin-bottom: 10px; color: var(--text);">Hoặc quét mã QR:</div>
-                  <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border);">
+                  <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid var(--border); margin: 0 auto;">
                 </div>
                 <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
                   ✓ Đơn hàng sẽ được xử lý ngay sau khi thanh toán.
@@ -511,8 +580,68 @@
               
               <label class="pm-option">
                 <input type="radio" name="paymentMethod" value="ATM" onchange="toggleBankInfo()">
-                <span>💳 Thẻ ATM Nội địa / Internet Banking</span>
+                <span>💳 Thẻ ATM / Internet Banking</span>
               </label>
+
+              <div class="bank-list" id="bankList">
+                <div class="bank-option" onclick="selectBank('vietcombank')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">Vietcombank</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('acb')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">ACB</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('mbbank')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">MB Bank</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('techcombank')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">Techcombank</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('agribank')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">Agribank</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('bidv')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">BIDV</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('shb')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">SHB</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('vib')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">VIB</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('hdbank')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">HDBank</div>
+                </div>
+                <div class="bank-option" onclick="selectBank('lpbank')">
+                  <div class="bank-icon">🏦</div>
+                  <div class="bank-name">LPBank</div>
+                </div>
+              </div>
+
+              <div class="atm-info-box" id="atmInfoBox">
+                <div style="margin-bottom: 15px;">
+                  <strong style="color: var(--primary);">Chuyển khoản tới TP Bank:</strong><br><br>
+                  - Ngân hàng: <strong>TP Bank</strong><br>
+                  - Số tài khoản: <strong>0733 0649 701</strong><br>
+                  - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
+                  - Nội dung: <strong>[SĐT của bạn]</strong>
+                </div>
+                <div style="text-align: center; padding-top: 15px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
+                  <div style="font-weight: 600; margin-bottom: 10px; color: var(--text);">Hoặc quét mã QR:</div>
+                  <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid var(--border); margin: 0 auto;">
+                </div>
+                <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
+                  ✓ Hệ thống sẽ tự động cập nhật trạng thái đơn hàng khi thanh toán thành công.
+                </div>
+              </div>
               
               <label class="pm-option">
                 <input type="radio" name="paymentMethod" value="MoMo" onchange="toggleBankInfo()">
@@ -522,7 +651,7 @@
               <div class="bank-info-box momo-qr-box" id="momoQrBox" style="display:none;">
                 <div style="text-align: center; padding: 15px 0;">
                   <div style="font-weight: 700; margin-bottom: 10px;">Quét mã QR MoMo</div>
-                  <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg" alt="MoMo QR Code" style="max-width: 100%; border-radius: 8px; border: 1px solid #e5e7eb;">
+                  <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg" alt="MoMo QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid #e5e7eb; margin: 0 auto;">
                   <div style="margin-top: 10px; font-size: 12px; color: var(--primary);">Hoặc nhập số điện thoại: <strong>0987153876</strong></div>
                 </div>
               </div>
@@ -655,9 +784,54 @@ function toggleBankInfo() {
   const selected = document.querySelector('input[name="paymentMethod"]:checked').value;
   const bankBox = document.getElementById('bankInfoBox');
   const momoBox = document.getElementById('momoQrBox');
+  const bankList = document.getElementById('bankList');
+  const atmInfo = document.getElementById('atmInfoBox');
   
   bankBox.classList.toggle('show', selected === 'Transfer');
   momoBox.style.display = selected === 'MoMo' ? 'block' : 'none';
+  bankList.classList.toggle('show', selected === 'ATM');
+  atmInfo.classList.toggle('show', selected === 'ATM');
+}
+
+function selectBank(bankCode) {
+  const bankNames = {
+    'vietcombank': 'Vietcombank',
+    'acb': 'ACB',
+    'mbbank': 'MB Bank',
+    'techcombank': 'Techcombank',
+    'agribank': 'Agribank',
+    'bidv': 'BIDV',
+    'shb': 'SHB',
+    'vib': 'VIB',
+    'hdbank': 'HDBank',
+    'lpbank': 'LPBank'
+  };
+
+  // Highlight selected bank
+  document.querySelectorAll('.bank-option').forEach(el => el.classList.remove('selected'));
+  event.target.closest('.bank-option').classList.add('selected');
+
+  // Update info box (mặc định chuyển tới TP Bank, nhưng có thể mở rộng)
+  const bankName = bankNames[bankCode] || 'Ngân hàng';
+  const atmInfo = document.getElementById('atmInfoBox');
+  atmInfo.innerHTML = `
+    <div style="margin-bottom: 15px;">
+      <strong style="color: var(--primary);">Chuyển khoản tới TP Bank:</strong><br><br>
+      - Ngân hàng: <strong>TP Bank</strong><br>
+      - Số tài khoản: <strong>0733 0649 701</strong><br>
+      - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
+      - Nội dung: <strong>[SĐT của bạn]</strong><br>
+      <br>
+      <em style="font-size: 12px; color: var(--text-muted);">💳 Bạn có thể chuyển từ ${bankName} hoặc bất kỳ ngân hàng nào qua hệ thống chuyển khoản liên ngân hàng.</em>
+    </div>
+    <div style="text-align: center; padding-top: 15px; border-top: 1px solid rgba(16, 185, 129, 0.3);">
+      <div style="font-weight: 600; margin-bottom: 10px; color: var(--text);">Hoặc quét mã QR:</div>
+      <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 200px; height: 200px; border-radius: 8px; border: 1px solid var(--border); margin: 0 auto;">
+    </div>
+    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
+      ✓ Hệ thống sẽ tự động cập nhật trạng thái đơn hàng khi thanh toán thành công.
+    </div>
+  `;
 }
 
 function genOrderCode() {
