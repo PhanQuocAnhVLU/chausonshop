@@ -562,21 +562,25 @@
               </label>
               
               <div class="bank-info-box" id="bankInfoBox" style="display: none;">
-                <div style="margin-bottom: 15px;">
-                  <strong style="color: var(--primary);">Thông tin chuyển khoản:</strong><br><br>
-                  - Ngân hàng: <strong>TP Bank</strong><br>
-                  - Số tài khoản: <strong>0733 0649 701</strong><br>
-                  - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
-                  - Nội dung: <strong>[SĐT của bạn]</strong>
-                </div>
-                <div style="text-align: center; padding: 20px; background: #f0fbf8; border-radius: 12px; margin-top: 15px;">
-                  <div style="font-weight: 600; margin-bottom: 12px; color: var(--text);">📱 Quét mã QR để thanh toán:</div>
-                  <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid var(--primary-light); display: inline-block; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);">
-                    <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 220px; height: 220px; border-radius: 8px; display: block;">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start;">
+                  <div>
+                    <div style="margin-bottom: 15px;">
+                      <strong style="color: var(--primary);">Thông tin chuyển khoản:</strong><br><br>
+                      - Ngân hàng: <strong>TP Bank</strong><br>
+                      - Số tài khoản: <strong>0733 0649 701</strong><br>
+                      - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
+                      - Nội dung: <strong>[SĐT của bạn]</strong>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+                      ✓ Đơn hàng sẽ được xử lý ngay sau khi thanh toán.
+                    </div>
                   </div>
-                </div>
-                <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
-                  ✓ Đơn hàng sẽ được xử lý ngay sau khi thanh toán.
+                  <div style="flex-shrink: 0;">
+                    <div style="font-weight: 600; margin-bottom: 12px; color: var(--text); font-size: 13px; text-align: center;">🔐 Quét QR:</div>
+                    <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid var(--primary-light); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);">
+                      <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 180px; height: 180px; border-radius: 6px; display: block;">
+                    </div>
+                  </div>
                 </div>
               </div>
               
@@ -587,63 +591,57 @@
 
               <div class="bank-list" id="bankList" style="display: none;">
                 <div class="bank-option" onclick="selectBank('vietcombank')">
-                  <div class="bank-icon">🏦</div>
-                  <div class="bank-name"><strong>VCB</strong><br>Vietcombank</div>
+                  <div class="bank-icon" style="background: #003a96; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">VCB</div>
+                  <div class="bank-name"><strong>VCB</strong><br><span style="font-size: 11px; color: #999;">Vietcombank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('acb')">
-                  <div class="bank-icon">🏧</div>
-                  <div class="bank-name"><strong>ACB</strong><br>ACB Bank</div>
+                  <div class="bank-icon" style="background: #1f61e5; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">ACB</div>
+                  <div class="bank-name"><strong>ACB</strong><br><span style="font-size: 11px; color: #999;">ACB Bank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('mbbank')">
-                  <div class="bank-icon">💳</div>
-                  <div class="bank-name"><strong>MB</strong><br>MB Bank</div>
+                  <div class="bank-icon" style="background: #0066cc; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">MB</div>
+                  <div class="bank-name"><strong>MB</strong><br><span style="font-size: 11px; color: #999;">MB Bank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('techcombank')">
-                  <div class="bank-icon">🏦</div>
-                  <div class="bank-name"><strong>TCB</strong><br>Techcombank</div>
+                  <div class="bank-icon" style="background: #e30613; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">TCB</div>
+                  <div class="bank-name"><strong>TCB</strong><br><span style="font-size: 11px; color: #999;">Techcombank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('agribank')">
-                  <div class="bank-icon">🌾</div>
-                  <div class="bank-name"><strong>AGB</strong><br>Agribank</div>
+                  <div class="bank-icon" style="background: #00703c; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">AGB</div>
+                  <div class="bank-name"><strong>AGB</strong><br><span style="font-size: 11px; color: #999;">Agribank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('bidv')">
-                  <div class="bank-icon">📊</div>
-                  <div class="bank-name"><strong>BIDV</strong><br>BIDV</div>
+                  <div class="bank-icon" style="background: #004b8d; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">BID</div>
+                  <div class="bank-name"><strong>BIDV</strong><br><span style="font-size: 11px; color: #999;">BIDV</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('shb')">
-                  <div class="bank-icon">🏪</div>
-                  <div class="bank-name"><strong>SHB</strong><br>SHB Bank</div>
+                  <div class="bank-icon" style="background: #e63946; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">SHB</div>
+                  <div class="bank-name"><strong>SHB</strong><br><span style="font-size: 11px; color: #999;">SHB Bank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('vib')">
-                  <div class="bank-icon">💰</div>
-                  <div class="bank-name"><strong>VIB</strong><br>VIB Bank</div>
+                  <div class="bank-icon" style="background: #ffa500; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">VIB</div>
+                  <div class="bank-name"><strong>VIB</strong><br><span style="font-size: 11px; color: #999;">VIB Bank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('hdbank')">
-                  <div class="bank-icon">🏛️</div>
-                  <div class="bank-name"><strong>HDB</strong><br>HDBank</div>
+                  <div class="bank-icon" style="background: #8b0000; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">HDB</div>
+                  <div class="bank-name"><strong>HDB</strong><br><span style="font-size: 11px; color: #999;">HDBank</span></div>
                 </div>
                 <div class="bank-option" onclick="selectBank('lpbank')">
-                  <div class="bank-icon">💎</div>
-                  <div class="bank-name"><strong>LPB</strong><br>LPBank</div>
+                  <div class="bank-icon" style="background: #0052cc; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">LPB</div>
+                  <div class="bank-name"><strong>LPB</strong><br><span style="font-size: 11px; color: #999;">LPBank</span></div>
                 </div>
               </div>
 
               <div class="atm-info-box" id="atmInfoBox" style="display: none;">
                 <div style="margin-bottom: 15px;">
-                  <strong style="color: var(--primary);">Chuyển khoản tới TP Bank:</strong><br><br>
+                  <strong style="color: var(--primary);">💳 Chuyển khoản tới TP Bank:</strong><br><br>
                   - Ngân hàng: <strong>TP Bank</strong><br>
                   - Số tài khoản: <strong>0733 0649 701</strong><br>
                   - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
                   - Nội dung: <strong>[SĐT của bạn]</strong>
                 </div>
-                <div style="text-align: center; padding: 20px; background: #f0fbf8; border-radius: 12px; margin-top: 15px;">
-                  <div style="font-weight: 600; margin-bottom: 12px; color: var(--text);">📱 Quét mã QR để thanh toán:</div>
-                  <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid var(--primary-light); display: inline-block; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);">
-                    <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 220px; height: 220px; border-radius: 8px; display: block;">
-                  </div>
-                </div>
-                <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
-                  ✓ Hệ thống sẽ tự động cập nhật trạng thái đơn hàng khi thanh toán thành công.
+                <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+                  ✓ Sau khi chuyển khoản, hệ thống sẽ tự động cập nhật trong vòng 30 phút.
                 </div>
               </div>
               
@@ -653,12 +651,24 @@
               </label>
               
               <div class="bank-info-box momo-qr-box" id="momoQrBox" style="display: none;">
-                <div style="text-align: center; padding: 20px;">
-                  <div style="font-weight: 700; margin-bottom: 12px; color: var(--text);">📱 Quét mã QR MoMo</div>
-                  <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid #f5a623; display: inline-block; box-shadow: 0 2px 8px rgba(245, 166, 35, 0.15);">
-                    <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg" alt="MoMo QR Code" style="width: 220px; height: 220px; border-radius: 8px; display: block;">
+                <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start;">
+                  <div>
+                    <div style="margin-bottom: 15px;">
+                      <strong style="color: var(--primary);">Thông tin thanh toán MoMo:</strong><br><br>
+                      - Số điện thoại: <strong>0987153876</strong><br>
+                      - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
+                      - Nội dung: <strong>[Mã đơn hàng]</strong>
+                    </div>
+                    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+                      ✓ Đơn hàng sẽ được xử lý sau khi thanh toán thành công.
+                    </div>
                   </div>
-                  <div style="margin-top: 12px; font-size: 12px; color: var(--primary);">Hoặc nhập số điện thoại: <strong>0987153876</strong></div>
+                  <div style="flex-shrink: 0;">
+                    <div style="font-weight: 600; margin-bottom: 12px; color: var(--text); font-size: 13px; text-align: center;">🔐 Quét QR:</div>
+                    <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid #f5a623; box-shadow: 0 2px 8px rgba(245, 166, 35, 0.15);">
+                      <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg" alt="MoMo QR Code" style="width: 180px; height: 180px; border-radius: 6px; display: block;">
+                    </div>
+                  </div>
                 </div>
               </div>
               
@@ -837,22 +847,16 @@ function selectBank(bankCode) {
   const atmInfo = document.getElementById('atmInfoBox');
   atmInfo.innerHTML = `
     <div style="margin-bottom: 15px;">
-      <strong style="color: var(--primary);">Chuyển khoản tới TP Bank:</strong><br><br>
+      <strong style="color: var(--primary);">💳 Chuyển khoản tới TP Bank:</strong><br><br>
       - Ngân hàng: <strong>TP Bank</strong><br>
       - Số tài khoản: <strong>0733 0649 701</strong><br>
       - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
       - Nội dung: <strong>[SĐT của bạn]</strong><br>
       <br>
-      <em style="font-size: 12px; color: var(--text-muted);">💳 Bạn có thể chuyển từ ${bankName} hoặc bất kỳ ngân hàng nào qua hệ thống chuyển khoản liên ngân hàng.</em>
+      <em style="font-size: 12px; color: var(--text-muted);">✓ Bạn có thể chuyển từ ${bankName} hoặc bất kỳ ngân hàng nào qua hệ thống chuyển khoản liên ngân hàng.</em>
     </div>
-    <div style="text-align: center; padding: 20px; background: #f0fbf8; border-radius: 12px; margin-top: 15px;">
-      <div style="font-weight: 600; margin-bottom: 12px; color: var(--text);">📱 Quét mã QR để thanh toán:</div>
-      <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid var(--primary-light); display: inline-block; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);">
-        <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 220px; height: 220px; border-radius: 8px; display: block;">
-      </div>
-    </div>
-    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted); text-align: center;">
-      ✓ Hệ thống sẽ tự động cập nhật trạng thái đơn hàng khi thanh toán thành công.
+    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
+      ✓ Sau khi chuyển khoản, hệ thống sẽ tự động cập nhật trong vòng 30 phút.
     </div>
   `;
 }
