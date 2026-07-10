@@ -36,6 +36,7 @@
       <div class="admin-nav-item" data-view="orders" onclick="switchView('orders')">🧾 Đơn hàng</div>
       <div class="admin-nav-item" data-view="products" onclick="switchView('products')">📦 Sản phẩm</div>
       <div class="admin-nav-item" data-view="visitors" onclick="switchView('visitors')">👀 Khách truy cập</div>
+      <div class="admin-nav-item" data-view="content" onclick="switchView('content')">🛍️ Nội dung</div>
 
       <div class="admin-logout" onclick="logout()">↩ Đăng xuất</div>
     </aside>
@@ -50,6 +51,7 @@
       <div class="admin-view" id="view-orders"></div>
       <div class="admin-view" id="view-products"></div>
       <div class="admin-view" id="view-visitors"></div>
+      <div class="admin-view" id="view-content"></div>
     </main>
   </div>
 </div>
@@ -61,6 +63,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+<script src="js/data.js"></script>
 <script src="js/supabase-client.js"></script>
 <script src="js/admin.js"></script>
 </body>

@@ -14,12 +14,71 @@ let revenueChart = null;
 let visitsChart = null;
 let allProductsCache = [];
 const PRODUCT_IMAGE_BUCKET = 'product-images';
+const CONTENT_STORAGE_KEY = 'chauson_admin_content_v1';
 
-// Trả về URL ảnh hiển thị được, dù ảnh là link Storage (http...) hay đường dẫn cũ (images/...)
 function resolveImageUrl(path) {
   if (!path) return 'https://via.placeholder.com/80?text=No+Image';
   if (/^https?:\/\//i.test(path)) return path;
   return '../' + path;
+}
+
+function formatCurrency(value) {
+  return Number(value || 0).toLocaleString('vi-VN') + 'đ';
+}
+
+function formatDateTime(value) {
+  if (!value) return '-';
+  return new Date(value).toLocaleString('vi-VN');
+}
+
+function getStatusBadgeClass(status) {
+  return `badge-${status || 'pending'}`;
+}
+
+function getStatusLabel(status) {
+  return STATUS_LABELS[status] || 'Không rõ';
+}
+
+function getDefaultContentSettings() {
+  const shopInfo = (typeof SHOP_INFO !== 'undefined' && SHOP_INFO) ? SHOP_INFO : {};
+  const categoryCount = Array.isArray(CATEGORIES) ? CATEGORIES.length : 0;
+  const bannerCount = Array.isArray(BANNERS) ? BANNERS.length : 0;
+
+  return {
+    name: shopInfo.name || 'Châu Sơn Shop',
+    hotline: shopInfo.hotline || '0987.153.876',
+    address: shopInfo.address1 || '',
+    workingHours: shopInfo.workingHours || '8h00–21h30',
+    deliveryTime: shopInfo.deliveryTime || '2–4 ngày',
+    description: shopInfo.tagline || 'Chuyên Hàng Nhập',
+    categoryCount,
+    bannerCount
+  };
+}
+
+function getContentSettings() {
+  try {
+    const saved = localStorage.getItem(CONTENT_STORAGE_KEY);
+    if (!saved) return getDefaultContentSettings();
+    return { ...getDefaultContentSettings(), ...JSON.parse(saved) };
+  } catch (error) {
+    return getDefaultContentSettings();
+  }
+}
+
+function saveContentSettings(settings) {
+  localStorage.setItem(CONTENT_STORAGE_KEY, JSON.stringify(settings));
+}
+
+function downloadCsv(filename, rows) {
+  const csv = rows.map(row => row.map(value => `"${String(value).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
 }
 
 // ========================= AUTH =========================
@@ -72,7 +131,7 @@ function logout() {
 }
 
 // ========================= NAV =========================
-const VIEW_TITLES = { overview: 'Tổng quan', orders: 'Đơn hàng', products: 'Sản phẩm', visitors: 'Khách truy cập' };
+const VIEW_TITLES = { overview: 'Tổng quan', orders: 'Đơn hàng', products: 'Sản phẩm', visitors: 'Khách truy cập', content: 'Nội dung & cài đặt' };
 
 function switchView(view) {
   document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === view));
@@ -83,6 +142,7 @@ function switchView(view) {
   if (view === 'orders') loadOrders();
   if (view === 'products') loadProducts();
   if (view === 'visitors') loadVisitors();
+  if (view === 'content') loadContent();
 }
 
 // ========================= OVERVIEW =========================
@@ -94,37 +154,47 @@ async function loadOverview() {
   since14.setDate(since14.getDate() - 13);
   since14.setHours(0, 0, 0, 0);
 
-  const [ordersRes, itemsRes, eventsRes] = await Promise.all([
+  const [ordersRes, itemsRes, eventsRes, productsRes] = await Promise.all([
     sb.from('orders').select('*').order('created_at', { ascending: false }),
     sb.from('order_items').select('product_name, qty, price'),
-    sb.from('site_events').select('event_type, session_id, created_at').gte('created_at', since14.toISOString())
+    sb.from('site_events').select('event_type, session_id, created_at').gte('created_at', since14.toISOString()),
+    sb.from('products').select('id, name, stock, is_active').order('stock', { ascending: true })
   ]);
+
+  if (ordersRes.error || itemsRes.error || eventsRes.error || productsRes.error) {
+    const error = ordersRes.error || itemsRes.error || eventsRes.error || productsRes.error;
+    container.innerHTML = `<div class="empty-state">Lỗi tải dữ liệu tổng quan: ${error.message}</div>`;
+    return;
+  }
 
   const orders = ordersRes.data || [];
   const items = itemsRes.data || [];
   const events = eventsRes.data || [];
+  const products = productsRes.data || [];
 
-  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
   const ordersToday = orders.filter(o => new Date(o.created_at) >= today);
   const revenueTotal = orders.filter(o => o.status !== 'cancelled').reduce((s, o) => s + Number(o.total), 0);
+  const revenueToday = ordersToday.filter(o => o.status !== 'cancelled').reduce((s, o) => s + Number(o.total), 0);
   const pendingCount = orders.filter(o => o.status === 'pending').length;
+  const lowStockProducts = products.filter(p => (p.stock ?? 0) <= 10).slice(0, 5);
   const uniqueSessions = new Set(events.filter(e => e.event_type === 'page_view').map(e => e.session_id)).size;
 
-  // Top products by qty sold
   const productMap = {};
   items.forEach(it => {
-    productMap[it.product_name] = (productMap[it.product_name] || 0) + it.qty;
+    productMap[it.product_name] = (productMap[it.product_name] || 0) + Number(it.qty || 0);
   });
   const topProducts = Object.entries(productMap).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
-  // Revenue by day (last 14 days)
   const dayLabels = [];
   const dayRevenue = [];
   for (let i = 13; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
     d.setHours(0, 0, 0, 0);
-    const dEnd = new Date(d); dEnd.setDate(dEnd.getDate() + 1);
+    const dEnd = new Date(d);
+    dEnd.setDate(dEnd.getDate() + 1);
     const label = `${d.getDate()}/${d.getMonth() + 1}`;
     const sum = orders
       .filter(o => o.status !== 'cancelled' && new Date(o.created_at) >= d && new Date(o.created_at) < dEnd)
@@ -133,10 +203,27 @@ async function loadOverview() {
     dayRevenue.push(sum);
   }
 
+  const recentOrders = orders.slice(0, 5);
+  window.__ordersCache = orders;
+
   container.innerHTML = `
-    <div class="stat-grid">
+    <div class="hero-card">
+      <div>
+        <h3>Hệ thống quản lý bán hàng</h3>
+        <p>Theo dõi doanh thu, đơn hàng và tồn kho chỉ trong một màn hình.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:8px;">
+        <div class="hero-badge">Cập nhật real-time</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+          <button class="btn btn-outline" style="background:#fff;color:#1b5e20;border:1px solid #fff;" onclick="exportOverviewCsv()">Xuất báo cáo CSV</button>
+          <button class="btn btn-outline" style="background:#fff;color:#1b5e20;border:1px solid #fff;" onclick="switchView('orders')">Xem đơn hàng</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-grid">
       <div class="stat-card"><div class="label">Đơn hàng hôm nay</div><div class="value">${ordersToday.length}</div></div>
-      <div class="stat-card"><div class="label">Tổng doanh thu (trừ đơn hủy)</div><div class="value">${revenueTotal.toLocaleString('vi-VN')}đ</div></div>
+      <div class="stat-card"><div class="label">Doanh thu hôm nay</div><div class="value">${formatCurrency(revenueToday)}</div></div>
       <div class="stat-card"><div class="label">Đơn chờ xác nhận</div><div class="value danger">${pendingCount}</div></div>
       <div class="stat-card"><div class="label">Khách truy cập (14 ngày)</div><div class="value">${uniqueSessions}</div></div>
     </div>
@@ -146,13 +233,44 @@ async function loadOverview() {
       <canvas id="revenueChartCanvas" height="90"></canvas>
     </div>
 
+    <div class="summary-grid">
+      <div class="card" style="margin-bottom:0;">
+        <h3>Đơn hàng gần đây</h3>
+        <div class="mini-list">
+          ${recentOrders.length === 0 ? '<div class="empty-state">Chưa có đơn hàng</div>' : recentOrders.map(order => `
+            <div class="mini-item">
+              <div>
+                <div>${escapeHtml(order.order_code)}</div>
+                <div class="mini-text">${escapeHtml(order.customer_name)} • ${formatDateTime(order.created_at)}</div>
+              </div>
+              <span class="badge ${getStatusBadgeClass(order.status)}">${getStatusLabel(order.status)}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="card" style="margin-bottom:0;">
+        <h3>Sản phẩm sắp hết hàng</h3>
+        <div class="mini-list">
+          ${lowStockProducts.length === 0 ? '<div class="empty-state">Tất cả sản phẩm đều đủ tồn kho</div>' : lowStockProducts.map(product => `
+            <div class="mini-item">
+              <div>
+                <div>${escapeHtml(product.name)}</div>
+                <div class="mini-text">Tồn kho: ${product.stock ?? 0}</div>
+              </div>
+              <span class="badge badge-warning" style="background:#fff3e0;color:#f57c00">${product.stock ?? 0}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
     <div class="card">
       <h3>Sản phẩm bán chạy nhất</h3>
       ${topProducts.length === 0 ? '<div class="empty-state">Chưa có dữ liệu đơn hàng</div>' : `
       <table>
         <thead><tr><th>Sản phẩm</th><th>Số lượng đã bán</th></tr></thead>
         <tbody>
-          ${topProducts.map(([name, qty]) => `<tr><td>${name}</td><td>${qty}</td></tr>`).join('')}
+          ${topProducts.map(([name, qty]) => `<tr><td>${escapeHtml(name)}</td><td>${qty}</td></tr>`).join('')}
         </tbody>
       </table>`}
     </div>
@@ -160,21 +278,23 @@ async function loadOverview() {
 
   const ctx = document.getElementById('revenueChartCanvas');
   if (revenueChart) revenueChart.destroy();
-  revenueChart = new Chart(ctx, {
-    type: 'line',
-    data: {
-      labels: dayLabels,
-      datasets: [{
-        label: 'Doanh thu (đ)',
-        data: dayRevenue,
-        borderColor: '#2e7d32',
-        backgroundColor: 'rgba(46,125,50,0.1)',
-        fill: true,
-        tension: 0.3
-      }]
-    },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-  });
+  if (ctx) {
+    revenueChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: dayLabels,
+        datasets: [{
+          label: 'Doanh thu (đ)',
+          data: dayRevenue,
+          borderColor: '#2e7d32',
+          backgroundColor: 'rgba(46,125,50,0.1)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+  }
 }
 
 // ========================= ORDERS =========================
@@ -188,7 +308,20 @@ async function loadOrders() {
     return;
   }
 
+  const statusCounts = Object.keys(STATUS_LABELS).reduce((acc, key) => ({ ...acc, [key]: 0 }), {});
+  orders.forEach(order => {
+    if (statusCounts[order.status] !== undefined) statusCounts[order.status] += 1;
+  });
+
   container.innerHTML = `
+    <div class="summary-grid">
+      ${Object.entries(statusCounts).map(([key, value]) => `
+        <div class="summary-card">
+          <div class="label">${getStatusLabel(key)}</div>
+          <div class="value">${value}</div>
+        </div>
+      `).join('')}
+    </div>
     <div class="toolbar">
       <select id="orderStatusFilter" onchange="renderOrdersTable()">
         <option value="">Tất cả trạng thái</option>
@@ -212,9 +345,9 @@ function renderOrdersTable() {
   if (statusFilter) filtered = filtered.filter(o => o.status === statusFilter);
   if (search) {
     filtered = filtered.filter(o =>
-      o.customer_name.toLowerCase().includes(search) ||
-      o.customer_phone.includes(search) ||
-      o.order_code.toLowerCase().includes(search)
+      (o.customer_name || '').toLowerCase().includes(search) ||
+      String(o.customer_phone || '').includes(search) ||
+      String(o.order_code || '').toLowerCase().includes(search)
     );
   }
 
@@ -234,11 +367,11 @@ function renderOrdersTable() {
       <tbody>
         ${filtered.map(o => `
           <tr>
-            <td>${o.order_code}</td>
-            <td>${o.customer_name}</td>
-            <td>${o.customer_phone}</td>
-            <td>${Number(o.total).toLocaleString('vi-VN')}đ</td>
-            <td>${new Date(o.created_at).toLocaleString('vi-VN')}</td>
+            <td>${escapeHtml(o.order_code || '')}</td>
+            <td>${escapeHtml(o.customer_name || '')}</td>
+            <td>${escapeHtml(o.customer_phone || '')}</td>
+            <td>${formatCurrency(o.total)}</td>
+            <td>${formatDateTime(o.created_at)}</td>
             <td>
               <select class="status-select" onchange="updateOrderStatus('${o.id}', this.value)">
                 ${Object.entries(STATUS_LABELS).map(([k, v]) => `<option value="${k}" ${o.status === k ? 'selected' : ''}>${v}</option>`).join('')}
@@ -260,6 +393,8 @@ async function updateOrderStatus(orderId, status) {
   }
   const o = (window.__ordersCache || []).find(x => x.id === orderId);
   if (o) o.status = status;
+  if (document.getElementById('view-overview').classList.contains('active')) loadOverview();
+  renderOrdersTable();
 }
 
 async function viewOrderDetail(orderId) {
@@ -269,24 +404,24 @@ async function viewOrderDetail(orderId) {
 
   const itemsHtml = error
     ? `<p>Lỗi tải chi tiết: ${error.message}</p>`
-    : items.map(it => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;">
-        <span>${it.product_name} × ${it.qty}</span><span>${Number(it.price * it.qty).toLocaleString('vi-VN')}đ</span>
+    : (items || []).map(it => `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid #eee;">
+        <span>${escapeHtml(it.product_name || '')} × ${it.qty}</span><span>${formatCurrency(Number(it.price || 0) * Number(it.qty || 0))}</span>
       </div>`).join('');
 
   openModal(`
-    <h3>Đơn hàng ${o.order_code}</h3>
+    <h3>Đơn hàng ${escapeHtml(o.order_code || '')}</h3>
     <p style="font-size:13.5px;line-height:1.8;">
-      <b>Khách:</b> ${o.customer_name} — ${o.customer_phone}<br>
-      <b>Địa chỉ:</b> ${o.customer_address}<br>
-      ${o.customer_email ? `<b>Email:</b> ${o.customer_email}<br>` : ''}
-      ${o.note ? `<b>Ghi chú:</b> ${o.note}<br>` : ''}
-      <b>Thanh toán:</b> ${o.payment_method}
+      <b>Khách:</b> ${escapeHtml(o.customer_name || '')} — ${escapeHtml(o.customer_phone || '')}<br>
+      <b>Địa chỉ:</b> ${escapeHtml(o.customer_address || '')}<br>
+      ${o.customer_email ? `<b>Email:</b> ${escapeHtml(o.customer_email)}<br>` : ''}
+      ${o.note ? `<b>Ghi chú:</b> ${escapeHtml(o.note)}<br>` : ''}
+      <b>Thanh toán:</b> ${escapeHtml(o.payment_method || 'COD')}
     </p>
     <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
     ${itemsHtml}
     <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
     <div style="display:flex;justify-content:space-between;font-weight:700;">
-      <span>Tổng cộng</span><span>${Number(o.total).toLocaleString('vi-VN')}đ</span>
+      <span>Tổng cộng</span><span>${formatCurrency(o.total)}</span>
     </div>
     <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Đóng</button></div>
   `);
@@ -302,12 +437,21 @@ async function loadProducts() {
     container.innerHTML = `<div class="empty-state">Lỗi tải sản phẩm: ${error.message}</div>`;
     return;
   }
-  allProductsCache = products;
+  allProductsCache = products || [];
 
   container.innerHTML = `
+    <div class="summary-grid">
+      <div class="summary-card"><div class="label">Tổng sản phẩm</div><div class="value">${products.length}</div></div>
+      <div class="summary-card"><div class="label">Đang hiển thị</div><div class="value">${products.filter(p => p.is_active).length}</div></div>
+      <div class="summary-card"><div class="label">Đang ẩn</div><div class="value">${products.filter(p => !p.is_active).length}</div></div>
+      <div class="summary-card"><div class="label">Hết hàng</div><div class="value">${products.filter(p => (p.stock ?? 0) <= 0).length}</div></div>
+    </div>
     <div class="toolbar">
       <input type="text" id="productSearch" placeholder="Tìm sản phẩm..." oninput="renderProductsTable()" style="min-width:220px">
-      <button class="btn btn-primary" onclick="openProductForm()">+ Thêm sản phẩm</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn btn-outline" onclick="exportProductsCsv()">Xuất CSV</button>
+        <button class="btn btn-primary" onclick="openProductForm()">+ Thêm sản phẩm</button>
+      </div>
     </div>
     <div class="card"><div id="productsTableWrap"></div></div>
   `;
@@ -316,7 +460,7 @@ async function loadProducts() {
 
 function renderProductsTable() {
   const search = (document.getElementById('productSearch')?.value || '').toLowerCase();
-  const filtered = allProductsCache.filter(p => p.name.toLowerCase().includes(search));
+  const filtered = allProductsCache.filter(p => (p.name || '').toLowerCase().includes(search));
   const wrap = document.getElementById('productsTableWrap');
   if (!wrap) return;
 
@@ -332,12 +476,13 @@ function renderProductsTable() {
         ${filtered.map(p => `
           <tr>
             <td><img src="${resolveImageUrl(p.image)}" onerror="this.src='https://via.placeholder.com/40'" style="width:40px;height:40px;object-fit:cover;border-radius:6px;"></td>
-            <td style="max-width:280px;">${p.name}</td>
-            <td>${p.category_id}</td>
-            <td>${Number(p.price).toLocaleString('vi-VN')}đ</td>
+            <td style="max-width:280px;">${escapeHtml(p.name || '')}</td>
+            <td>${escapeHtml(p.category_id || '')}</td>
+            <td>${formatCurrency(p.price)}</td>
             <td>${p.stock ?? '-'}</td>
             <td>${p.is_active ? '✅' : '⛔'}</td>
             <td style="white-space:nowrap;">
+              <button class="btn btn-outline btn-sm" onclick="toggleProductStatus('${p.id}', ${!p.is_active})">${p.is_active ? 'Ẩn' : 'Hiện'}</button>
               <button class="btn btn-outline btn-sm" onclick="openProductForm('${p.id}')">Sửa</button>
               <button class="btn btn-danger btn-sm" onclick="deleteProduct('${p.id}')">Xóa</button>
             </td>
@@ -355,7 +500,7 @@ function openProductForm(productId) {
     <h3>${p ? 'Sửa sản phẩm' : 'Thêm sản phẩm mới'}</h3>
     <form id="productForm">
       <label>Tên sản phẩm</label>
-      <input type="text" id="pf_name" required value="${p ? escapeHtml(p.name) : ''}">
+      <input type="text" id="pf_name" required value="${p ? escapeHtml(p.name || '') : ''}">
       <div class="field-row">
         <div><label>Giá bán</label><input type="number" id="pf_price" required value="${p ? p.price : ''}"></div>
         <div><label>Giá gốc</label><input type="number" id="pf_original" value="${p && p.original_price ? p.original_price : ''}"></div>
@@ -391,7 +536,6 @@ function openProductForm(productId) {
     const file = fileInput.files[0];
     if (!file) return;
 
-    // Preview ngay lập tức trong lúc chờ tải lên
     document.getElementById('pf_image_preview').src = URL.createObjectURL(file);
     statusEl.textContent = '⏳ Đang tải ảnh lên...';
     submitBtn.disabled = true;
@@ -446,6 +590,15 @@ function openProductForm(productId) {
   });
 }
 
+async function toggleProductStatus(productId, isActive) {
+  const { error } = await sb.from('products').update({ is_active: isActive }).eq('id', productId);
+  if (error) {
+    alert('Lỗi cập nhật trạng thái sản phẩm: ' + error.message);
+    return;
+  }
+  renderProductsTable();
+}
+
 async function deleteProduct(productId) {
   if (!confirm('Xóa sản phẩm này? Hành động không thể hoàn tác.')) return;
   const { error } = await sb.from('products').delete().eq('id', productId);
@@ -482,23 +635,24 @@ async function loadVisitors() {
   const orderPlaced = events.filter(e => e.event_type === 'order_placed');
   const uniqueSessions = new Set(events.map(e => e.session_id));
 
-  // Views by day
   const dayLabels = [];
   const dayViews = [];
   for (let i = 13; i >= 0; i--) {
-    const d = new Date(); d.setDate(d.getDate() - i); d.setHours(0, 0, 0, 0);
-    const dEnd = new Date(d); dEnd.setDate(dEnd.getDate() + 1);
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    d.setHours(0, 0, 0, 0);
+    const dEnd = new Date(d);
+    dEnd.setDate(dEnd.getDate() + 1);
     dayLabels.push(`${d.getDate()}/${d.getMonth() + 1}`);
     dayViews.push(pageViews.filter(e => new Date(e.created_at) >= d && new Date(e.created_at) < dEnd).length);
   }
 
-  // Top pages
   const pageMap = {};
   pageViews.forEach(e => { pageMap[e.page || 'khác'] = (pageMap[e.page || 'khác'] || 0) + 1; });
   const topPages = Object.entries(pageMap).sort((a, b) => b[1] - a[1]).slice(0, 8);
 
   container.innerHTML = `
-    <div class="stat-grid">
+    <div class="summary-grid">
       <div class="stat-card"><div class="label">Lượt xem trang (14 ngày)</div><div class="value">${pageViews.length}</div></div>
       <div class="stat-card"><div class="label">Phiên truy cập (14 ngày)</div><div class="value">${uniqueSessions.size}</div></div>
       <div class="stat-card"><div class="label">Lượt thêm giỏ hàng</div><div class="value">${addToCarts.length}</div></div>
@@ -515,7 +669,7 @@ async function loadVisitors() {
       ${topPages.length === 0 ? '<div class="empty-state">Chưa có dữ liệu</div>' : `
       <table>
         <thead><tr><th>Trang</th><th>Lượt xem</th></tr></thead>
-        <tbody>${topPages.map(([page, c]) => `<tr><td>${page}</td><td>${c}</td></tr>`).join('')}</tbody>
+        <tbody>${topPages.map(([page, c]) => `<tr><td>${escapeHtml(page)}</td><td>${c}</td></tr>`).join('')}</tbody>
       </table>`}
     </div>
 
@@ -525,7 +679,7 @@ async function loadVisitors() {
       <table>
         <thead><tr><th>Thời gian</th><th>Loại</th><th>Trang</th></tr></thead>
         <tbody>
-          ${events.slice(0, 50).map(e => `<tr><td>${new Date(e.created_at).toLocaleString('vi-VN')}</td><td>${e.event_type}</td><td>${e.page || '-'}</td></tr>`).join('')}
+          ${events.slice(0, 50).map(e => `<tr><td>${formatDateTime(e.created_at)}</td><td>${escapeHtml(e.event_type || '')}</td><td>${escapeHtml(e.page || '-')}</td></tr>`).join('')}
         </tbody>
       </table>`}
     </div>
@@ -533,11 +687,13 @@ async function loadVisitors() {
 
   const ctx = document.getElementById('visitsChartCanvas');
   if (visitsChart) visitsChart.destroy();
-  visitsChart = new Chart(ctx, {
-    type: 'bar',
-    data: { labels: dayLabels, datasets: [{ label: 'Lượt xem', data: dayViews, backgroundColor: '#43a047' }] },
-    options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
-  });
+  if (ctx) {
+    visitsChart = new Chart(ctx, {
+      type: 'bar',
+      data: { labels: dayLabels, datasets: [{ label: 'Lượt xem', data: dayViews, backgroundColor: '#43a047' }] },
+      options: { plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+  }
 }
 
 // ========================= MODAL HELPERS =========================
@@ -549,8 +705,118 @@ function closeModal() {
   document.getElementById('modalOverlay').classList.remove('show');
 }
 
+function exportOverviewCsv() {
+  const orders = window.__ordersCache || [];
+  const rows = [
+    ['Mã đơn', 'Khách hàng', 'SĐT', 'Tổng tiền', 'Trạng thái', 'Ngày đặt'],
+    ...orders.map(order => [
+      order.order_code || '',
+      order.customer_name || '',
+      order.customer_phone || '',
+      Number(order.total || 0),
+      getStatusLabel(order.status),
+      formatDateTime(order.created_at)
+    ])
+  ];
+  downloadCsv('bao-cao-don-hang.csv', rows);
+}
+
+function exportProductsCsv() {
+  const rows = [
+    ['Tên sản phẩm', 'Danh mục', 'Giá', 'Tồn kho', 'Trạng thái'],
+    ...allProductsCache.map(product => [
+      product.name || '',
+      product.category_id || '',
+      Number(product.price || 0),
+      Number(product.stock || 0),
+      product.is_active ? 'Hiển thị' : 'Ẩn'
+    ])
+  ];
+  downloadCsv('bao-cao-san-pham.csv', rows);
+}
+
+async function loadContent() {
+  const container = document.getElementById('view-content');
+  const settings = getContentSettings();
+
+  container.innerHTML = `
+    <div class="content-grid">
+      <div class="card">
+        <h3>Thông tin cửa hàng</h3>
+        <form id="contentForm">
+          <div class="setting-group">
+            <label>Tên cửa hàng</label>
+            <input type="text" id="content_name" value="${escapeHtml(settings.name)}">
+          </div>
+          <div class="setting-group">
+            <label>Mô tả ngắn</label>
+            <input type="text" id="content_description" value="${escapeHtml(settings.description)}">
+          </div>
+          <div class="setting-group">
+            <label>Hotline</label>
+            <input type="text" id="content_hotline" value="${escapeHtml(settings.hotline)}">
+          </div>
+          <div class="setting-group">
+            <label>Địa chỉ</label>
+            <textarea id="content_address">${escapeHtml(settings.address)}</textarea>
+          </div>
+          <div class="setting-group">
+            <label>Giờ làm việc</label>
+            <input type="text" id="content_hours" value="${escapeHtml(settings.workingHours)}">
+          </div>
+          <div class="setting-group">
+            <label>Thời gian giao hàng</label>
+            <input type="text" id="content_delivery" value="${escapeHtml(settings.deliveryTime)}">
+          </div>
+          <div class="settings-actions">
+            <button type="submit" class="btn btn-primary">Lưu cài đặt</button>
+            <button type="button" class="btn btn-outline" onclick="loadContent()">Tải lại</button>
+          </div>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Tổng quan nội dung</h3>
+        <div class="summary-pill">Danh mục: ${settings.categoryCount}</div>
+        <div class="summary-pill">Banner: ${settings.bannerCount}</div>
+        <div class="summary-pill">Trạng thái: Đang hoạt động</div>
+        <div class="mini-list" style="margin-top:16px;">
+          <div class="mini-item"><div><strong>Khuyến nghị</strong><div class="mini-text">Cập nhật banner và tin tức thường xuyên để tăng doanh thu.</div></div></div>
+          <div class="mini-item"><div><strong>Gợi ý</strong><div class="mini-text">Theo dõi các sản phẩm sắp hết hàng và ưu tiên bán chạy.</div></div></div>
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('contentForm').addEventListener('submit', (event) => {
+    event.preventDefault();
+    const values = {
+      name: document.getElementById('content_name').value.trim(),
+      description: document.getElementById('content_description').value.trim(),
+      hotline: document.getElementById('content_hotline').value.trim(),
+      address: document.getElementById('content_address').value.trim(),
+      workingHours: document.getElementById('content_hours').value.trim(),
+      deliveryTime: document.getElementById('content_delivery').value.trim()
+    };
+    const currentSettings = getContentSettings();
+    const nextSettings = { ...currentSettings, ...values };
+    saveContentSettings(nextSettings);
+    alert('Đã lưu cài đặt cửa hàng.');
+    loadContent();
+  });
+}
+
 function escapeHtml(str) {
   return String(str).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
+if (!window.__adminInit) {
+  const overlay = document.getElementById('modalOverlay');
+  if (overlay) {
+    overlay.addEventListener('click', (event) => {
+      if (event.target === overlay) closeModal();
+    });
+  }
+  window.__adminInit = true;
 }
 
 initAuth();
