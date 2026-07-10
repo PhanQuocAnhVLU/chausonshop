@@ -493,29 +493,6 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>`).join('');
   }
 
-  // ── FLASH SALE (5 products) ──
-  const flashEl = document.getElementById('flashSaleProducts');
-  if (flashEl && typeof PRODUCTS !== 'undefined') {
-    const flashProds = PRODUCTS.filter(p => p.isSale).slice(0, 5);
-    flashEl.innerHTML = flashProds.map(p => {
-      const disc = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
-      const sold = Math.min(p.sold, 600);
-      const pct = Math.round((sold / 600) * 100);
-      return `
-        <div class="flash-product-card" onclick="addToCart('${p.id}')">
-          <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
-          <div class="fp-name">${p.name}</div>
-          <div class="fp-price">${p.price.toLocaleString('vi-VN')}đ</div>
-          ${p.originalPrice ? `<div class="fp-original">${p.originalPrice.toLocaleString('vi-VN')}đ</div>` : ''}
-          <div class="fp-discount">-${disc}%</div>
-          <div class="fp-progress-wrap">
-            <div class="fp-progress-label">Đã bán ${sold}</div>
-            <div class="fp-progress-bar"><div class="fp-progress" style="width:${pct}%"></div></div>
-          </div>
-        </div>`;
-    }).join('');
-  }
-
   // ── COUNTDOWN TIMER ──
   function setCountdown() {
     const end = new Date();
@@ -578,7 +555,33 @@ document.addEventListener('DOMContentLoaded', () => {
     if (el) el.innerHTML = products.map(buildProductCard).join('');
   }
 
-  if (typeof PRODUCTS !== 'undefined') {
+  // ── RENDER MỌI THỨ PHỤ THUỘC PRODUCTS SAU KHI SUPABASE TẢI XONG ──
+  // (PRODUCTS được nạp bất đồng bộ trong products-loader.js — nếu render
+  // ngay trong DOMContentLoaded thì PRODUCTS vẫn đang là mảng rỗng)
+  function renderAllProductSections() {
+    // Flash Sale
+    const flashEl = document.getElementById('flashSaleProducts');
+    if (flashEl) {
+      const flashProds = PRODUCTS.filter(p => p.isSale).slice(0, 5);
+      flashEl.innerHTML = flashProds.map(p => {
+        const disc = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
+        const sold = Math.min(p.sold, 600);
+        const pct = Math.round((sold / 600) * 100);
+        return `
+          <div class="flash-product-card" onclick="addToCart('${p.id}')">
+            <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+            <div class="fp-name">${p.name}</div>
+            <div class="fp-price">${p.price.toLocaleString('vi-VN')}đ</div>
+            ${p.originalPrice ? `<div class="fp-original">${p.originalPrice.toLocaleString('vi-VN')}đ</div>` : ''}
+            <div class="fp-discount">-${disc}%</div>
+            <div class="fp-progress-wrap">
+              <div class="fp-progress-label">Đã bán ${sold}</div>
+              <div class="fp-progress-bar"><div class="fp-progress" style="width:${pct}%"></div></div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
     // Best sellers
     renderGrid('bestsellerGrid', PRODUCTS.filter(p => p.isBestSeller).slice(0, 8));
     // Categories
@@ -587,6 +590,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderGrid('myphamGrid', PRODUCTS.filter(p => p.categoryId === 'my-pham').slice(0, 5));
     renderGrid('xuongkhopGrid', PRODUCTS.filter(p => p.categoryId === 'ho-tro-xuong-khop').slice(0, 5));
     renderGrid('mebeGrid', PRODUCTS.filter(p => p.categoryId === 'me-va-be').slice(0, 5));
+  }
+
+  if (typeof onProductsReady === 'function') {
+    onProductsReady(renderAllProductSections);
+  } else if (typeof PRODUCTS !== 'undefined') {
+    renderAllProductSections();
   }
 
   // ── TPCN TABS ──
