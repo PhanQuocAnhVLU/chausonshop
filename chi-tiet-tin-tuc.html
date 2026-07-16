@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Chi tiết tin tức - Châu Sơn Shop.">
+  <title>Chi Tiết Tin Tức | Châu Sơn Shop</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/responsive.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .article-layout {
+      max-width: 1280px;
+      margin: 16px auto;
+      padding: 0 16px;
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 30px;
+    }
+
+    .breadcrumb {
+      max-width: 1280px;
+      margin: 12px auto 0;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      color: var(--text-light);
+    }
+    .breadcrumb a { color: var(--primary); }
+    .breadcrumb i { font-size: 0.6rem; color: var(--text-muted); }
+
+    .article-container {
+      background: white;
+      border-radius: 12px;
+      padding: 30px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .article-meta {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .article-cat {
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .article-date, .article-read-time {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .article-title {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--text-dark);
+      line-height: 1.3;
+      margin-bottom: 25px;
+    }
+
+    .article-content {
+      font-size: 1.05rem;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .article-content h2, .article-content h3 {
+      color: var(--text-dark);
+      margin: 25px 0 15px;
+      font-weight: 700;
+    }
+
+    .article-content p {
+      margin-bottom: 15px;
+    }
+
+    .article-content ul {
+      margin-bottom: 15px;
+      padding-left: 20px;
+    }
+
+    .article-content li {
+      margin-bottom: 8px;
+    }
+
+    .article-content img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+
+    .share-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 30px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+    }
+
+    .share-btn {
+      padding: 8px 16px;
+      border-radius: 6px;
+      color: white;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .share-btn.fb { background: #1877f2; }
+    .share-btn.zl { background: #0068ff; }
+    .share-btn.tw { background: #1da1f2; }
+
+    @media (max-width: 900px) {
+      .article-layout { grid-template-columns: 1fr; }
+      .article-title { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-phone-alt"></i> Hotline: 0987.153.876</span>
+      <span><i class="fas fa-clock"></i> 8h00 – 21h30</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="index.html">Trang chủ</a>
+    </div>
+  </div>
+</div>
+
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon"><i class="fas fa-leaf"></i></div>
+          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
+        </a>
+      </div>
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text"><strong>0987.153.876</strong><small>Hotline</small></div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i><span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="cat-all">
+        <i class="fas fa-bars"></i><span>DANH MỤC</span><i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="san-pham.html">Sản phẩm</a>
+        <a href="tin-tuc.html" class="active">Tin tức</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="breadcrumb" id="breadcrumb" style="max-width: 1280px; margin: 12px auto 0; padding: 0 16px;">
+  <a href="index.html">Trang chủ</a><span>›</span>
+  <a href="tin-tuc.html">Tin tức</a><span>›</span>
+  <span id="bc-title">Đang tải...</span>
+</div>
+
+<div class="article-layout">
+  <!-- Main Content -->
+  <div class="article-container" id="articleContent">
+    <div style="text-align:center; padding: 50px;">
+      <i class="fas fa-spinner fa-spin" style="font-size:30px;color:var(--primary);"></i>
+      <p>Đang tải bài viết...</p>
+    </div>
+  </div>
+
+  <!-- Sidebar -->
+  <aside>
+    <!-- Recent news -->
+    <div class="news-sidebar-widget">
+      <div class="widget-header"><i class="fas fa-fire"></i> Tin Mới Nhất</div>
+      <div class="widget-body" id="sidebarNewsList"></div>
+    </div>
+
+    <!-- Categories -->
+    <div class="news-sidebar-widget">
+      <div class="widget-header"><i class="fas fa-tags"></i> Chuyên Mục</div>
+      <div class="widget-cat-list">
+        <div class="widget-cat-item"><span><i class="fas fa-heartbeat" style="color:#e53935;margin-right:6px;"></i>Sức khỏe</span><span class="widget-cat-count">24</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-spa" style="color:#9c27b0;margin-right:6px;"></i>Làm đẹp</span><span class="widget-cat-count">18</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-carrot" style="color:#ff6f00;margin-right:6px;"></i>Dinh dưỡng</span><span class="widget-cat-count">15</span></div>
+        <div class="widget-cat-item"><span><i class="fas fa-lightbulb" style="color:#ffc107;margin-right:6px;"></i>Mẹo vặt</span><span class="widget-cat-count">12</span></div>
+      </div>
+    </div>
+
+    <!-- Hot products -->
+    <div class="news-sidebar-widget">
+      <div class="widget-header"><i class="fas fa-fire-alt"></i> Sản Phẩm Nổi Bật</div>
+      <div class="widget-body" id="sidebarHotProducts"></div>
+    </div>
+  </aside>
+</div>
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="footer-logo-text">🌿 CHÂU SƠN SHOP</div>
+        <div class="footer-logo-sub">Chuyên hàng ngoại nhập</div>
+        <p>Chuyên cung cấp thực phẩm chức năng và mỹ phẩm nhập khẩu chính hãng từ Nhật, Úc, Mỹ, Hàn Quốc.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="chinh-sach.html?tab=return"><i class="fas fa-angle-right"></i> Chính sách đổi trả</a></li>
+          <li><a href="chinh-sach.html?tab=guide"><i class="fas fa-angle-right"></i> Hướng dẫn mua hàng</a></li>
+          <li><a href="lien-he.html"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <div class="footer-contact-item"><i class="fas fa-phone-alt"></i><span>0987.153.876</span></div>
+        <div class="footer-contact-item"><i class="fas fa-envelope"></i><span>nhutu5556@gmail.com</span></div>
+        <div class="social-links" style="margin-top:12px">
+          <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="social-link fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="https://zalo.me/0987153876" target="_blank" class="social-link zl"><i class="fas fa-comment-dots"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p>
+    </div>
+  </div>
+</footer>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row"><span>Tổng tiền:</span><span class="cart-total-price" id="cartTotalPrice">0đ</span></div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'"><i class="fas fa-credit-card"></i> THANH TOÁN</button>
+  </div>
+</aside>
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<div class="float-btns">
+  <a href="tel:0987153876" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+  <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="float-btn facebook" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <a href="https://zalo.me/0987153876" target="_blank" class="float-btn zalo"><i class="fas fa-comment-dots"></i></a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const megaDrop = document.getElementById('megaDropdown');
+  if (megaDrop) {
+    megaDrop.innerHTML = CATEGORIES.map(c => `
+      <li><a href="san-pham.html?cat=${c.id}">
+        <i class="fas ${c.icon}" style="color:${c.color}"></i>${c.name}
+        <i class="fas fa-chevron-right angle"></i>
+      </a></li>`).join('');
+  }
+
+  loadArticle();
+  onProductsReady(() => renderSidebar());
+});
+
+window.doSearch = function(e) {
+  e.preventDefault();
+  const q = document.getElementById('searchInput').value.trim();
+  if (q) window.location.href = `san-pham.html?q=${encodeURIComponent(q)}`;
+};
+
+function loadArticle() {
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get('slug');
+  const article = NEWS.find(n => n.slug === slug);
+  const container = document.getElementById('articleContent');
+
+  if (!article) {
+    container.innerHTML = `
+      <div style="text-align:center; padding: 50px;">
+        <i class="fas fa-exclamation-triangle" style="font-size:40px;color:var(--sale-red);margin-bottom:15px;"></i>
+        <h2>Bài viết không tồn tại</h2>
+        <p style="margin-top:10px; color:#666;">Rất tiếc, bài viết bạn tìm kiếm không có sẵn hoặc đã bị xóa.</p>
+        <button onclick="window.location.href='tin-tuc.html'" style="margin-top:20px; padding:10px 20px; background:var(--primary); color:white; border:none; border-radius:6px; cursor:pointer;">
+          Về trang tin tức
+        </button>
+      </div>
+    `;
+    document.getElementById('bc-title').textContent = 'Lỗi';
+    return;
+  }
+
+  document.title = article.title + " | Châu Sơn Shop";
+  document.getElementById('bc-title').textContent = article.title.substring(0, 40) + '...';
+
+  container.innerHTML = `
+    <div class="article-meta">
+      <span class="article-cat" style="background:${article.catColor};color:${article.catTextColor};">${article.catLabel}</span>
+      <span class="article-date"><i class="far fa-calendar-alt"></i> ${article.date}</span>
+      <span class="article-read-time"><i class="far fa-clock"></i> ${article.readTime}</span>
+    </div>
+    <h1 class="article-title">${article.title}</h1>
+    <div class="article-content">
+      ${article.content}
+    </div>
+    <div class="share-buttons">
+      <button class="share-btn fb" onclick="window.open('https://www.facebook.com/sharer/sharer.php?u=' + encodeURIComponent(window.location.href))">
+        <i class="fab fa-facebook-f"></i> Chia sẻ
+      </button>
+      <button class="share-btn tw" onclick="window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent(document.title) + '&url=' + encodeURIComponent(window.location.href))">
+        <i class="fab fa-twitter"></i> Tweet
+      </button>
+    </div>
+  `;
+}
+
+function renderSidebar() {
+  // Sidebar news
+  const sidebarList = document.getElementById('sidebarNewsList');
+  // show 4 latest news, excluding current one if possible
+  const params = new URLSearchParams(window.location.search);
+  const currentSlug = params.get('slug');
+  const recentNews = NEWS.filter(n => n.slug !== currentSlug).slice(0, 4);
+
+  sidebarList.innerHTML = recentNews.map(n => `
+    <div class="widget-news-item" onclick="window.location.href='chi-tiet-tin-tuc.html?slug=${n.slug}'">
+      <img src="${n.image}" alt="${n.title}" class="widget-news-thumb" onerror="this.src='https://via.placeholder.com/58x48/e8f5e9/2e7d32?text=T'">
+      <div>
+        <div class="widget-news-title">${n.title}</div>
+        <div class="widget-news-date"><i class="far fa-clock"></i> ${n.date}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Hot products
+  const hotProds = document.getElementById('sidebarHotProducts');
+  const sellers = getBestSellers(4);
+  hotProds.innerHTML = sellers.map(p => `
+    <div class="widget-news-item" onclick="goToProduct('${p.id}')">
+      <img src="${p.image}" alt="${p.name}" class="widget-news-thumb" onerror="this.src='https://via.placeholder.com/58x48/f5f5f5/bdbdbd?text=SP'">
+      <div>
+        <div class="widget-news-title">${p.name}</div>
+        <div style="font-size:0.75rem;font-weight:700;color:var(--sale-red);margin-top:2px;">${formatPrice(p.price)}</div>
+      </div>
+    </div>
+  `).join('');
+}
+</script>
+</body>
+</html>

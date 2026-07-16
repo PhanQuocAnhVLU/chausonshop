@@ -512,7 +512,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="news-item">
         <img class="news-item-img" src="${n.image}" alt="${n.title}" onerror="this.src='images/product-1.png'">
         <div class="news-item-content">
-          <a href="tin-tuc.html" class="news-item-title">${n.title}</a>
+          <a href="chi-tiet-tin-tuc.html?slug=${n.slug}" class="news-item-title">${n.title}</a>
           <div class="news-item-time"><i class="fas fa-clock"></i> ${n.time}</div>
         </div>
       </div>`).join('');

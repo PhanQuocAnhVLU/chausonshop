@@ -38,38 +38,123 @@ const CATEGORIES = [
 const NEWS = [
   {
     id: 1,
+    cat: 'lam-dep', catLabel: 'Làm Đẹp', catColor: '#fce4ec', catTextColor: '#c62828',
     title: "Bí quyết chọn mua Collagen Nhật Bản chính hãng, an toàn và hiệu quả",
     image: "images/exact-2.jpg",
     time: "2 ngày trước, lúc 15:59",
-    slug: "bi-quyet-chon-mua-collagen-nhat-ban"
+    date: '2 ngày trước, 15:59', readTime: '5 phút',
+    slug: "bi-quyet-chon-mua-collagen-nhat-ban",
+    excerpt: "Thị trường collagen hiện nay rất đa dạng khiến người tiêu dùng khó lựa chọn. Bài viết hướng dẫn chi tiết cách phân biệt Collagen Shiseido thật giả và cách uống hiệu quả nhất.",
+    content: `
+      <p>Collagen là một trong những thực phẩm chức năng được phái đẹp tin dùng nhất hiện nay. Tuy nhiên, trên thị trường có rất nhiều loại sản phẩm khác nhau. Để chọn mua đúng loại Collagen Nhật Bản chất lượng, bạn cần lưu ý những điểm sau:</p>
+      <h3>1. Nguồn gốc xuất xứ rõ ràng</h3>
+      <p>Luôn yêu cầu người bán cung cấp hóa đơn chứng từ, mã vạch hoặc tem phụ tiếng Việt (nếu là hàng nhập khẩu chính ngạch). Đối với hàng xách tay, hãy chọn những cửa hàng uy tín có lịch sử bán hàng lâu năm.</p>
+      <img src="images/exact-2.jpg" alt="Collagen Shiseido Nhật Bản" style="width:100%; border-radius:12px; margin: 20px 0;">
+      <h3>2. Hàm lượng và thành phần</h3>
+      <p>Mỗi loại cơ địa sẽ phù hợp với một hàm lượng nhất định. Đối với phụ nữ dưới 30 tuổi, hàm lượng 1000mg - 3000mg/ngày là phù hợp. Trên 30 tuổi có thể cần từ 5000mg/ngày trở lên.</p>
+      <h3>3. Cách sử dụng hiệu quả</h3>
+      <p>Nên uống vào buổi sáng trước khi ăn 30 phút hoặc buổi tối trước khi đi ngủ. Lúc này cơ thể hấp thu collagen tốt nhất.</p>
+      <p><strong>Kết luận:</strong> Chọn mua collagen không khó nếu bạn biết cách kiểm tra. Hãy luôn đặt sức khỏe lên hàng đầu và đừng ham rẻ mà mua phải hàng kém chất lượng nhé!</p>
+    `
   },
   {
     id: 2,
+    cat: 'suc-khoe', catLabel: 'Sức Khỏe', catColor: '#e8f5e9', catTextColor: '#2e7d32',
     title: "Omega-3: Công dụng thần kỳ cho tim mạch và cách dùng chuẩn chuyên gia",
     image: "images/exact-3.jpg",
     time: "4 ngày trước, lúc 20:02",
-    slug: "omega-3-cong-dung-than-ky"
+    date: '4 ngày trước, 20:02', readTime: '4 phút',
+    slug: "omega-3-cong-dung-than-ky",
+    excerpt: "Omega-3 là axit béo thiết yếu cơ thể không tự tổng hợp được. Cùng tìm hiểu cách chọn viên uống Dầu cá Nature Made Fish Oil tốt nhất cho tim mạch.",
+    content: `
+      <p>Omega-3 mang lại vô vàn lợi ích tuyệt vời cho sức khỏe, đặc biệt là hệ tim mạch và trí não. Vậy uống như thế nào để phát huy tối đa công dụng?</p>
+      <h3>Tác dụng của Omega-3</h3>
+      <ul>
+        <li>Giảm mỡ máu (Triglyceride) và nguy cơ mắc bệnh tim mạch.</li>
+        <li>Phát triển trí não, cải thiện thị lực.</li>
+        <li>Hỗ trợ giảm viêm, rất tốt cho người bị đau khớp.</li>
+      </ul>
+      <img src="images/exact-3.jpg" alt="Omega 3" style="width:100%; border-radius:12px; margin: 20px 0;">
+      <h3>Uống Omega-3 lúc nào tốt nhất?</h3>
+      <p>Omega-3 tan trong dầu (chất béo). Do đó, thời điểm lý tưởng nhất để uống là <strong>ngay sau bữa ăn</strong> chứa nhiều chất béo để cơ thể hấp thu tối đa.</p>
+      <p>Chúc bạn luôn có một trái tim khỏe mạnh cùng bí quyết này!</p>
+    `
   },
   {
     id: 3,
+    cat: 'dinh-duong', catLabel: 'Dinh Dưỡng', catColor: '#fff3e0', catTextColor: '#e65100',
     title: "Cao hồng sâm Hàn Quốc: Món quà sức khỏe vô giá cho người lớn tuổi",
     image: "images/bing2-prod-26.jpg",
     time: "1 tuần trước, lúc 14:58",
-    slug: "cao-hong-sam-han-quoc-qua-suc-khoe"
+    date: '1 tuần trước, 14:58', readTime: '6 phút',
+    slug: "cao-hong-sam-han-quoc-qua-suc-khoe",
+    excerpt: "Cao hồng sâm 365 chứa hàm lượng Saponin cao, giúp bồi bổ cơ thể, tăng cường sức đề kháng và cải thiện trí nhớ. Phù hợp làm quà tặng ý nghĩa cho ông bà, cha mẹ.",
+    content: `
+      <p>Khi tuổi tác ngày càng cao, hệ miễn dịch suy giảm dẫn đến nhiều vấn đề sức khỏe. Cao hồng sâm Hàn Quốc từ lâu đã được xem là "thần dược" bồi bổ sức khỏe cho người lớn tuổi.</p>
+      <h3>Tại sao nên chọn cao hồng sâm?</h3>
+      <p>Hồng sâm qua quá trình hấp sấy có chứa hàm lượng Saponin cao gấp nhiều lần nhân sâm tươi. Dạng cao đặc giúp cơ thể dễ dàng hấp thu và tiện lợi khi sử dụng.</p>
+      <img src="images/bing2-prod-26.jpg" alt="Cao Hồng Sâm" style="width:100%; border-radius:12px; margin: 20px 0;">
+      <h3>Công dụng chính</h3>
+      <ul>
+        <li>Tăng cường trí nhớ, giảm mệt mỏi.</li>
+        <li>Ổn định huyết áp, tốt cho hệ tuần hoàn.</li>
+        <li>Cải thiện chất lượng giấc ngủ.</li>
+      </ul>
+    `
   },
   {
     id: 4,
+    cat: 'suc-khoe', catLabel: 'Sức Khỏe', catColor: '#e8f5e9', catTextColor: '#2e7d32',
     title: "Phục hồi sụn khớp hiệu quả với viên uống Schiff Move Free Advanced",
     image: "images/bing2-prod-18.jpg",
     time: "2 tuần trước, lúc 09:19",
-    slug: "phuc-hoi-sun-khop-schiff-move-free"
+    date: '2 tuần trước, 09:19', readTime: '4 phút',
+    slug: "phuc-hoi-sun-khop-schiff-move-free",
+    excerpt: "Đau nhức xương khớp ở người già có thể được cải thiện đáng kể với Glucosamine và Chondroitin. Tìm hiểu cơ chế tác động của Schiff Move Free.",
+    content: `
+      <p>Đau nhức xương khớp không chỉ ảnh hưởng đến khả năng vận động mà còn làm giảm chất lượng cuộc sống đáng kể. Sản phẩm Schiff Move Free Advanced ra đời như một giải pháp tuyệt vời.</p>
+      <h3>Thành phần vượt trội</h3>
+      <p>Với sự kết hợp của Glucosamine, Chondroitin và Hyaluronic Acid, sản phẩm không chỉ giảm đau mà còn hỗ trợ tái tạo lớp sụn khớp bị bào mòn.</p>
+      <img src="images/bing2-prod-18.jpg" alt="Schiff Move Free" style="width:100%; border-radius:12px; margin: 20px 0;">
+    `
   },
   {
     id: 5,
+    cat: 'lam-dep', catLabel: 'Làm Đẹp', catColor: '#fce4ec', catTextColor: '#c62828',
     title: "Review chi tiết kem dưỡng vùng cổ Medi-Peel: Có thực sự tốt như lời đồn?",
     image: "images/bing2-prod-20.jpg",
     time: "1 tháng trước, lúc 11:30",
-    slug: "review-kem-duong-co-medi-peel"
+    date: '1 tháng trước, 11:30', readTime: '5 phút',
+    slug: "review-kem-duong-co-medi-peel",
+    excerpt: "Vùng cổ rất dễ tố cáo tuổi tác thật của bạn nếu không được chăm sóc đúng cách. Cùng review hiệu quả nâng cơ, chống nhăn của kem cổ Medi-Peel Naite Thread.",
+    content: `
+      <p>Phụ nữ thường tập trung chăm sóc da mặt mà quên đi vùng cổ. Thực tế, cổ là nơi có lớp da mỏng manh và dễ lão hóa nhất. Hãy cùng Châu Sơn Shop review kem dưỡng cổ Medi-Peel đang rất hot nhé.</p>
+      <h3>Trải nghiệm kết cấu</h3>
+      <p>Chất kem khá đặc và có độ kéo sợi giống như chất nhầy ốc sên, giúp bám chặt vào da và cung cấp độ ẩm sâu.</p>
+      <img src="images/bing2-prod-20.jpg" alt="Kem cổ Medi-Peel" style="width:100%; border-radius:12px; margin: 20px 0;">
+      <h3>Hiệu quả sau 4 tuần</h3>
+      <p>Sự săn chắc thấy rõ, các nếp nhăn li ti mờ đi đáng kể. Đây thực sự là sản phẩm "must-have" cho chị em ngoài 25 tuổi.</p>
+    `
+  },
+  {
+    id: 6,
+    cat: 'meo-vat', catLabel: 'Mẹo vặt', catColor: '#fff8e1', catTextColor: '#f57f17',
+    title: "Top 10 thực phẩm chức năng ngoại nhập bán chạy nhất đáng để thử",
+    image: "images/exact-1.jpg",
+    time: "2 tháng trước, lúc 10:00",
+    date: '2 tháng trước, 10:00', readTime: '7 phút',
+    slug: "top-10-tpcn-ngoai-nhap",
+    excerpt: "Với hàng trăm sản phẩm trên thị trường, đâu là những sản phẩm được tin tưởng nhất? Danh sách top 10 được tổng hợp từ đánh giá của chuyên gia và khách hàng.",
+    content: `
+      <p>Bạn đang tìm kiếm thực phẩm chức năng bảo vệ sức khỏe cho cả gia đình nhưng lại hoa mắt với hàng loạt lựa chọn? Dưới đây là những sản phẩm "quốc dân" được nhiều người ưa chuộng.</p>
+      <h3>Sản phẩm hàng đầu</h3>
+      <ul>
+        <li>Viên uống sữa ong chúa Úc - đẹp da, tăng cường đề kháng</li>
+        <li>Vitamin tổng hợp Centrum - phù hợp mọi lứa tuổi</li>
+        <li>Sâm tươi Hàn Quốc - món quà biếu thượng hạng</li>
+      </ul>
+      <p>Ghé ngay Châu Sơn Shop để chọn mua hàng chính hãng với mức giá ưu đãi nhất nhé!</p>
+    `
   }
 ];
 
