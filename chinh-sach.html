@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chính Sách - Châu Sơn Shop | Hàng Ngoại Nhập Chính Hãng</title>
+  <meta name="description" content="Chính sách đổi trả, vận chuyển, bảo mật, và hướng dẫn mua hàng tại Châu Sơn Shop.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f8fafc; }
+    
+    .policy-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 30px;
+      padding: 40px 15px;
+      align-items: start;
+    }
+
+    /* Tabs / Sidebar */
+    .policy-nav {
+      background: #fff;
+      border-radius: 12px;
+      padding: 20px 0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 90px;
+    }
+    .policy-nav h3 {
+      padding: 0 24px 15px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+      border-bottom: 1px solid #f1f5f9;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+    }
+    .policy-nav ul { list-style: none; padding: 0; margin: 0; }
+    .policy-nav li a {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 24px;
+      color: var(--text-muted);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .policy-nav li a i { font-size: 18px; width: 24px; text-align: center; }
+    .policy-nav li a:hover { color: var(--primary); background: #f0fdf4; }
+    .policy-nav li a.active {
+      color: var(--primary);
+      background: #f0fdf4;
+      border-right: 3px solid var(--primary);
+    }
+
+    /* Content Area */
+    .policy-content-wrap {
+      background: #fff;
+      border-radius: 12px;
+      padding: 35px 40px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .policy-section { display: none; animation: fadeIn 0.3s ease; }
+    .policy-section.active { display: block; }
+    
+    .policy-section h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 24px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid #f1f5f9;
+    }
+    .policy-section h4 {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 24px 0 12px;
+    }
+    .policy-section p {
+      font-size: 14.5px;
+      color: #475569;
+      line-height: 1.8;
+      margin-bottom: 12px;
+    }
+    .policy-section ul {
+      padding-left: 20px;
+      margin-bottom: 16px;
+    }
+    .policy-section ul li {
+      font-size: 14.5px;
+      color: #475569;
+      line-height: 1.8;
+      margin-bottom: 8px;
+    }
+
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+    @media (max-width: 768px) {
+      .policy-container { grid-template-columns: 1fr; padding: 20px 15px; gap: 20px; }
+      .policy-nav { position: static; padding: 15px 0; }
+      .policy-content-wrap { padding: 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-shipping-fast"></i> Giao hàng toàn quốc 2–4 ngày</span>
+      <span><i class="fas fa-shield-alt"></i> Hàng chính hãng 100%</span>
+      <span><i class="fas fa-undo-alt"></i> Đổi trả 30 ngày</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="lien-he.html"><i class="fas fa-envelope"></i> nhutu5556@gmail.com</a>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN HEADER -->
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon">🌿</div>
+          <div class="logo-text">
+            <h1>CHÂU SƠN</h1>
+            <span>Chuyên hàng nhập</span>
+          </div>
+        </a>
+      </div>
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm sản phẩm...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
+      </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text">
+            <strong>0987.153.876</strong>
+            <small>Hotline bán hàng</small>
+          </div>
+        </div>
+      </div>
+      <button class="cart-btn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- NAVIGATION -->
+<nav class="main-nav">
+  <div class="container">
+    <ul class="nav-list">
+      <li><a href="index.html">Trang Chủ</a></li>
+      <li><a href="san-pham.html">Tất Cả Sản Phẩm</a></li>
+      <li><a href="chinh-sach.html" class="active">Chính Sách</a></li>
+      <li><a href="lien-he.html">Liên Hệ</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- POLICY CONTAINER -->
+<div class="policy-container">
+  
+  <!-- Sidebar -->
+  <aside class="policy-nav">
+    <h3>Danh mục hỗ trợ</h3>
+    <ul>
+      <li><a href="#huong-dan" class="nav-link active" data-target="huong-dan"><i class="fas fa-shopping-bag"></i> Hướng dẫn mua hàng</a></li>
+      <li><a href="#thanh-toan" class="nav-link" data-target="thanh-toan"><i class="fas fa-credit-card"></i> Hình thức thanh toán</a></li>
+      <li><a href="#van-chuyen" class="nav-link" data-target="van-chuyen"><i class="fas fa-truck"></i> Chính sách vận chuyển</a></li>
+      <li><a href="#doi-tra" class="nav-link" data-target="doi-tra"><i class="fas fa-undo-alt"></i> Chính sách đổi trả</a></li>
+      <li><a href="#bao-mat" class="nav-link" data-target="bao-mat"><i class="fas fa-shield-alt"></i> Chính sách bảo mật</a></li>
+    </ul>
+  </aside>
+
+  <!-- Content -->
+  <main class="policy-content-wrap">
+    
+    <!-- Hướng Dẫn Mua Hàng -->
+    <div id="huong-dan" class="policy-section active">
+      <h2>Hướng Dẫn Mua Hàng</h2>
+      <p>Chào mừng bạn đến với Châu Sơn Shop. Việc đặt hàng trên website rất đơn giản với các bước sau:</p>
+      <h4>Bước 1: Tìm kiếm sản phẩm</h4>
+      <p>Bạn có thể duyệt qua danh mục sản phẩm hoặc sử dụng thanh tìm kiếm để tìm sản phẩm mong muốn.</p>
+      <h4>Bước 2: Thêm vào giỏ hàng</h4>
+      <p>Bấm nút "Thêm vào giỏ" đối với các sản phẩm bạn muốn mua. Bạn có thể thay đổi số lượng hoặc xóa sản phẩm trong giỏ hàng.</p>
+      <h4>Bước 3: Tiến hành thanh toán</h4>
+      <p>Điền đầy đủ thông tin giao hàng bao gồm Tên, Số điện thoại, và Địa chỉ chi tiết (chọn Tỉnh/Thành phố, Quận/Huyện, Phường/Xã).</p>
+      <h4>Bước 4: Xác nhận đơn hàng</h4>
+      <p>Sau khi chọn phương thức thanh toán và nhấn "Hoàn tất đặt hàng", hệ thống sẽ cung cấp cho bạn một mã đơn hàng. Chúng tôi sẽ liên hệ với bạn trong thời gian sớm nhất để xác nhận đơn.</p>
+    </div>
+
+    <!-- Thanh Toán -->
+    <div id="thanh-toan" class="policy-section">
+      <h2>Hình Thức Thanh Toán</h2>
+      <p>Châu Sơn Shop cung cấp các phương thức thanh toán an toàn và linh hoạt cho khách hàng:</p>
+      <h4>1. Thanh toán khi nhận hàng (COD)</h4>
+      <p>Khách hàng thanh toán tiền mặt trực tiếp cho nhân viên giao hàng khi nhận được sản phẩm.</p>
+      <h4>2. Chuyển khoản ngân hàng (VietQR)</h4>
+      <p>Hỗ trợ thanh toán nhanh chóng bằng mã VietQR tự động. Bạn chỉ cần quét mã QR bằng bất kỳ ứng dụng ngân hàng nào (TPBank, Vietcombank, MB Bank, v.v.), số tiền và nội dung đơn hàng sẽ được tự động điền.</p>
+      <h4>3. Thanh toán qua Ví MoMo</h4>
+      <p>Hệ thống tự động tạo mã QR MoMo cho đơn hàng của bạn. Quét mã bằng ứng dụng MoMo để thanh toán ngay lập tức.</p>
+    </div>
+
+    <!-- Vận Chuyển -->
+    <div id="van-chuyen" class="policy-section">
+      <h2>Chính Sách Vận Chuyển</h2>
+      <p>Chúng tôi hợp tác với các đơn vị vận chuyển uy tín để giao hàng nhanh chóng nhất đến tay bạn.</p>
+      <h4>Thời gian giao hàng</h4>
+      <ul>
+        <li>Khu vực nội thành: 1-2 ngày làm việc.</li>
+        <li>Khu vực ngoại thành và các tỉnh: 2-4 ngày làm việc.</li>
+      </ul>
+      <h4>Phí vận chuyển</h4>
+      <ul>
+        <li><strong>MIỄN PHÍ GIAO HÀNG</strong> cho mọi đơn hàng có giá trị từ <strong>500,000đ</strong> trở lên.</li>
+        <li>Đơn hàng dưới 500,000đ sẽ áp dụng phí vận chuyển đồng giá <strong>30,000đ</strong> trên toàn quốc.</li>
+      </ul>
+    </div>
+
+    <!-- Đổi Trả -->
+    <div id="doi-tra" class="policy-section">
+      <h2>Chính Sách Đổi Trả</h2>
+      <p>Châu Sơn Shop cam kết 100% hàng chính hãng. Chúng tôi luôn mong muốn mang đến cho khách hàng sự hài lòng tuyệt đối.</p>
+      <h4>Điều kiện đổi trả</h4>
+      <ul>
+        <li>Sản phẩm còn nguyên tem mác, chưa qua sử dụng, chưa bóc hộp.</li>
+        <li>Sản phẩm bị lỗi do nhà sản xuất hoặc hư hỏng trong quá trình vận chuyển (cần có video quay lại khi mở hộp).</li>
+        <li>Thời gian hỗ trợ đổi trả: Trong vòng <strong>30 ngày</strong> kể từ khi nhận hàng.</li>
+      </ul>
+      <h4>Quy trình đổi trả</h4>
+      <p>Vui lòng liên hệ với chúng tôi qua số điện thoại/Zalo <strong>0987.153.876</strong> để được hướng dẫn chi tiết các bước gửi trả hàng. Chúng tôi sẽ chịu toàn bộ chi phí vận chuyển cho hàng bị lỗi.</p>
+    </div>
+
+    <!-- Bảo Mật -->
+    <div id="bao-mat" class="policy-section">
+      <h2>Chính Sách Bảo Mật</h2>
+      <p>Bảo vệ thông tin cá nhân của khách hàng là ưu tiên hàng đầu của chúng tôi.</p>
+      <h4>Thu thập thông tin</h4>
+      <p>Chúng tôi chỉ thu thập các thông tin cần thiết cho việc xử lý đơn hàng: Tên, số điện thoại, địa chỉ nhận hàng, và email (nếu có).</p>
+      <h4>Sử dụng thông tin</h4>
+      <p>Thông tin của bạn được sử dụng để:</p>
+      <ul>
+        <li>Giao hàng và xác nhận đơn hàng.</li>
+        <li>Hỗ trợ khách hàng về bảo hành và đổi trả.</li>
+        <li>Gửi các thông báo về đơn hàng.</li>
+      </ul>
+      <h4>Cam kết bảo mật</h4>
+      <p>Châu Sơn Shop cam kết KHÔNG chia sẻ, bán, hoặc trao đổi thông tin khách hàng cho bất kỳ bên thứ ba nào vì mục đích thương mại.</p>
+    </div>
+
+  </main>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-col">
+        <div class="footer-logo-text">🌿 CHÂU SƠN SHOP</div>
+        <div class="footer-logo-sub">Chuyên hàng ngoại nhập</div>
+        <p>Chuyên cung cấp thực phẩm chức năng và mỹ phẩm nhập khẩu chính hãng từ Nhật, Úc, Mỹ, Hàn Quốc.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Danh mục</h4>
+        <ul id="footerCatList"></ul>
+      </div>
+      <div class="footer-col">
+        <h4>Hỗ trợ</h4>
+        <ul>
+          <li><a href="chinh-sach.html#doi-tra"><i class="fas fa-angle-right"></i> Chính sách đổi trả</a></li>
+          <li><a href="chinh-sach.html#huong-dan"><i class="fas fa-angle-right"></i> Hướng dẫn mua hàng</a></li>
+          <li><a href="lien-he.html"><i class="fas fa-angle-right"></i> Liên hệ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Liên hệ</h4>
+        <div class="footer-contact-item"><i class="fas fa-phone-alt"></i><span>0987.153.876</span></div>
+        <div class="footer-contact-item"><i class="fas fa-envelope"></i><span>nhutu5556@gmail.com</span></div>
+        <div class="social-links" style="margin-top:12px">
+          <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="social-link fb"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" class="social-link zl"><i class="fas fa-comment-dots"></i></a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- MINI CART -->
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<aside class="mini-cart-drawer" id="miniCartDrawer">
+  <div class="cart-drawer-head">
+    <h3><i class="fas fa-shopping-cart"></i> Giỏ Hàng Của Bạn</h3>
+    <button class="cart-close-btn" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+  </div>
+  <div class="cart-items-list" id="cartItemsList"></div>
+  <div class="cart-drawer-foot" id="cartFoot" style="display:none;">
+    <div class="cart-total-row">
+      <span>Tổng tiền:</span>
+      <span class="cart-total-price" id="cartTotalPrice">0đ</span>
+    </div>
+    <button class="btn-checkout" onclick="window.location.href='gio-hang.html'">
+      <i class="fas fa-credit-card"></i> TIẾN HÀNH THANH TOÁN
+    </button>
+  </div>
+</aside>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastMsg"></span></div>
+
+<div class="float-btns">
+  <a href="tel:0987153876" class="float-btn phone"><i class="fas fa-phone-alt"></i></a>
+  <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank" class="float-btn facebook" title="Facebook">
+    <i class="fab fa-facebook-f"></i>
+  </a>
+  <button class="float-btn scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})"><i class="fas fa-chevron-up"></i></button>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script src="js/data.js"></script>
+<script src="js/products-loader.js"></script>
+<script src="js/cart.js"></script>
+<script src="js/tracking.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Footer categories load
+  const footerCatList = document.getElementById('footerCatList');
+  if (footerCatList && typeof CATEGORIES !== 'undefined') {
+    footerCatList.innerHTML = CATEGORIES.slice(0, 6).map(c =>
+      `<li><a href="san-pham.html?cat=${c.id}"><i class="fas fa-angle-right"></i> ${c.name}</a></li>`
+    ).join('');
+  }
+
+  // Handle Tab Switching
+  const navLinks = document.querySelectorAll('.nav-link');
+  const sections = document.querySelectorAll('.policy-section');
+
+  function activateTab(hash) {
+    if (!hash) return;
+    const targetId = hash.replace('#', '');
+    const targetSection = document.getElementById(targetId);
+    
+    if (targetSection) {
+      sections.forEach(sec => sec.classList.remove('active'));
+      navLinks.forEach(link => link.classList.remove('active'));
+      
+      targetSection.classList.add('active');
+      const activeLink = document.querySelector(`.nav-link[data-target="${targetId}"]`);
+      if (activeLink) activeLink.classList.add('active');
+      
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }
+
+  // Check URL Hash on load
+  if (window.location.hash) {
+    activateTab(window.location.hash);
+  }
+
+  // Handle click on tabs
+  navLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = link.getAttribute('data-target');
+      window.location.hash = target;
+      activateTab('#' + target);
+    });
+  });
+});
+</script>
+</body>
+</html>
