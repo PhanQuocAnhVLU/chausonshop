@@ -822,12 +822,16 @@
                     <div>
                       <table class="bank-info-table">
                         <tr>
-                          <td>Số điện thoại</td>
-                          <td style="font-family:monospace;font-size:16px;letter-spacing:1px;">0987 153 876</td>
+                          <td>Ví</td>
+                          <td><span style="background:#ae2070;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;">MoMo</span></td>
+                        </tr>
+                        <tr>
+                          <td>SĐT MoMo</td>
+                          <td style="font-family:monospace;font-size:15px;letter-spacing:1px;color:#ae2070;font-weight:800;">0987 153 876</td>
                         </tr>
                         <tr>
                           <td>Tên tài khoản</td>
-                          <td>PHAN QUOC ANH</td>
+                          <td style="font-weight:700;">PHAN QUOC ANH</td>
                         </tr>
                         <tr>
                           <td>Số tiền</td>
@@ -838,31 +842,46 @@
                           <td><span class="vietqr-content-badge" id="momoContentBadge">CS...</span></td>
                         </tr>
                       </table>
+                      <!-- Copy SĐT MoMo -->
+                      <div class="vietqr-copy-row" style="border-color:#f9a8d4;">
+                        <span style="color:var(--momo);font-size:15px;">0987153876</span>
+                        <button type="button" class="btn-copy" style="background:var(--momo);" id="copyMomoBtn" onclick="copyMomoPhone()">
+                          <i class="fas fa-copy"></i> Sao chép
+                        </button>
+                      </div>
 
                       <div class="momo-steps">
                         <div class="step-title">📌 Hướng dẫn thanh toán MoMo</div>
                         <ol>
-                          <li>Mở app <strong>MoMo</strong> → nhấn <strong>Quét mã</strong></li>
-                          <li>Quét QR bên cạnh hoặc chọn <strong>Chuyển tiền</strong></li>
-                          <li>Nhập SĐT: <strong>0987153876</strong></li>
-                          <li>Nhập <strong>đúng số tiền</strong> và <strong>nội dung</strong> ở trên</li>
-                          <li>Xác nhận → Hoàn tất!</li>
+                          <li>Mở app <strong>MoMo</strong> → nhấn <strong>Quét mã QR</strong></li>
+                          <li>Quét QR bên cạnh — số tiền <strong>tự động điền sẵn</strong> ✅</li>
+                          <li>Kiểm tra nội dung chuyển khoản (mã đơn hàng)</li>
+                          <li>Nhấn <strong>Xác nhận</strong> → Thanh toán thành công!</li>
                         </ol>
+                        <div style="margin-top:8px;padding:8px 10px;background:#fff;border-radius:7px;font-size:12px;color:#065f46;border:1px solid #86efac;">
+                          <i class="fas fa-magic" style="color:var(--primary);"></i>
+                          <strong>Tự động:</strong> QR được tạo riêng cho đơn hàng của bạn — số tiền điền sẵn, không cần nhập tay!
+                        </div>
                       </div>
                     </div>
 
-                    <!-- MOMO QR -->
+                    <!-- MOMO QR ĐỘNG (VietQR tự tạo theo số tiền đơn) -->
                     <div class="momo-qr-col" style="text-align:center;flex-shrink:0;">
-                      <div class="qr-box-label">Quét QR MoMo</div>
+                      <div class="qr-box-label">Quét QR — Số tiền tự điền</div>
                       <div class="momo-qr-wrap">
-                        <!-- Static MoMo QR from Supabase storage -->
-                        <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg"
-                             alt="MoMo QR"
+                        <img id="momoVietQrImg"
+                             src=""
+                             alt="MoMo VietQR"
                              onerror="this.src='images/product-1.png'"
-                             style="width:160px;height:160px;display:block;border-radius:6px;">
+                             style="width:160px;height:160px;display:block;border-radius:6px;object-fit:contain;">
                       </div>
-                      <div style="font-size:11px;color:var(--momo);font-weight:600;margin-top:8px;">
-                        <i class="fas fa-info-circle"></i> Nhập đúng số tiền sau khi quét
+                      <div class="qr-logos" style="margin-top:8px;">
+                        <span class="qr-logo-badge" style="background:#ae2070;color:#fff;">MoMo</span>
+                        <span class="qr-logo-badge" style="background:#e63946;color:#fff;">VietQR</span>
+                        <span class="qr-logo-badge" style="background:#0066cc;color:#fff;">Napas</span>
+                      </div>
+                      <div style="font-size:11px;color:var(--primary);font-weight:600;margin-top:6px;">
+                        <i class="fas fa-check-circle"></i> Số tiền tự động điền sẵn!
                       </div>
                     </div>
                   </div>
@@ -975,15 +994,18 @@
 // ================================================================
 const PAYMENT_CONFIG = {
   bank: {
-    bankId: 'TPB',            // Mã ngân hàng VietQR (TPBank = TPB)
-    accountNo: '07330649701', // Số TK không có khoảng trắng
+    bankId: 'TPB',              // Mã VietQR: TPBank
+    accountNo: '07330649701',   // Số TK không khoảng trắng
     accountName: 'PHAN QUOC ANH',
     displayName: 'TPBank',
     displayNo: '0733 0649 701'
   },
   momo: {
-    phone: '0987153876',
-    name: 'PHAN QUOC ANH'
+    bankId: 'MOMO',                     // Mã VietQR: MoMo
+    accountNo: 'PSP2614116900000197',    // Số tài khoản MoMo VietQR
+    accountName: 'PHAN QUOC ANH',
+    phone: '0987 153 876',
+    displayNo: 'PSP2614116900000197'
   }
 };
 
@@ -991,10 +1013,10 @@ const PAYMENT_CONFIG = {
 // GENERATE VIETQR URL — https://img.vietqr.io/image/
 // Format: /image/{BANK_ID}-{ACCOUNT_NO}-{TEMPLATE}.png
 //         ?amount={AMOUNT}&addInfo={DESCRIPTION}&accountName={NAME}
+// Dùng cho cả TPBank và MoMo!
 // ================================================================
-function buildVietQrUrl(amount, description) {
-  const { bankId, accountNo, accountName } = PAYMENT_CONFIG.bank;
-  const template = 'compact2'; // compact | compact2 | print | qr_only
+function buildVietQrUrl(bankId, accountNo, accountName, amount, description) {
+  const template = 'compact2';
   const encoded = encodeURIComponent(description);
   const encodedName = encodeURIComponent(accountName);
   return `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${amount}&addInfo=${encoded}&accountName=${encodedName}`;
@@ -1081,20 +1103,27 @@ function onPmChange(method) {
 function updatePaymentQr(code) {
   const description = `${code} CHAU SON SHOP`;
 
-  // VietQR
+  // ── TPBank VietQR ──
   const qrImg = document.getElementById('vietQrImg');
   const amtBadge = document.getElementById('vqAmountBadge');
   const contentBadge = document.getElementById('vqContentBadge');
   if (qrImg && orderTotal > 0) {
-    qrImg.src = buildVietQrUrl(orderTotal, description);
+    const { bankId, accountNo, accountName } = PAYMENT_CONFIG.bank;
+    qrImg.src = buildVietQrUrl(bankId, accountNo, accountName, orderTotal, description);
     qrImg.alt = `QR TPBank ${orderTotal.toLocaleString('vi-VN')}đ`;
   }
   if (amtBadge) amtBadge.textContent = orderTotal.toLocaleString('vi-VN') + 'đ';
   if (contentBadge) contentBadge.textContent = description;
 
-  // MoMo (amount display only, static QR)
+  // ── MoMo VietQR (ĐỘNG — tự động theo số tiền) ──
+  const momoQrImg = document.getElementById('momoVietQrImg');
   const momoAmt = document.getElementById('momoAmountBadge');
   const momoContent = document.getElementById('momoContentBadge');
+  if (momoQrImg && orderTotal > 0) {
+    const m = PAYMENT_CONFIG.momo;
+    momoQrImg.src = buildVietQrUrl(m.bankId, m.accountNo, m.accountName, orderTotal, description);
+    momoQrImg.alt = `QR MoMo ${orderTotal.toLocaleString('vi-VN')}đ`;
+  }
   if (momoAmt) momoAmt.textContent = orderTotal.toLocaleString('vi-VN') + 'đ';
   if (momoContent) momoContent.textContent = description;
 }
