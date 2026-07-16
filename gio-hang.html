@@ -258,9 +258,29 @@ function renderCartPage() {
     return;
   }
 
+  let currentCoupon = JSON.parse(localStorage.getItem('chausonCoupon') || 'null');
   const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  
+  let discount = 0;
+  let discountText = '';
+  if (currentCoupon) {
+     if (currentCoupon.min_order_value && subtotal < currentCoupon.min_order_value) {
+        currentCoupon = null;
+        localStorage.removeItem('chausonCoupon');
+        setTimeout(() => showToast('Đơn hàng không đủ điều kiện dùng mã giảm giá này'), 500);
+     } else {
+        if (currentCoupon.discount_type === 'percent') {
+           discount = (subtotal * currentCoupon.discount_value) / 100;
+        } else {
+           discount = currentCoupon.discount_value;
+        }
+        if (discount > subtotal) discount = subtotal;
+        discountText = currentCoupon.code;
+     }
+  }
+
   const shipping = subtotal >= 500000 ? 0 : 30000;
-  const total = subtotal + shipping;
+  const total = subtotal + shipping - discount;
 
   const itemsHtml = cartData.map(item => `
     <div class="cart-page-item" id="cpitem_${item.id}">
@@ -319,9 +339,17 @@ function renderCartPage() {
         </div>
         ${shipping > 0 ? `<div style="font-size:11.5px;color:#888;margin-bottom:10px;"><i class="fas fa-info-circle"></i> Mua thêm ${(500000 - subtotal).toLocaleString('vi-VN')}đ để được miễn phí vận chuyển</div>` : ''}
         <div class="promo-input">
-          <input type="text" placeholder="Nhập mã giảm giá...">
-          <button onclick="showToast('Mã không hợp lệ hoặc đã hết hạn')">Áp dụng</button>
+          <input type="text" id="couponInput" placeholder="Nhập mã giảm giá..." value="${currentCoupon ? currentCoupon.code : ''}" ${currentCoupon ? 'disabled' : ''}>
+          ${currentCoupon 
+            ? `<button onclick="removeCoupon()" style="background:#dc2626;">Hủy bỏ</button>`
+            : `<button onclick="applyCoupon()">Áp dụng</button>`
+          }
         </div>
+        ${discount > 0 ? `
+        <div class="summary-row" style="color:var(--sale-red);">
+          <span>Giảm giá (${discountText}):</span>
+          <span style="font-weight:700;">-${discount.toLocaleString('vi-VN')}đ</span>
+        </div>` : ''}
         <div class="summary-row total">
           <span>Tổng cộng:</span>
           <span>${total.toLocaleString('vi-VN')}đ</span>
@@ -346,6 +374,50 @@ function renderCartPage() {
 
 window.pageChangeQty = function(id, delta) {
   changeQty(id, delta);
+  renderCartPage();
+};
+
+window.applyCoupon = async function() {
+  const code = document.getElementById('couponInput').value.trim().toUpperCase();
+  if (!code) return;
+  
+  try {
+    const { data, error } = await sb.from('coupons')
+      .select('*')
+      .eq('code', code)
+      .eq('is_active', true)
+      .single();
+      
+    if (error || !data) throw new Error('Mã không hợp lệ hoặc đã hết hạn');
+    
+    // Check expiry
+    if (data.expires_at && new Date(data.expires_at) < new Date()) {
+      throw new Error('Mã giảm giá đã hết hạn');
+    }
+    
+    // Check limit
+    if (data.usage_limit && data.used_count >= data.usage_limit) {
+      throw new Error('Mã giảm giá đã hết lượt sử dụng');
+    }
+    
+    // Check min order
+    const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+    const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+    if (data.min_order_value && subtotal < data.min_order_value) {
+      throw new Error('Đơn hàng chưa đạt giá trị tối thiểu ' + data.min_order_value.toLocaleString('vi-VN') + 'đ');
+    }
+    
+    localStorage.setItem('chausonCoupon', JSON.stringify(data));
+    showToast('Áp dụng mã giảm giá thành công!');
+    renderCartPage();
+  } catch (err) {
+    showToast(err.message);
+  }
+};
+
+window.removeCoupon = function() {
+  localStorage.removeItem('chausonCoupon');
+  showToast('Đã bỏ mã giảm giá');
   renderCartPage();
 };
 

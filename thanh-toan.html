@@ -938,6 +938,10 @@
               <span>Phí vận chuyển:</span>
               <span id="coShipping">---</span>
             </div>
+            <div class="summary-row" id="coDiscountRow" style="display:none; color:var(--sale-red);">
+              <span>Giảm giá (<span id="coDiscountText"></span>):</span>
+              <span id="coDiscountValue" style="font-weight:700;"></span>
+            </div>
             <div class="summary-row total">
               <span>Tổng cộng:</span>
               <span id="coTotal">0đ</span>
@@ -1069,9 +1073,27 @@ function renderSummary() {
     return;
   }
 
+  const currentCoupon = JSON.parse(localStorage.getItem('chausonCoupon') || 'null');
   const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  
+  let discount = 0;
+  let discountText = '';
+  if (currentCoupon) {
+     if (currentCoupon.min_order_value && subtotal < currentCoupon.min_order_value) {
+        localStorage.removeItem('chausonCoupon');
+     } else {
+        if (currentCoupon.discount_type === 'percent') {
+           discount = (subtotal * currentCoupon.discount_value) / 100;
+        } else {
+           discount = currentCoupon.discount_value;
+        }
+        if (discount > subtotal) discount = subtotal;
+        discountText = currentCoupon.code;
+     }
+  }
+
   const shipping = subtotal >= 500000 ? 0 : 30000;
-  orderTotal = subtotal + shipping;
+  orderTotal = subtotal + shipping - discount;
 
   const list = document.getElementById('checkoutItemsList');
   list.innerHTML = cartData.map(item => `
@@ -1088,6 +1110,16 @@ function renderSummary() {
   document.getElementById('coShipping').innerHTML = shipping === 0
     ? '<span style="color:var(--primary);font-weight:700;"><i class="fas fa-check-circle"></i> Miễn phí</span>'
     : shipping.toLocaleString('vi-VN') + 'đ';
+  
+  const discountRow = document.getElementById('coDiscountRow');
+  if (discount > 0) {
+    document.getElementById('coDiscountText').textContent = discountText;
+    document.getElementById('coDiscountValue').textContent = `-${discount.toLocaleString('vi-VN')}đ`;
+    discountRow.style.display = 'flex';
+  } else {
+    discountRow.style.display = 'none';
+  }
+  
   document.getElementById('coTotal').textContent = orderTotal.toLocaleString('vi-VN') + 'đ';
 
   const fsBanner = document.getElementById('freeShipBanner');
@@ -1220,9 +1252,27 @@ async function handleCheckout(e) {
   submitBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
 
   cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+  const currentCoupon = JSON.parse(localStorage.getItem('chausonCoupon') || 'null');
   const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  
+  let discount = 0;
+  let couponCode = null;
+  if (currentCoupon) {
+     if (currentCoupon.min_order_value && subtotal < currentCoupon.min_order_value) {
+        localStorage.removeItem('chausonCoupon');
+     } else {
+        if (currentCoupon.discount_type === 'percent') {
+           discount = (subtotal * currentCoupon.discount_value) / 100;
+        } else {
+           discount = currentCoupon.discount_value;
+        }
+        if (discount > subtotal) discount = subtotal;
+        couponCode = currentCoupon.code;
+     }
+  }
+
   const shipping = subtotal >= 500000 ? 0 : 30000;
-  const total = subtotal + shipping;
+  const total = subtotal + shipping - discount;
   const paymentMethod = document.querySelector('input[name="pm"]:checked')?.value || 'COD';
 
   try {
@@ -1237,8 +1287,14 @@ async function handleCheckout(e) {
       status: 'pending',
       subtotal,
       shipping_fee: shipping,
+      discount_code: couponCode,
+      discount_amount: discount,
       total
     }).select().single();
+    
+    if (couponCode && order) {
+      await sb.from('coupons').update({ used_count: (currentCoupon.used_count || 0) + 1 }).eq('code', couponCode);
+    }
 
     if (orderErr) throw orderErr;
 

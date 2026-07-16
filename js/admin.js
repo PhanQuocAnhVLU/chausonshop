@@ -131,7 +131,7 @@ function logout() {
 }
 
 // ========================= NAV =========================
-const VIEW_TITLES = { overview: 'Tổng quan', orders: 'Đơn hàng', products: 'Sản phẩm', visitors: 'Khách truy cập', content: 'Nội dung & cài đặt' };
+const VIEW_TITLES = { overview: 'Tổng quan', orders: 'Đơn hàng', products: 'Sản phẩm', coupons: 'Mã giảm giá', reviews: 'Đánh giá', visitors: 'Khách truy cập', content: 'Nội dung & cài đặt' };
 
 function switchView(view) {
   document.querySelectorAll('.admin-nav-item').forEach(el => el.classList.toggle('active', el.dataset.view === view));
@@ -141,6 +141,8 @@ function switchView(view) {
   if (view === 'overview') loadOverview();
   if (view === 'orders') loadOrders();
   if (view === 'products') loadProducts();
+  if (view === 'coupons') loadCoupons();
+  if (view === 'reviews') loadAdminReviews();
   if (view === 'visitors') loadVisitors();
   if (view === 'content') loadContent();
 }
@@ -697,6 +699,190 @@ async function loadVisitors() {
 }
 
 // ========================= MODAL HELPERS =========================
+// ========================= COUPONS =========================
+async function loadCoupons() {
+  const container = document.getElementById('view-coupons');
+  container.innerHTML = '<div class="loading-spin">Đang tải mã giảm giá...</div>';
+
+  const { data: coupons, error } = await sb.from('coupons').select('*').order('created_at', { ascending: false });
+  if (error) { container.innerHTML = `<div class="empty-state">Lỗi: ${error.message}</div>`; return; }
+
+  container.innerHTML = `
+    <div class="toolbar">
+      <div style="flex:1;"></div>
+      <button class="btn btn-primary" onclick="openCouponForm()">+ Tạo mã mới</button>
+    </div>
+    <div class="card"><div id="couponsTableWrap"></div></div>
+  `;
+  window.__couponsCache = coupons || [];
+  renderCouponsTable();
+}
+
+function renderCouponsTable() {
+  const coupons = window.__couponsCache || [];
+  const wrap = document.getElementById('couponsTableWrap');
+  if (!wrap) return;
+  if (coupons.length === 0) {
+    wrap.innerHTML = '<div class="empty-state">Chưa có mã giảm giá nào. Hãy tạo mã đầu tiên!</div>';
+    return;
+  }
+  wrap.innerHTML = `
+    <table>
+      <thead><tr><th>Mã</th><th>Loại</th><th>Giá trị</th><th>Đơn tối thiểu</th><th>Sử dụng</th><th>Hết hạn</th><th>Trạng thái</th><th></th></tr></thead>
+      <tbody>
+        ${coupons.map(c => `
+          <tr>
+            <td><strong style="font-family:monospace;font-size:14px;">${escapeHtml(c.code)}</strong></td>
+            <td>${c.discount_type === 'percent' ? 'Phần trăm' : 'Số tiền'}</td>
+            <td style="color:var(--danger);font-weight:700;">${c.discount_type === 'percent' ? `-${c.discount_value}%` : `-${Number(c.discount_value).toLocaleString('vi-VN')}đ`}</td>
+            <td>${c.min_order_value ? Number(c.min_order_value).toLocaleString('vi-VN') + 'đ' : 'Không'}</td>
+            <td>${c.used_count || 0}${c.usage_limit ? ' / ' + c.usage_limit : ''}</td>
+            <td>${c.expires_at ? new Date(c.expires_at).toLocaleDateString('vi-VN') : 'Không'}</td>
+            <td><span class="badge ${c.is_active ? 'badge-confirmed' : 'badge-cancelled'}">${c.is_active ? 'Hoạt động' : 'Dừng'}</span></td>
+            <td style="white-space:nowrap;">
+              <button class="btn btn-outline btn-sm" onclick="toggleCouponStatus('${c.id}', ${!c.is_active})">${c.is_active ? 'Dừng' : 'Kích hoạt'}</button>
+              <button class="btn btn-danger btn-sm" onclick="deleteCoupon('${c.id}')">Xóa</button>
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+function openCouponForm() {
+  openModal(`
+    <h3>Tạo mã giảm giá mới</h3>
+    <form id="couponForm">
+      <label>Mã (viết in hoa, không dấu)</label>
+      <input type="text" id="cf_code" required placeholder="VD: GIAM50K, SALE20" style="text-transform:uppercase;">
+      <div class="field-row">
+        <div>
+          <label>Loại giảm</label>
+          <select id="cf_type">
+            <option value="fixed">Số tiền cụ thể (đ)</option>
+            <option value="percent">Phần trăm (%)</option>
+          </select>
+        </div>
+        <div>
+          <label>Giá trị giảm</label>
+          <input type="number" id="cf_value" required min="1" placeholder="VD: 50000 hoặc 10">
+        </div>
+      </div>
+      <div class="field-row">
+        <div>
+          <label>Đơn hàng tối thiểu (đ)</label>
+          <input type="number" id="cf_min" min="0" placeholder="0 = không giới hạn">
+        </div>
+        <div>
+          <label>Giới hạn sử dụng</label>
+          <input type="number" id="cf_limit" min="1" placeholder="Để trống = không giới hạn">
+        </div>
+      </div>
+      <label>Ngày hết hạn</label>
+      <input type="date" id="cf_expires">
+      <div class="modal-actions">
+        <button type="button" class="btn btn-outline" onclick="closeModal()">Hủy</button>
+        <button type="submit" class="btn btn-primary">Tạo mã</button>
+      </div>
+    </form>
+  `);
+  document.getElementById('cf_code').addEventListener('input', function() {
+    this.value = this.value.toUpperCase().replace(/[^A-Z0-9]/g, '');
+  });
+  document.getElementById('couponForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const payload = {
+      code: document.getElementById('cf_code').value.trim().toUpperCase(),
+      discount_type: document.getElementById('cf_type').value,
+      discount_value: parseFloat(document.getElementById('cf_value').value) || 0,
+      min_order_value: parseFloat(document.getElementById('cf_min').value) || 0,
+      usage_limit: parseInt(document.getElementById('cf_limit').value) || null,
+      expires_at: document.getElementById('cf_expires').value || null,
+      is_active: true
+    };
+    const { error } = await sb.from('coupons').insert(payload);
+    if (error) { alert('Lỗi: ' + error.message); return; }
+    closeModal();
+    loadCoupons();
+  });
+}
+
+async function toggleCouponStatus(id, isActive) {
+  await sb.from('coupons').update({ is_active: isActive }).eq('id', id);
+  loadCoupons();
+}
+
+async function deleteCoupon(id) {
+  if (!confirm('Xóa mã giảm giá này?')) return;
+  await sb.from('coupons').delete().eq('id', id);
+  loadCoupons();
+}
+
+// ========================= ADMIN REVIEWS =========================
+async function loadAdminReviews() {
+  const container = document.getElementById('view-reviews');
+  container.innerHTML = '<div class="loading-spin">Đang tải đánh giá...</div>';
+
+  const { data: reviews, error } = await sb.from('reviews').select('*, products(name)').order('created_at', { ascending: false });
+  if (error) { container.innerHTML = `<div class="empty-state">Lỗi: ${error.message}</div>`; return; }
+
+  const all = reviews || [];
+  const pending = all.filter(r => r.status === 'pending').length;
+
+  container.innerHTML = `
+    <div class="summary-grid" style="margin-bottom:20px;">
+      <div class="summary-card"><div class="label">Tổng đánh giá</div><div class="value">${all.length}</div></div>
+      <div class="summary-card"><div class="label">Chờ duyệt</div><div class="value danger">${pending}</div></div>
+      <div class="summary-card"><div class="label">Đã duyệt</div><div class="value">${all.filter(r => r.status === 'approved').length}</div></div>
+    </div>
+    <div class="toolbar">
+      <select id="reviewStatusFilter" onchange="renderReviewsTable()">
+        <option value="">Tất cả</option>
+        <option value="pending">Chờ duyệt</option>
+        <option value="approved">Đã duyệt</option>
+        <option value="rejected">Đã từ chối</option>
+      </select>
+    </div>
+    <div class="card"><div id="reviewsTableWrap"></div></div>`;
+  window.__reviewsCache = all;
+  renderReviewsTable();
+}
+
+function renderReviewsTable() {
+  const filter = document.getElementById('reviewStatusFilter')?.value || '';
+  const reviews = (window.__reviewsCache || []).filter(r => !filter || r.status === filter);
+  const wrap = document.getElementById('reviewsTableWrap');
+  if (!wrap) return;
+  if (reviews.length === 0) { wrap.innerHTML = '<div class="empty-state">Không có đánh giá nào</div>'; return; }
+  const statusMap = { pending: '⏳ Chờ duyệt', approved: '✅ Đã duyệt', rejected: '❌ Đã từ chối' };
+  wrap.innerHTML = `
+    <table>
+      <thead><tr><th>Sản phẩm</th><th>Người đánh giá</th><th>Số sao</th><th>Nội dung</th><th>Ngày</th><th>Trạng thái</th><th></th></tr></thead>
+      <tbody>
+        ${reviews.map(r => `
+          <tr>
+            <td style="max-width:150px;font-size:12px;">${escapeHtml(r.products?.name || 'Không rõ')}</td>
+            <td>${escapeHtml(r.customer_name)}</td>
+            <td style="color:#FFC107;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</td>
+            <td style="max-width:220px;font-size:13px;">${escapeHtml(r.comment || '')}</td>
+            <td style="white-space:nowrap;font-size:12px;">${formatDateTime(r.created_at)}</td>
+            <td>${statusMap[r.status] || r.status}</td>
+            <td style="white-space:nowrap;">
+              ${r.status !== 'approved' ? `<button class="btn btn-outline btn-sm" style="color:var(--success)" onclick="setReviewStatus('${r.id}', 'approved')">Duyệt</button>` : ''}
+              ${r.status !== 'rejected' ? `<button class="btn btn-danger btn-sm" onclick="setReviewStatus('${r.id}', 'rejected')">Từ chối</button>` : ''}
+            </td>
+          </tr>`).join('')}
+      </tbody>
+    </table>`;
+}
+
+async function setReviewStatus(id, status) {
+  const { error } = await sb.from('reviews').update({ status }).eq('id', id);
+  if (error) { alert('Lỗi: ' + error.message); return; }
+  const r = (window.__reviewsCache || []).find(x => x.id === id);
+  if (r) r.status = status;
+  renderReviewsTable();
+}
+
 function openModal(html) {
   document.getElementById('modalBoxContent').innerHTML = html;
   document.getElementById('modalOverlay').classList.add('show');

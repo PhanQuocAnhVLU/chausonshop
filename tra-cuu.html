@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tra Cứu Đơn Hàng - Châu Sơn Shop</title>
+  <meta name="description" content="Tra cứu tình trạng đơn hàng của bạn tại Châu Sơn Shop nhanh chóng và dễ dàng.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    .tracking-container {
+      max-width: 600px;
+      margin: 40px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    }
+    .tracking-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .tracking-header h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 10px;
+    }
+    .tracking-header p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+    
+    .tracking-form .form-group {
+      margin-bottom: 20px;
+    }
+    .tracking-form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      font-size: 14px;
+      color: var(--text);
+    }
+    .tracking-form input {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-family: inherit;
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+    .tracking-form input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(104,159,56,0.1);
+      outline: none;
+    }
+    .btn-track {
+      width: 100%;
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 10px;
+      transition: background 0.3s;
+    }
+    .btn-track:hover { background: var(--primary-dark); }
+    
+    .tracking-result {
+      margin-top: 30px;
+      display: none;
+    }
+    .result-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 20px;
+    }
+    .order-status-badge {
+      display: inline-block;
+      padding: 6px 12px;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 15px;
+    }
+    .status-pending { background: #fff3e0; color: #f57c00; }
+    .status-confirmed { background: #e3f2fd; color: #1976d2; }
+    .status-shipping { background: #e8f5e9; color: #2e7d32; }
+    .status-completed { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+    .status-cancelled { background: #fee2e2; color: #991b1b; }
+    
+    .order-info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-bottom: 20px;
+      font-size: 14px;
+    }
+    .order-info-item span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 4px; }
+    .order-info-item strong { color: var(--text); }
+    
+    .order-items-list {
+      border-top: 1px solid #e2e8f0;
+      padding-top: 15px;
+    }
+    .track-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px 0;
+      font-size: 14px;
+      border-bottom: 1px dashed #e2e8f0;
+    }
+    .track-item:last-child { border-bottom: none; }
+    .track-total {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 15px;
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--sale-red);
+    }
+    .error-msg {
+      color: #dc2626;
+      background: #fef2f2;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-top: 15px;
+      display: none;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- HEADER (thực tế sẽ được render qua js hoặc dùng chung file) -->
+<!-- Giữ nguyên cấu trúc header cơ bản -->
+<header class="main-header">
+  <div class="container">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <a href="index.html" class="logo-link">
+          <div class="logo-icon">🌿</div>
+          <div class="logo-text">
+            <h1>CHÂU SƠN</h1>
+            <span>Chuyên hàng nhập</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+<nav class="main-nav">
+  <div class="container">
+    <ul class="nav-list">
+      <li><a href="index.html">Trang Chủ</a></li>
+      <li><a href="san-pham.html">Tất Cả Sản Phẩm</a></li>
+      <li><a href="tra-cuu.html" class="active">Tra Cứu Đơn Hàng</a></li>
+      <li><a href="chinh-sach.html">Chính Sách</a></li>
+    </ul>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="tracking-container">
+    <div class="tracking-header">
+      <h1>Tra Cứu Đơn Hàng</h1>
+      <p>Nhập thông tin để xem trạng thái đơn hàng của bạn</p>
+    </div>
+    
+    <form class="tracking-form" id="trackingForm">
+      <div class="form-group">
+        <label>Mã Đơn Hàng</label>
+        <input type="text" id="trackOrderCode" placeholder="VD: CS2025..." required>
+      </div>
+      <div class="form-group">
+        <label>Số Điện Thoại Mua Hàng</label>
+        <input type="tel" id="trackPhone" placeholder="Nhập số điện thoại" required>
+      </div>
+      <button type="submit" class="btn-track" id="btnTrack">
+        <i class="fas fa-search"></i> Tra Cứu Ngay
+      </button>
+      <div class="error-msg" id="trackError"></div>
+    </form>
+    
+    <div class="tracking-result" id="trackingResult">
+      <!-- Kết quả sẽ render vào đây -->
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase-client.js"></script>
+<script>
+  const STATUS_MAP = {
+    pending: { label: 'Chờ xác nhận', class: 'status-pending' },
+    confirmed: { label: 'Đã xác nhận', class: 'status-confirmed' },
+    shipping: { label: 'Đang giao hàng', class: 'status-shipping' },
+    completed: { label: 'Giao thành công', class: 'status-completed' },
+    cancelled: { label: 'Đã hủy', class: 'status-cancelled' }
+  };
+
+  document.getElementById('trackingForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btnTrack');
+    const err = document.getElementById('trackError');
+    const resEl = document.getElementById('trackingResult');
+    
+    const code = document.getElementById('trackOrderCode').value.trim();
+    const phone = document.getElementById('trackPhone').value.trim();
+    
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tra cứu...';
+    btn.disabled = true;
+    err.style.display = 'none';
+    resEl.style.display = 'none';
+
+    try {
+      const { data, error } = await sb.rpc('get_order_status', { 
+        p_order_code: code, 
+        p_phone: phone 
+      });
+
+      if (error) throw error;
+      if (!data || data.length === 0) {
+        throw new Error('Không tìm thấy đơn hàng. Vui lòng kiểm tra lại mã đơn và số điện thoại.');
+      }
+
+      const order = data[0];
+      const st = STATUS_MAP[order.status] || STATUS_MAP.pending;
+      
+      let itemsHtml = '';
+      if (order.items && order.items.length > 0) {
+        itemsHtml = order.items.map(it => `
+          <div class="track-item">
+            <span>${it.qty} x ${it.product_name}</span>
+            <span>${Number(it.price * it.qty).toLocaleString('vi-VN')}đ</span>
+          </div>
+        `).join('');
+      }
+
+      resEl.innerHTML = `
+        <div class="result-card">
+          <div class="order-status-badge ${st.class}">${st.label}</div>
+          <div class="order-info-grid">
+            <div class="order-info-item"><span>Mã Đơn:</span> <strong>${order.order_code}</strong></div>
+            <div class="order-info-item"><span>Ngày Đặt:</span> <strong>${new Date(order.created_at).toLocaleDateString('vi-VN')}</strong></div>
+            <div class="order-info-item"><span>Người Nhận:</span> <strong>${order.customer_name}</strong></div>
+            <div class="order-info-item"><span>Giao Đến:</span> <strong>${order.customer_address}</strong></div>
+          </div>
+          <div class="order-items-list">
+            ${itemsHtml}
+            <div class="track-total">
+              <span>Tổng Tiền</span>
+              <span>${Number(order.total).toLocaleString('vi-VN')}đ</span>
+            </div>
+          </div>
+        </div>
+      `;
+      resEl.style.display = 'block';
+    } catch (error) {
+      err.textContent = error.message;
+      err.style.display = 'block';
+    } finally {
+      btn.innerHTML = '<i class="fas fa-search"></i> Tra Cứu Ngay';
+      btn.disabled = false;
+    }
+  });
+</script>
+</body>
+</html>
