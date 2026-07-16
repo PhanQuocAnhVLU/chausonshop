@@ -981,25 +981,28 @@
       <div class="modal-success-title">Đặt hàng thành công! 🎉</div>
       <div class="modal-success-sub">Cảm ơn bạn đã tin tưởng Châu Sơn Shop</div>
     </div>
-    <div class="modal-body">
+    <div class="modal-body" id="modalBodyContent">
       <div class="modal-order-code">
         <div class="modal-order-code-label">Mã đơn hàng của bạn</div>
         <div class="modal-order-code-value" id="modalOrderCode">CS20250101XXXX</div>
+      </div>
+      <div id="modalQrContainer" style="display:none; text-align:center; margin-bottom:20px;">
+        <!-- QR code image will be injected here -->
       </div>
       <div class="modal-payment-note" id="modalPayNote">
         <i class="fas fa-exclamation-triangle" style="color:#f59e0b;margin-right:6px;"></i>
         <span id="modalPayNoteText"></span>
       </div>
-      <div class="modal-info-list">
+      <div class="modal-info-list" id="modalInfoList">
         <div><i class="fas fa-phone-alt"></i> Chúng tôi sẽ gọi điện xác nhận trong <strong>vòng 2 giờ</strong></div>
         <div><i class="fas fa-shipping-fast"></i> Giao hàng dự kiến <strong>2–4 ngày làm việc</strong></div>
         <div><i class="fas fa-headset"></i> Hỗ trợ: <strong>0987.153.876</strong> (8h–21h30)</div>
       </div>
-      <div class="modal-actions">
+      <div class="modal-actions" id="modalActionsBox">
         <button class="btn-modal-primary" onclick="goHome()"><i class="fas fa-home"></i> Về trang chủ</button>
         <button class="btn-modal-sec" onclick="goShop()"><i class="fas fa-shopping-bag"></i> Mua thêm</button>
       </div>
-      <div class="countdown-hint">
+      <div class="countdown-hint" id="countdownHintBox">
         <i class="fas fa-clock"></i>
         <span id="countdownText">Tự động về trang chủ sau 6 giây...</span>
       </div>
@@ -1332,31 +1335,72 @@ let countdownTimer;
 function showSuccessModal(paymentMethod) {
   document.getElementById('modalOrderCode').textContent = orderCode;
 
-  // Payment-specific note
   const note = document.getElementById('modalPayNote');
   const noteText = document.getElementById('modalPayNoteText');
-  if (paymentMethod === 'Transfer') {
-    noteText.innerHTML = `⚠️ Vui lòng chuyển khoản <strong>${orderTotal.toLocaleString('vi-VN')}đ</strong> đến TPBank <strong>0733 0649 701</strong> với nội dung <strong>${orderCode} CHAU SON SHOP</strong> để đơn được xác nhận sớm.`;
-    note.classList.add('show');
-  } else if (paymentMethod === 'MoMo') {
-    noteText.innerHTML = `⚠️ Vui lòng chuyển <strong>${orderTotal.toLocaleString('vi-VN')}đ</strong> qua MoMo số <strong>0987 153 876</strong> với nội dung <strong>${orderCode}</strong>.`;
-    note.classList.add('show');
-  }
+  const qrContainer = document.getElementById('modalQrContainer');
+  const actionsBox = document.getElementById('modalActionsBox');
+  const countdownBox = document.getElementById('countdownHintBox');
 
-  document.getElementById('successModal').classList.add('show');
-
-  // Countdown
-  let count = 6;
-  document.getElementById('countdownText').textContent = `Tự động về trang chủ sau ${count} giây...`;
-  countdownTimer = setInterval(() => {
-    count--;
-    if (count <= 0) {
-      clearInterval(countdownTimer);
-      goHome();
+  // Reset display
+  qrContainer.style.display = 'none';
+  qrContainer.innerHTML = '';
+  note.classList.remove('show');
+  
+  if (paymentMethod === 'Transfer' || paymentMethod === 'MoMo') {
+    // Generate QR logic inside modal
+    let qrUrl = '';
+    let descriptionText = '';
+    
+    if (paymentMethod === 'Transfer') {
+       qrUrl = buildVietQrUrl(PAYMENT_CONFIG.bank.bankId, PAYMENT_CONFIG.bank.accountNo, PAYMENT_CONFIG.bank.accountName, orderTotal, orderCode + ' CHAU SON SHOP');
+       noteText.innerHTML = `⚠️ Vui lòng chuyển khoản <strong>${orderTotal.toLocaleString('vi-VN')}đ</strong> đến TPBank <strong>0733 0649 701</strong> với nội dung <strong>${orderCode} CHAU SON SHOP</strong>.`;
+       descriptionText = 'Quét mã QR qua app ngân hàng của bạn để thanh toán nhanh.';
     } else {
-      document.getElementById('countdownText').textContent = `Tự động về trang chủ sau ${count} giây...`;
+       qrUrl = buildVietQrUrl(PAYMENT_CONFIG.momo.bankId, PAYMENT_CONFIG.momo.accountNo, PAYMENT_CONFIG.momo.accountName, orderTotal, orderCode);
+       noteText.innerHTML = `⚠️ Vui lòng chuyển <strong>${orderTotal.toLocaleString('vi-VN')}đ</strong> qua MoMo số <strong>0987 153 876</strong> với nội dung <strong>${orderCode}</strong>.`;
+       descriptionText = 'Mở ứng dụng MoMo và quét mã QR này.';
     }
-  }, 1000);
+    
+    note.classList.add('show');
+    
+    qrContainer.innerHTML = `
+      <p style="font-size:14px; color:var(--text-dark); font-weight:600; margin-bottom:10px;">${descriptionText}</p>
+      <img src="${qrUrl}" alt="QR Code" style="width:220px; max-width:100%; border-radius:12px; border:1px solid #eee; box-shadow:0 4px 12px rgba(0,0,0,0.05); margin-bottom:15px;">
+    `;
+    qrContainer.style.display = 'block';
+
+    // Show Manual Confirmation Button instead of countdown
+    countdownBox.style.display = 'none';
+    actionsBox.innerHTML = `
+      <button class="btn-modal-primary" onclick="goHome()" style="background:#f59e0b; font-size:15px;"><i class="fas fa-check-double"></i> TÔI ĐÃ CHUYỂN KHOẢN XONG</button>
+    `;
+  } else {
+    // COD Flow
+    countdownBox.style.display = 'flex';
+    actionsBox.innerHTML = `
+      <button class="btn-modal-primary" onclick="goHome()"><i class="fas fa-home"></i> Về trang chủ</button>
+      <button class="btn-modal-sec" onclick="goShop()"><i class="fas fa-shopping-bag"></i> Mua thêm</button>
+    `;
+
+    document.getElementById('successModal').classList.add('show');
+
+    // Countdown only for COD
+    let count = 6;
+    document.getElementById('countdownText').textContent = `Tự động về trang chủ sau ${count} giây...`;
+    countdownTimer = setInterval(() => {
+      count--;
+      if (count <= 0) {
+        clearInterval(countdownTimer);
+        goHome();
+      } else {
+        document.getElementById('countdownText').textContent = `Tự động về trang chủ sau ${count} giây...`;
+      }
+    }, 1000);
+  }
+  
+  if (paymentMethod === 'Transfer' || paymentMethod === 'MoMo') {
+     document.getElementById('successModal').classList.add('show');
+  }
 }
 
 function goHome() {
