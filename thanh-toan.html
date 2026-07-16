@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Thanh Toán - Châu Sơn Shop</title>
+  <meta name="description" content="Thanh toán đơn hàng tại Châu Sơn Shop - Hàng ngoại nhập chính hãng.">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       --primary: #10b981;
@@ -13,49 +16,39 @@
       --primary-light: #d1fae5;
       --danger: #ef4444;
       --warning: #f59e0b;
-      --info: #3b82f6;
-      --success: #10b981;
+      --momo: #ae2070;
+      --momo-light: #fce7f3;
+      --tpbank: #5c2d91;
+      --tpbank-light: #ede9fe;
       --bg: #f8fafc;
-      --bg-secondary: #f1f5f9;
       --card-bg: #ffffff;
       --border: #e2e8f0;
       --text: #0f172a;
       --text-muted: #64748b;
-      --text-light: #94a3b8;
     }
 
-    /* Progress Steps */
+    body { font-family: 'Inter', sans-serif; background: var(--bg); }
+
+    /* ── STEPS ── */
     .checkout-steps {
       display: flex;
       justify-content: center;
+      align-items: center;
       gap: 0;
       margin-bottom: 32px;
-      padding: 20px 0;
+      padding: 20px 0 0;
     }
-
-    .checkout-step {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      position: relative;
-    }
-
-    .checkout-step:not(:last-child)::after {
-      content: '';
-      position: absolute;
-      top: 22px;
-      right: -28px;
-      width: 24px;
+    .checkout-step { display: flex; align-items: center; gap: 12px; }
+    .checkout-step:not(:last-child) { margin-right: 0; }
+    .step-connector {
+      width: 48px;
       height: 2px;
       background: #d1d5db;
-      z-index: 0;
+      flex-shrink: 0;
     }
-
-    .checkout-step.active:not(:last-child)::after { background: var(--primary); }
-
+    .step-connector.done { background: var(--primary); }
     .step-badge {
-      width: 44px;
-      height: 44px;
+      width: 44px; height: 44px;
       border-radius: 50%;
       background: #e5e7eb;
       color: #6b7280;
@@ -63,399 +56,541 @@
       align-items: center;
       justify-content: center;
       font-weight: 700;
-      position: relative;
-      z-index: 1;
-      transition: all 0.3s ease;
+      font-size: 16px;
+      flex-shrink: 0;
+      transition: all 0.3s;
     }
+    .checkout-step.done .step-badge { background: var(--primary); color: #fff; }
+    .checkout-step.active .step-badge { background: var(--primary-dark); color: #fff; box-shadow: 0 4px 12px rgba(16,185,129,.3); }
+    .step-label { font-size: 12px; font-weight: 600; color: #6b7280; white-space: nowrap; }
+    .checkout-step.done .step-label, .checkout-step.active .step-label { color: var(--primary-dark); }
 
-    .checkout-step.active .step-badge {
-      background: var(--primary);
-      color: #fff;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-
-    .step-label {
-      font-size: 12px;
-      font-weight: 600;
-      color: #6b7280;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    .checkout-step.active .step-label { color: var(--primary); }
-
-    /* Layout */
+    /* ── LAYOUT ── */
     .checkout-layout {
       display: grid;
       grid-template-columns: 1fr 400px;
       gap: 24px;
       align-items: start;
     }
-    
+
     .checkout-box {
-      background: #fff;
+      background: var(--card-bg);
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 28px;
-      margin-bottom: 24px;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
+      margin-bottom: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.04);
+      transition: box-shadow .2s;
     }
-
-    .checkout-box:hover {
-      border-color: var(--primary-light);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.08);
-    }
-    
+    .checkout-box:hover { box-shadow: 0 4px 16px rgba(0,0,0,.07); }
     .checkout-box h3 {
-      font-size: 16px;
-      font-weight: 700;
+      font-size: 15px; font-weight: 700;
       color: var(--text);
-      margin-bottom: 18px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid var(--bg);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1.5px solid #f1f5f9;
+      display: flex; align-items: center; gap: 10px;
     }
+    .checkout-box h3 i { font-size: 17px; }
 
-    .checkout-box h3 i { color: var(--primary); font-size: 18px; }
-    
-    .form-group {
-      margin-bottom: 16px;
-    }
-    
+    /* ── FORM ── */
+    .form-group { margin-bottom: 16px; }
     .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      margin-bottom: 7px;
-      color: var(--text);
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--text); margin-bottom: 7px;
     }
-    
-    .form-group label span { color: var(--danger); }
-    
-    .form-group input, .form-group textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-      transition: all 0.3s ease;
-      background: #fff;
+    .form-group label .req { color: var(--danger); }
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--border); border-radius: 9px;
+      font-size: 14px; font-family: inherit;
+      transition: all .25s; background: #fff; color: var(--text);
+      -webkit-appearance: none;
     }
-    
-    .form-group input:focus, .form-group textarea:focus {
-      outline: none;
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
-      background: #f0fbf8;
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(16,185,129,.1);
     }
-    
-    .payment-methods {
-      display: flex;
-      flex-direction: column;
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+    /* ── PAYMENT METHOD CARDS ── */
+    .pm-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 12px;
+      margin-bottom: 20px;
     }
-    
-    .pm-option {
-      border: 1.5px solid var(--border);
-      border-radius: 10px;
-      padding: 16px 18px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
+    .pm-card {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 16px 12px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      text-align: center;
+      transition: all .25s;
       background: #fff;
+      position: relative;
     }
-    
-    .pm-option:hover {
-      border-color: var(--primary-light);
+    .pm-card:hover { border-color: #94d1be; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+    .pm-card.active {
+      border-color: var(--primary);
       background: #f0fbf8;
-      transform: translateX(4px);
+      box-shadow: 0 4px 14px rgba(16,185,129,.18);
     }
-    
-    .pm-option input[type="radio"] {
-      accent-color: var(--primary);
-      width: 20px;
-      height: 20px;
-      cursor: pointer;
+    .pm-card input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+    .pm-icon { font-size: 28px; margin-bottom: 8px; display: block; }
+    .pm-label { font-size: 12px; font-weight: 600; color: var(--text); }
+    .pm-sub { font-size: 11px; color: var(--text-muted); margin-top: 3px; }
+    .pm-check {
+      position: absolute; top: 8px; right: 8px;
+      width: 18px; height: 18px;
+      border-radius: 50%; background: var(--primary);
+      color: #fff; font-size: 10px;
+      display: none; align-items: center; justify-content: center;
+    }
+    .pm-card.active .pm-check { display: flex; }
+
+    /* ── PAYMENT DETAIL PANEL ── */
+    .payment-detail-panel {
+      border-radius: 14px;
+      padding: 0;
+      overflow: hidden;
+      display: none;
+      animation: slideDown .3s ease;
+    }
+    .payment-detail-panel.show { display: block; }
+
+    /* COD */
+    .cod-panel {
+      background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+      border: 1.5px solid #86efac;
+      border-radius: 14px;
+      padding: 20px 22px;
+      display: flex; gap: 16px; align-items: flex-start;
+    }
+    .cod-icon { font-size: 36px; flex-shrink: 0; }
+    .cod-title { font-size: 15px; font-weight: 700; color: #065f46; margin-bottom: 6px; }
+    .cod-desc { font-size: 13px; color: #047857; line-height: 1.6; }
+
+    /* VIETQR DYNAMIC PANEL */
+    .vietqr-panel {
+      border: 2px solid var(--tpbank);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .vietqr-header {
+      background: linear-gradient(135deg, #5c2d91, #7c3aed);
+      padding: 16px 22px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .vietqr-header-logo {
+      background: rgba(255,255,255,.15);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.5px;
+    }
+    .vietqr-header-title { color: #fff; font-weight: 700; font-size: 15px; flex: 1; }
+    .vietqr-header-sub { color: rgba(255,255,255,.7); font-size: 12px; }
+    .vietqr-body { padding: 22px; background: #fff; }
+    .vietqr-layout {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+    }
+    .bank-info-table { width: 100%; }
+    .bank-info-table tr td {
+      padding: 7px 0;
+      font-size: 13.5px;
+      vertical-align: top;
+    }
+    .bank-info-table td:first-child {
+      color: var(--text-muted);
+      width: 120px;
       flex-shrink: 0;
     }
-    
-    .pm-option span {
-      font-weight: 600;
-      font-size: 14px;
+    .bank-info-table td:last-child {
+      font-weight: 700;
       color: var(--text);
+    }
+    .vietqr-amount-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #5c2d91, #7c3aed);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .vietqr-content-badge {
+      display: inline-block;
+      background: #fef9c3;
+      color: #92400e;
+      border: 1px solid #fde68a;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      font-family: monospace;
+    }
+
+    .qr-box {
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .qr-box-label {
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 10px;
+    }
+    .qr-image-wrap {
+      background: #fff;
+      border: 2px solid var(--tpbank);
+      border-radius: 12px;
+      padding: 10px;
+      display: inline-block;
+      box-shadow: 0 4px 16px rgba(92,45,145,.15);
+    }
+    .qr-image-wrap img {
+      width: 160px;
+      height: 160px;
+      display: block;
+      border-radius: 6px;
+    }
+    .qr-logos {
+      display: flex; gap: 6px; justify-content: center; margin-top: 8px;
+    }
+    .qr-logo-badge {
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      letter-spacing: 0.03em;
+    }
+
+    .vietqr-copy-row {
+      margin-top: 16px;
+      background: #f8fafc;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
       display: flex;
       align-items: center;
-      gap: 10px;
+      justify-content: space-between;
+      gap: 12px;
     }
-    
-    .pm-option img {
-      height: 28px;
-      width: auto;
-      object-fit: contain;
+    .vietqr-copy-row span {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--tpbank);
+      letter-spacing: 1px;
+      font-family: monospace;
     }
-
-    .pm-active {
-      border-color: var(--primary);
-      background: #f0fbf8;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-    }
-    
-    .bank-info-box {
-      display: none;
-      background: linear-gradient(135deg, #f0fbf8 0%, #ecfdf5 100%);
-      border: 1px solid var(--primary-light);
-      padding: 16px 18px;
-      border-radius: 10px;
-      margin-top: 12px;
-      font-size: 13.5px;
-      line-height: 1.7;
-      color: var(--text-muted);
-    }
-    
-    .bank-info-box.show { display: block; animation: slideDown 0.3s ease; }
-    .bank-info-box strong { color: var(--primary-dark); font-weight: 700; }
-
-    /* Bank Selection Grid */
-    .bank-list {
-      display: none;
-      background: linear-gradient(135deg, #f0fbf8 0%, #ecfdf5 100%);
-      border: 1px solid var(--primary-light);
-      padding: 16px;
-      border-radius: 10px;
-      margin-top: 12px;
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-      gap: 10px;
-    }
-
-    .bank-list.show { display: grid; animation: slideDown 0.3s ease; }
-
-    .bank-option {
-      border: 1px solid #e5e7eb;
-      border-radius: 8px;
-      padding: 12px 10px;
-      text-align: center;
+    .btn-copy {
+      padding: 7px 14px;
+      background: var(--tpbank);
+      color: #fff;
+      border: none;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
-      background: #fff;
+      transition: all .2s;
+      white-space: nowrap;
+    }
+    .btn-copy:hover { background: #4c1d95; }
+    .btn-copy.copied { background: var(--primary); }
+
+    .vietqr-warning {
+      margin-top: 14px;
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 9px;
+      padding: 12px 16px;
+      font-size: 12.5px;
+      color: #92400e;
       display: flex;
-      flex-direction: column;
+      gap: 8px;
+      align-items: flex-start;
+    }
+    .vietqr-warning i { color: #f59e0b; margin-top: 2px; flex-shrink: 0; }
+
+    /* MOMO PANEL */
+    .momo-panel {
+      border: 2px solid var(--momo);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .momo-header {
+      background: linear-gradient(135deg, #ae2070, #d4226b);
+      padding: 16px 22px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .momo-logo-text {
+      background: rgba(255,255,255,.2);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+    .momo-header-title { color: #fff; font-weight: 700; font-size: 15px; flex: 1; }
+    .momo-body { padding: 22px; background: #fff; }
+    .momo-layout {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 24px;
+      align-items: start;
+    }
+    .momo-qr-wrap {
+      background: #fff;
+      border: 2px solid var(--momo);
+      border-radius: 12px;
+      padding: 10px;
+      display: inline-block;
+      box-shadow: 0 4px 16px rgba(174,32,112,.15);
+    }
+    .momo-qr-wrap img {
+      width: 160px; height: 160px;
+      display: block; border-radius: 6px;
+    }
+    .momo-amount-badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #ae2070, #d4226b);
+      color: #fff;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 15px;
+      font-weight: 800;
+    }
+    .momo-steps {
+      margin-top: 14px;
+      padding: 14px 16px;
+      background: var(--momo-light);
+      border-radius: 10px;
+      border: 1px solid #f9a8d4;
+    }
+    .momo-steps ol {
+      margin: 0; padding: 0 0 0 18px;
+      font-size: 13px; color: #9d174d;
+      line-height: 1.9;
+    }
+    .momo-steps .step-title {
+      font-size: 12.5px; font-weight: 700; color: var(--momo);
+      text-transform: uppercase; letter-spacing: .06em;
+      margin-bottom: 8px;
+    }
+
+    /* ── SUMMARY BOX ── */
+    .summary-box {
+      position: sticky;
+      top: 90px;
+      background: #fff;
+      border: 1.5px solid var(--primary-light);
+      border-radius: 14px;
+      padding: 24px;
+      box-shadow: 0 4px 20px rgba(16,185,129,.1);
+    }
+    .summary-item {
+      display: flex; align-items: flex-start;
+      gap: 12px; margin-bottom: 14px;
+    }
+    .summary-item img {
+      width: 56px; height: 56px;
+      object-fit: contain;
+      border: 1px solid #f0f0f0;
+      border-radius: 8px;
+      background: #fafafa;
+      flex-shrink: 0;
+    }
+    .summary-item-name {
+      font-size: 13px; font-weight: 600;
+      color: var(--text);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .summary-item-qty { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
+    .summary-item-price { font-size: 14px; font-weight: 700; color: var(--primary); margin-left: auto; flex-shrink: 0; }
+    .summary-divider { height: 1px; background: var(--border); margin: 16px 0; }
+    .summary-row {
+      display: flex; justify-content: space-between;
+      align-items: center; font-size: 13.5px;
+      color: var(--text-muted); margin-bottom: 10px;
+    }
+    .summary-row.total {
+      font-size: 18px; font-weight: 800;
+      padding-top: 14px; border-top: 2px solid var(--border);
+      margin-top: 12px; color: var(--text);
+    }
+    .summary-row.total span:last-child { color: var(--primary); font-size: 22px; }
+
+    /* ── SUBMIT BUTTON ── */
+    .btn-complete {
+      width: 100%;
+      background: linear-gradient(135deg, #059669, #10b981);
+      color: #fff; border: none;
+      padding: 15px 16px;
+      font-size: 15px; font-weight: 700;
+      font-family: inherit; cursor: pointer;
+      border-radius: 11px;
+      transition: all .3s;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-top: 20px;
+      box-shadow: 0 4px 14px rgba(16,185,129,.35);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-complete:hover { background: linear-gradient(135deg, #047857, #059669); box-shadow: 0 6px 18px rgba(16,185,129,.45); transform: translateY(-1px); }
+    .btn-complete:disabled { opacity: 0.6; cursor: wait; transform: none; }
+
+    .trust-strip {
+      display: flex; gap: 12px; justify-content: center;
+      margin-top: 16px; padding-top: 14px;
+      border-top: 1px solid var(--border);
+      flex-wrap: wrap;
+    }
+    .trust-item { display: flex; align-items: center; gap: 5px; font-size: 11.5px; color: var(--text-muted); }
+    .trust-item i { color: var(--primary); }
+
+    /* ── FREE SHIP BANNER ── */
+    .free-ship-banner {
+      background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+      border: 1px solid #86efac;
+      border-radius: 10px;
+      padding: 10px 16px;
+      font-size: 13px;
+      color: #065f46;
+      font-weight: 600;
+      margin-bottom: 16px;
+      display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .bank-option:hover {
-      border-color: var(--primary);
-      background: #f0fbf8;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
-    }
-
-    .bank-option.selected {
-      border-color: var(--primary);
-      background: var(--primary-light);
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
-    }
-
-    .bank-icon {
-      font-size: 24px;
-      line-height: 1;
-    }
-
-    .bank-name {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text);
-      word-break: break-word;
-    }
-
-    .atm-info-box {
-      display: none;
-      background: linear-gradient(135deg, #f0fbf8 0%, #ecfdf5 100%);
-      border: 1px solid var(--primary-light);
-      padding: 16px 18px;
-      border-radius: 10px;
-      margin-top: 12px;
-      font-size: 13.5px;
-      line-height: 1.7;
-      color: var(--text-muted);
-    }
-
-    .atm-info-box.show { display: block; animation: slideDown 0.3s ease; }
-    .atm-info-box strong { color: var(--primary-dark); font-weight: 700; }
-
-    @keyframes slideDown {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    
-    /* Summary */
-    .summary-box {
-      position: sticky;
-      top: 100px;
-      background: linear-gradient(135deg, #fff 0%, #f8fdf8 100%);
-      border: 1px solid var(--primary-light);
-      box-shadow: 0 4px 16px rgba(16, 185, 129, 0.12);
-    }
-    
-    .summary-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    
-    .summary-item img {
-      width: 60px;
-      height: 60px;
-      object-fit: cover;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      background: #f3f3f3;
-    }
-    
-    .summary-item-info { flex: 1; }
-    .summary-item-name { font-size: 13px; font-weight: 600; color: var(--text); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    .summary-item-qty { font-size: 12px; color: var(--text-muted); margin-top: 4px; }
-    .summary-item-price { font-size: 14px; font-weight: 700; color: var(--primary); }
-    
-    .summary-divider { height: 1px; background: var(--border); margin: 16px 0; }
-
-    .summary-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; font-size: 13.5px; color: var(--text-muted); }
-    .summary-row.highlight { font-size: 14px; font-weight: 600; color: var(--text); }
-    .summary-row.total { font-size: 18px; font-weight: 800; padding-top: 16px; border-top: 2px solid var(--border); margin-top: 16px; color: var(--text); }
-    .summary-row.total span:last-child { color: var(--primary); font-size: 24px; }
-    
-    .btn-complete {
-      width: 100%;
-      background: linear-gradient(135deg, var(--primary) 0%, var(--success) 100%);
-      color: #fff;
-      border: none;
-      padding: 14px 16px;
-      font-size: 14px;
-      font-weight: 700;
-      font-family: inherit;
-      cursor: pointer;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 20px;
-      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-    }
-    .btn-complete:hover {
-      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
-      box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
-      transform: translateY(-2px);
-    }
-    .btn-complete:active { transform: translateY(0); }
-    .btn-complete:disabled {
-      opacity: 0.6;
-      cursor: wait;
-      box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
-    }
-
-    .trust-badges {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-      justify-content: center;
-      flex-wrap: wrap;
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
-    .badge-item {
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .badge-item i { color: var(--primary); }
-    
-    /* Success Popup */
-    .success-overlay {
-      position: fixed;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 2000;
+    /* ── SUCCESS MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.55);
+      z-index: 3000;
       display: none;
       align-items: center;
       justify-content: center;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
     }
-    .success-overlay.show { display: flex; animation: fadeIn 0.3s ease; }
-    .success-popup {
+    .modal-overlay.show { display: flex; animation: fadeIn .3s ease; }
+    .modal-box {
       background: #fff;
-      width: 420px;
-      max-width: 90%;
-      border-radius: 14px;
-      padding: 40px 32px;
+      width: 480px;
+      max-width: 94vw;
+      border-radius: 20px;
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 24px 56px rgba(0,0,0,.2);
+    }
+    .modal-header-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+      padding: 36px 32px 28px;
       text-align: center;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
-      transform: scale(0.95);
-      opacity: 0;
-      transition: all 0.3s ease;
     }
-    .success-overlay.show .success-popup {
-      transform: scale(1);
-      opacity: 1;
-      animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    }
-    .success-icon {
-      width: 80px; height: 80px;
-      background: linear-gradient(135deg, var(--primary-light) 0%, #a7f3d0 100%);
-      color: var(--primary-dark);
+    .modal-success-icon {
+      width: 72px; height: 72px;
+      background: rgba(255,255,255,.2);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 40px;
-      margin: 0 auto 20px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 36px; color: #fff;
+      margin: 0 auto 16px;
     }
-    .success-popup h2 { font-size: 24px; color: var(--text); margin-bottom: 10px; font-weight: 700; }
-    .success-popup p { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
-    .success-popup-code { 
-      background: var(--bg);
-      padding: 12px 14px;
-      border-radius: 8px;
-      font-weight: 700;
-      color: var(--primary);
-      margin-bottom: 15px;
-      font-family: 'Courier New', monospace;
+    .modal-success-title { color: #fff; font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+    .modal-success-sub { color: rgba(255,255,255,.85); font-size: 14px; }
+    .modal-body { padding: 28px 32px; }
+    .modal-order-code {
+      background: #f0fdf4;
+      border: 2px dashed var(--primary);
+      border-radius: 10px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+    .modal-order-code-label { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+    .modal-order-code-value {
+      font-size: 20px; font-weight: 800;
+      color: var(--primary-dark);
+      font-family: monospace;
+      letter-spacing: 2px;
+    }
+    .modal-payment-note {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 10px;
+      padding: 14px 16px;
       font-size: 13px;
+      color: #92400e;
+      margin-bottom: 18px;
+      display: none;
+    }
+    .modal-payment-note.show { display: block; }
+    .modal-info-list { font-size: 13.5px; color: var(--text-muted); line-height: 1.9; margin-bottom: 20px; }
+    .modal-info-list i { color: var(--primary); margin-right: 6px; width: 16px; }
+    .modal-actions { display: flex; gap: 10px; }
+    .btn-modal-primary {
+      flex: 1; padding: 12px;
+      background: var(--primary);
+      color: #fff; border: none;
+      border-radius: 9px;
+      font-size: 14px; font-weight: 700;
+      cursor: pointer; font-family: inherit;
+      transition: all .2s;
+    }
+    .btn-modal-primary:hover { background: var(--primary-dark); }
+    .btn-modal-sec {
+      flex: 1; padding: 12px;
+      background: var(--bg);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      font-size: 14px; font-weight: 600;
+      cursor: pointer; font-family: inherit;
+      transition: all .2s;
+    }
+    .btn-modal-sec:hover { background: #f1f5f9; }
+
+    .countdown-hint {
+      font-size: 12px; color: var(--text-muted);
+      text-align: center; margin-top: 14px;
+      display: flex; align-items: center; justify-content: center; gap: 5px;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; backdrop-filter: blur(0); }
-      to { opacity: 1; backdrop-filter: blur(4px); }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
 
-    @keyframes popIn {
-      from { transform: scale(0.8); opacity: 0; }
-      to { transform: scale(1); opacity: 1; }
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1000px) {
+      .checkout-layout { grid-template-columns: 1fr; }
+      .summary-box { position: static; }
     }
-    
-    @media (max-width: 1000px) { .checkout-layout { grid-template-columns: 1fr; } .summary-box { position: static; } }
-    @media (max-width: 600px) {
-      .checkout-steps { flex-direction: column; gap: 12px; }
-      .checkout-step:not(:last-child)::after { display: none; }
-      .step-label { display: none; }
-      .step-badge { width: 36px; height: 36px; }
-      .checkout-box { padding: 20px; }
+    @media (max-width: 680px) {
+      .vietqr-layout, .momo-layout { grid-template-columns: 1fr; }
+      .qr-box, .momo-qr-col { text-align: center; }
+      .pm-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .checkout-box { padding: 18px; }
+      .checkout-steps { gap: 4px; }
+      .step-connector { width: 24px; }
+      .step-label { font-size: 10px; }
     }
   </style>
 </head>
 <body>
 
+<!-- TOP BAR -->
 <div class="top-bar">
   <div class="container">
     <div class="top-bar-left">
@@ -468,6 +603,7 @@
   </div>
 </div>
 
+<!-- HEADER -->
 <header class="main-header">
   <div class="container">
     <div class="header-inner">
@@ -477,12 +613,10 @@
           <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
         </a>
       </div>
-      <div class="search-wrap" style="visibility:hidden;">
-        <!-- Hide search in checkout to focus -->
-      </div>
+      <div style="flex:1;"></div>
       <div class="header-info">
         <div class="info-item">
-          <div class="info-icon"><i class="fas fa-shield-check"></i></div>
+          <div class="info-icon"><i class="fas fa-lock"></i></div>
           <div class="info-item-text"><strong>Thanh toán</strong><small>Bảo mật 100%</small></div>
         </div>
       </div>
@@ -490,264 +624,340 @@
   </div>
 </header>
 
-<div class="page-wrapper" style="background:#f5f5f5; padding-top:20px;">
+<!-- PAGE WRAPPER -->
+<div class="page-wrapper" style="background:#f5f7fb; padding-top:20px;">
   <div class="container">
+
+    <!-- Breadcrumb -->
     <div class="breadcrumb" style="margin-bottom:20px;">
       <a href="index.html">Trang chủ</a><span>›</span>
       <a href="gio-hang.html">Giỏ hàng</a><span>›</span>
       <span>Thanh toán</span>
     </div>
 
-    <!-- Progress Steps -->
-    <div class="checkout-steps" style="margin-bottom: 28px;">
-      <div class="checkout-step active">
-        <div class="step-badge">1</div>
+    <!-- Steps -->
+    <div class="checkout-steps">
+      <div class="checkout-step done">
+        <div class="step-badge"><i class="fas fa-check" style="font-size:14px;"></i></div>
         <div class="step-label">Giỏ hàng</div>
       </div>
+      <div class="step-connector done"></div>
       <div class="checkout-step active">
         <div class="step-badge">2</div>
-        <div class="step-label">Thông tin</div>
+        <div class="step-label">Thông tin & Thanh toán</div>
       </div>
-      <div class="checkout-step active">
+      <div class="step-connector"></div>
+      <div class="checkout-step">
         <div class="step-badge">3</div>
-        <div class="step-label">Thanh toán</div>
+        <div class="step-label">Xác nhận</div>
       </div>
     </div>
 
-    <form id="checkoutForm" onsubmit="handleCheckout(event)">
+    <!-- FORM -->
+    <form id="checkoutForm" onsubmit="handleCheckout(event)" novalidate>
       <div class="checkout-layout">
-        
-        <!-- LEFT COL -->
+
+        <!-- ═══ LEFT COLUMN ═══ -->
         <div>
-          <!-- THÔNG TIN GIAO HÀNG -->
+
+          <!-- SHIPPING INFO -->
           <div class="checkout-box">
-            <h3><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Thông tin giao hàng</h3>
+            <h3><i class="fas fa-map-marker-alt" style="color:var(--primary)"></i> Thông tin nhận hàng</h3>
             <div class="form-group">
-              <label>Họ và tên <span>*</span></label>
-              <input type="text" id="custName" placeholder="Nhập họ và tên người nhận" required>
+              <label>Họ và tên <span class="req">*</span></label>
+              <input type="text" id="custName" placeholder="Nhập họ và tên người nhận" required autocomplete="name">
             </div>
-            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+            <div class="form-row">
               <div class="form-group">
-                <label>Số điện thoại <span>*</span></label>
-                <input type="tel" id="custPhone" placeholder="Ví dụ: 0987153876" required pattern="[0-9]{10,11}">
+                <label>Số điện thoại <span class="req">*</span></label>
+                <input type="tel" id="custPhone" placeholder="0987 153 876" required autocomplete="tel">
               </div>
               <div class="form-group">
-                <label>Email (Tùy chọn)</label>
-                <input type="email" id="custEmail" placeholder="Nhập email để nhận hóa đơn">
+                <label>Email <small style="color:#aaa;font-weight:400;">(tùy chọn)</small></label>
+                <input type="email" id="custEmail" placeholder="email@example.com" autocomplete="email">
               </div>
             </div>
             <div class="form-group">
-              <label>Địa chỉ nhận hàng <span>*</span></label>
-              <input type="text" id="custAddress" placeholder="Số nhà, tên đường, phường/xã, quận/huyện, tỉnh/thành" required>
+              <label>Địa chỉ nhận hàng <span class="req">*</span></label>
+              <input type="text" id="custAddress" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" required autocomplete="street-address">
             </div>
             <div class="form-group" style="margin-bottom:0;">
-              <label>Ghi chú đơn hàng (Tùy chọn)</label>
-              <textarea id="custNote" rows="3" placeholder="Ghi chú về thời gian hoặc địa điểm giao hàng..."></textarea>
+              <label>Ghi chú <small style="color:#aaa;font-weight:400;">(tùy chọn)</small></label>
+              <textarea id="custNote" rows="2" placeholder="Ghi chú thời gian giao hàng, màu sắc, số lượng..."></textarea>
             </div>
           </div>
 
-          <!-- PHƯƠNG THỨC THANH TOÁN -->
+          <!-- PAYMENT METHOD -->
           <div class="checkout-box">
-            <h3><i class="fas fa-wallet" style="color:var(--primary)"></i> Phương thức thanh toán</h3>
-            <div class="payment-methods">
-              
-              <label class="pm-option pm-active">
-                <input type="radio" name="paymentMethod" value="COD" checked onchange="toggleBankInfo()">
-                <span>💵 Thanh toán khi nhận hàng (COD)</span>
-              </label>
-              
-              <label class="pm-option">
-                <input type="radio" name="paymentMethod" value="Transfer" onchange="toggleBankInfo()">
-                <span>🏦 Chuyển khoản ngân hàng</span>
-              </label>
-              
-              <div class="bank-info-box" id="bankInfoBox" style="display: none;">
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start;">
-                  <div>
-                    <div style="margin-bottom: 15px;">
-                      <strong style="color: var(--primary);">Thông tin chuyển khoản:</strong><br><br>
-                      - Ngân hàng: <strong>TP Bank</strong><br>
-                      - Số tài khoản: <strong>0733 0649 701</strong><br>
-                      - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
-                      - Nội dung: <strong>[SĐT của bạn]</strong>
-                    </div>
-                    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
-                      ✓ Đơn hàng sẽ được xử lý ngay sau khi thanh toán.
-                    </div>
-                  </div>
-                  <div style="flex-shrink: 0;">
-                    <div style="font-weight: 600; margin-bottom: 12px; color: var(--text); font-size: 13px; text-align: center;">🔐 Quét QR:</div>
-                    <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid var(--primary-light); box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);">
-                      <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/bank.jpg" alt="TP Bank QR Code" style="width: 180px; height: 180px; border-radius: 6px; display: block;">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <label class="pm-option">
-                <input type="radio" name="paymentMethod" value="ATM" onchange="toggleBankInfo()">
-                <span>💳 Thẻ ATM / Internet Banking</span>
-              </label>
+            <h3><i class="fas fa-credit-card" style="color:var(--primary)"></i> Phương thức thanh toán</h3>
 
-              <div class="bank-list" id="bankList" style="display: none;">
-                <div class="bank-option" onclick="selectBank('vietcombank')">
-                  <div class="bank-icon" style="background: #003a96; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">VCB</div>
-                  <div class="bank-name"><strong>VCB</strong><br><span style="font-size: 11px; color: #999;">Vietcombank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('acb')">
-                  <div class="bank-icon" style="background: #1f61e5; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">ACB</div>
-                  <div class="bank-name"><strong>ACB</strong><br><span style="font-size: 11px; color: #999;">ACB Bank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('mbbank')">
-                  <div class="bank-icon" style="background: #0066cc; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">MB</div>
-                  <div class="bank-name"><strong>MB</strong><br><span style="font-size: 11px; color: #999;">MB Bank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('techcombank')">
-                  <div class="bank-icon" style="background: #e30613; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">TCB</div>
-                  <div class="bank-name"><strong>TCB</strong><br><span style="font-size: 11px; color: #999;">Techcombank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('agribank')">
-                  <div class="bank-icon" style="background: #00703c; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">AGB</div>
-                  <div class="bank-name"><strong>AGB</strong><br><span style="font-size: 11px; color: #999;">Agribank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('bidv')">
-                  <div class="bank-icon" style="background: #004b8d; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">BID</div>
-                  <div class="bank-name"><strong>BIDV</strong><br><span style="font-size: 11px; color: #999;">BIDV</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('shb')">
-                  <div class="bank-icon" style="background: #e63946; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">SHB</div>
-                  <div class="bank-name"><strong>SHB</strong><br><span style="font-size: 11px; color: #999;">SHB Bank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('vib')">
-                  <div class="bank-icon" style="background: #ffa500; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">VIB</div>
-                  <div class="bank-name"><strong>VIB</strong><br><span style="font-size: 11px; color: #999;">VIB Bank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('hdbank')">
-                  <div class="bank-icon" style="background: #8b0000; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">HDB</div>
-                  <div class="bank-name"><strong>HDB</strong><br><span style="font-size: 11px; color: #999;">HDBank</span></div>
-                </div>
-                <div class="bank-option" onclick="selectBank('lpbank')">
-                  <div class="bank-icon" style="background: #0052cc; color: white; width: 48px; height: 48px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 16px; margin: 0 auto 8px;">LPB</div>
-                  <div class="bank-name"><strong>LPB</strong><br><span style="font-size: 11px; color: #999;">LPBank</span></div>
-                </div>
-              </div>
-
-              <div class="atm-info-box" id="atmInfoBox" style="display: none;">
-                <div style="margin-bottom: 15px;">
-                  <strong style="color: var(--primary);">💳 Chuyển khoản tới TP Bank:</strong><br><br>
-                  - Ngân hàng: <strong>TP Bank</strong><br>
-                  - Số tài khoản: <strong>0733 0649 701</strong><br>
-                  - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
-                  - Nội dung: <strong>[SĐT của bạn]</strong>
-                </div>
-                <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
-                  ✓ Sau khi chuyển khoản, hệ thống sẽ tự động cập nhật trong vòng 30 phút.
-                </div>
-              </div>
-              
-              <label class="pm-option">
-                <input type="radio" name="paymentMethod" value="MoMo" onchange="toggleBankInfo()">
-                <span>📱 Ví điện tử MoMo</span>
+            <!-- 3 PM CARDS -->
+            <div class="pm-grid">
+              <label class="pm-card active" id="pmCOD">
+                <input type="radio" name="pm" value="COD" checked onchange="onPmChange('COD')">
+                <span class="pm-check"><i class="fas fa-check"></i></span>
+                <span class="pm-icon">💵</span>
+                <div class="pm-label">Tiền mặt</div>
+                <div class="pm-sub">COD khi nhận hàng</div>
               </label>
-              
-              <div class="bank-info-box momo-qr-box" id="momoQrBox" style="display: none;">
-                <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start;">
-                  <div>
-                    <div style="margin-bottom: 15px;">
-                      <strong style="color: var(--primary);">Thông tin thanh toán MoMo:</strong><br><br>
-                      - Số điện thoại: <strong>0987153876</strong><br>
-                      - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
-                      - Nội dung: <strong>[Mã đơn hàng]</strong>
-                    </div>
-                    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
-                      ✓ Đơn hàng sẽ được xử lý sau khi thanh toán thành công.
-                    </div>
-                  </div>
-                  <div style="flex-shrink: 0;">
-                    <div style="font-weight: 600; margin-bottom: 12px; color: var(--text); font-size: 13px; text-align: center;">🔐 Quét QR:</div>
-                    <div style="background: white; padding: 12px; border-radius: 10px; border: 2px solid #f5a623; box-shadow: 0 2px 8px rgba(245, 166, 35, 0.15);">
-                      <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg" alt="MoMo QR Code" style="width: 180px; height: 180px; border-radius: 6px; display: block;">
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
+              <label class="pm-card" id="pmBank">
+                <input type="radio" name="pm" value="Transfer" onchange="onPmChange('Transfer')">
+                <span class="pm-check"><i class="fas fa-check"></i></span>
+                <span class="pm-icon">🏦</span>
+                <div class="pm-label">TPBank VietQR</div>
+                <div class="pm-sub">QR tự động theo đơn</div>
+              </label>
+              <label class="pm-card" id="pmMomo">
+                <input type="radio" name="pm" value="MoMo" onchange="onPmChange('MoMo')">
+                <span class="pm-check"><i class="fas fa-check"></i></span>
+                <span class="pm-icon">📱</span>
+                <div class="pm-label">Ví MoMo</div>
+                <div class="pm-sub">Quét QR nhanh</div>
+              </label>
             </div>
-          </div>
-        </div>
 
-        <!-- RIGHT COL (SUMMARY) -->
+            <!-- COD DETAIL -->
+            <div class="payment-detail-panel show" id="detailCOD">
+              <div class="cod-panel">
+                <div class="cod-icon">🚚</div>
+                <div>
+                  <div class="cod-title">Thanh toán khi nhận hàng (COD)</div>
+                  <div class="cod-desc">
+                    Bạn sẽ thanh toán bằng <strong>tiền mặt</strong> khi nhận được hàng.<br>
+                    ✅ Không cần thẻ hay tài khoản ngân hàng<br>
+                    ✅ Kiểm tra hàng trước khi trả tiền<br>
+                    ✅ Nhân viên giao hàng có máy POS (nếu cần)
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- VIETQR DYNAMIC DETAIL -->
+            <div class="payment-detail-panel" id="detailBank">
+              <div class="vietqr-panel">
+                <div class="vietqr-header">
+                  <div>
+                    <div class="vietqr-header-logo">TPBank</div>
+                  </div>
+                  <div style="flex:1;">
+                    <div class="vietqr-header-title">Chuyển khoản qua VietQR</div>
+                    <div class="vietqr-header-sub">Hỗ trợ: MoMo · VietQR · Napas 247 · VNPAY</div>
+                  </div>
+                  <div style="font-size:28px;">🔐</div>
+                </div>
+                <div class="vietqr-body">
+                  <div class="vietqr-layout">
+                    <div>
+                      <table class="bank-info-table">
+                        <tr>
+                          <td>Ngân hàng</td>
+                          <td><span style="background:#5c2d91;color:#fff;padding:2px 8px;border-radius:4px;font-size:12px;font-weight:700;">TPBank</span></td>
+                        </tr>
+                        <tr>
+                          <td>Số TK</td>
+                          <td id="bankAccNum" style="font-size:16px;letter-spacing:1px;font-family:monospace;">0733 0649 701</td>
+                        </tr>
+                        <tr>
+                          <td>Chủ TK</td>
+                          <td>PHAN QUOC ANH</td>
+                        </tr>
+                        <tr>
+                          <td>Số tiền</td>
+                          <td><span class="vietqr-amount-badge" id="vqAmountBadge">---</span></td>
+                        </tr>
+                        <tr>
+                          <td>Nội dung CK</td>
+                          <td><span class="vietqr-content-badge" id="vqContentBadge">CS...</span></td>
+                        </tr>
+                      </table>
+
+                      <!-- Copy STK -->
+                      <div class="vietqr-copy-row">
+                        <span id="bankAccDisplay">0733 0649 701</span>
+                        <button type="button" class="btn-copy" id="copyBtn" onclick="copyAccNum()">
+                          <i class="fas fa-copy"></i> Sao chép
+                        </button>
+                      </div>
+
+                      <div class="vietqr-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <div>
+                          <strong>Lưu ý quan trọng:</strong> Nhập <strong>đúng nội dung chuyển khoản</strong> để đơn hàng được xác nhận tự động.
+                          <br>Sau khi chuyển khoản, đơn hàng sẽ được xử lý trong <strong>30–60 phút</strong>.
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- QR CODE -->
+                    <div class="qr-box">
+                      <div class="qr-box-label">Quét QR thanh toán</div>
+                      <div class="qr-image-wrap">
+                        <img id="vietQrImg" src="" alt="VietQR TPBank" onerror="this.src='images/product-1.png'">
+                      </div>
+                      <div class="qr-logos">
+                        <span class="qr-logo-badge" style="background:#5c2d91;color:#fff;">TPBank</span>
+                        <span class="qr-logo-badge" style="background:#e63946;color:#fff;">VietQR</span>
+                        <span class="qr-logo-badge" style="background:#0066cc;color:#fff;">Napas</span>
+                      </div>
+                      <div style="font-size:11px;color:#aaa;margin-top:6px;">Mọi app ngân hàng đều quét được</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- MOMO DETAIL -->
+            <div class="payment-detail-panel" id="detailMomo">
+              <div class="momo-panel">
+                <div class="momo-header">
+                  <div class="momo-logo-text">MoMo</div>
+                  <div style="flex:1;">
+                    <div class="momo-header-title">Thanh toán qua Ví MoMo</div>
+                    <div style="color:rgba(255,255,255,.7);font-size:12px;">Quét mã & chuyển đúng số tiền</div>
+                  </div>
+                  <div style="font-size:28px;">📱</div>
+                </div>
+                <div class="momo-body">
+                  <div class="momo-layout">
+                    <div>
+                      <table class="bank-info-table">
+                        <tr>
+                          <td>Số điện thoại</td>
+                          <td style="font-family:monospace;font-size:16px;letter-spacing:1px;">0987 153 876</td>
+                        </tr>
+                        <tr>
+                          <td>Tên tài khoản</td>
+                          <td>PHAN QUOC ANH</td>
+                        </tr>
+                        <tr>
+                          <td>Số tiền</td>
+                          <td><span class="momo-amount-badge" id="momoAmountBadge">---</span></td>
+                        </tr>
+                        <tr>
+                          <td>Nội dung</td>
+                          <td><span class="vietqr-content-badge" id="momoContentBadge">CS...</span></td>
+                        </tr>
+                      </table>
+
+                      <div class="momo-steps">
+                        <div class="step-title">📌 Hướng dẫn thanh toán MoMo</div>
+                        <ol>
+                          <li>Mở app <strong>MoMo</strong> → nhấn <strong>Quét mã</strong></li>
+                          <li>Quét QR bên cạnh hoặc chọn <strong>Chuyển tiền</strong></li>
+                          <li>Nhập SĐT: <strong>0987153876</strong></li>
+                          <li>Nhập <strong>đúng số tiền</strong> và <strong>nội dung</strong> ở trên</li>
+                          <li>Xác nhận → Hoàn tất!</li>
+                        </ol>
+                      </div>
+                    </div>
+
+                    <!-- MOMO QR -->
+                    <div class="momo-qr-col" style="text-align:center;flex-shrink:0;">
+                      <div class="qr-box-label">Quét QR MoMo</div>
+                      <div class="momo-qr-wrap">
+                        <!-- Static MoMo QR from Supabase storage -->
+                        <img src="https://byhddpyoctjabtcqtygu.supabase.co/storage/v1/object/public/product-images/momo.jpg"
+                             alt="MoMo QR"
+                             onerror="this.src='images/product-1.png'"
+                             style="width:160px;height:160px;display:block;border-radius:6px;">
+                      </div>
+                      <div style="font-size:11px;color:var(--momo);font-weight:600;margin-top:8px;">
+                        <i class="fas fa-info-circle"></i> Nhập đúng số tiền sau khi quét
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- /checkout-box payment -->
+        </div><!-- /left col -->
+
+        <!-- ═══ RIGHT COLUMN (SUMMARY) ═══ -->
         <div>
-          <div class="checkout-box summary-box">
-            <h3><i class="fas fa-shopping-bag"></i> Đơn hàng của bạn</h3>
-            
-            <div id="checkoutItemsList" style="margin-bottom: 16px; padding-bottom: 16px;">
-              <!-- Items loaded by JS -->
-            </div>
+          <div class="summary-box">
+            <h3 style="margin-bottom:16px;padding-bottom:14px;border-bottom:1.5px solid #f1f5f9;">
+              <i class="fas fa-shopping-bag" style="color:var(--primary);"></i> Đơn hàng của bạn
+            </h3>
+
+            <div id="checkoutItemsList"></div>
 
             <div class="summary-divider"></div>
-            
+
+            <div id="freeShipBanner" class="free-ship-banner" style="display:none;">
+              <i class="fas fa-truck" style="color:var(--primary);"></i>
+              <span>Đơn từ <strong>500,000đ</strong> được <strong>miễn phí vận chuyển</strong>!</span>
+            </div>
+
             <div class="summary-row">
               <span>Tạm tính:</span>
               <span id="coSubtotal">0đ</span>
             </div>
             <div class="summary-row">
               <span>Phí vận chuyển:</span>
-              <span id="coShipping">Miễn phí</span>
+              <span id="coShipping">---</span>
             </div>
-            
             <div class="summary-row total">
               <span>Tổng cộng:</span>
               <span id="coTotal">0đ</span>
             </div>
-            
-            <button type="submit" class="btn-complete">
-              <i class="fas fa-check-circle"></i> HOÀN TẤT ĐẶT HÀNG
+
+            <button type="submit" class="btn-complete" id="submitBtn">
+              <i class="fas fa-check-circle"></i>
+              <span id="submitBtnText">HOÀN TẤT ĐẶT HÀNG</span>
             </button>
 
-            <div class="trust-badges">
-              <div class="badge-item">
-                <i class="fas fa-lock-alt"></i>
-                <span>Bảo mật SSL</span>
-              </div>
-              <div class="badge-item">
-                <i class="fas fa-redo"></i>
-                <span>Hoàn tiền</span>
-              </div>
-              <div class="badge-item">
-                <i class="fas fa-check-circle"></i>
-                <span>100% Hợp lệ</span>
-              </div>
+            <div class="trust-strip">
+              <div class="trust-item"><i class="fas fa-lock"></i><span>Bảo mật SSL</span></div>
+              <div class="trust-item"><i class="fas fa-shield-check"></i><span>Hàng chính hãng</span></div>
+              <div class="trust-item"><i class="fas fa-undo"></i><span>Đổi trả 30 ngày</span></div>
             </div>
           </div>
-        </div>
+        </div><!-- /right col -->
 
-      </div>
+      </div><!-- /checkout-layout -->
     </form>
+
   </div>
 </div>
 
+<!-- FOOTER -->
 <footer class="footer">
   <div class="container">
-    <div class="footer-bottom"><p>© 2025 Châu Sơn Shop — Chuyên hàng ngoại nhập chính hãng.</p></div>
+    <div class="footer-bottom"><p>© 2025 Châu Sơn Shop — Hàng ngoại nhập chính hãng.</p></div>
   </div>
 </footer>
 
-<!-- SUCCESS POPUP OVERLAY -->
-<div class="success-overlay" id="successOverlay">
-  <div class="success-popup">
-    <div class="success-icon"><i class="fas fa-check"></i></div>
-    <h2>Đặt hàng thành công! ✓</h2>
-    <p>Cảm ơn bạn đã tin tưởng Châu Sơn Shop.<br>Đơn hàng của bạn đã được ghi nhận.</p>
-    <div class="success-popup-code" id="successOrderCode">Mã đơn: ...</div>
-    <p style="font-size: 12px; color: var(--text-muted); margin-top: 15px;">
-      <i class="fas fa-phone-alt" style="color: var(--primary); margin-right: 5px;"></i>
-      Chúng tôi sẽ liên hệ trong vòng 2 giờ để xác nhận.<br>
-      <i class="fas fa-envelope" style="color: var(--primary); margin-right: 5px;"></i>
-      Một email xác nhận sẽ được gửi sớm nhất.
-    </p>
-    <div style="font-size:11px; color:#aaa; margin-top:15px;">
-      <i class="fas fa-clock"></i> Chuyển về trang chủ sau 4 giây...
+<!-- ═══ SUCCESS MODAL ═══ -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal-box">
+    <div class="modal-header-success">
+      <div class="modal-success-icon"><i class="fas fa-check"></i></div>
+      <div class="modal-success-title">Đặt hàng thành công! 🎉</div>
+      <div class="modal-success-sub">Cảm ơn bạn đã tin tưởng Châu Sơn Shop</div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-order-code">
+        <div class="modal-order-code-label">Mã đơn hàng của bạn</div>
+        <div class="modal-order-code-value" id="modalOrderCode">CS20250101XXXX</div>
+      </div>
+      <div class="modal-payment-note" id="modalPayNote">
+        <i class="fas fa-exclamation-triangle" style="color:#f59e0b;margin-right:6px;"></i>
+        <span id="modalPayNoteText"></span>
+      </div>
+      <div class="modal-info-list">
+        <div><i class="fas fa-phone-alt"></i> Chúng tôi sẽ gọi điện xác nhận trong <strong>vòng 2 giờ</strong></div>
+        <div><i class="fas fa-shipping-fast"></i> Giao hàng dự kiến <strong>2–4 ngày làm việc</strong></div>
+        <div><i class="fas fa-headset"></i> Hỗ trợ: <strong>0987.153.876</strong> (8h–21h30)</div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-primary" onclick="goHome()"><i class="fas fa-home"></i> Về trang chủ</button>
+        <button class="btn-modal-sec" onclick="goShop()"><i class="fas fa-shopping-bag"></i> Mua thêm</button>
+      </div>
+      <div class="countdown-hint">
+        <i class="fas fa-clock"></i>
+        <span id="countdownText">Tự động về trang chủ sau 6 giây...</span>
+      </div>
     </div>
   </div>
 </div>
@@ -760,106 +970,42 @@
 <script src="js/cart.js"></script>
 <script src="js/tracking.js"></script>
 <script>
-document.addEventListener('DOMContentLoaded', () => {
-  const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
-  if (cartData.length === 0) {
-    window.location.href = 'gio-hang.html';
-    return;
+// ================================================================
+// PAYMENT CONFIG — Cấu hình tài khoản ngân hàng
+// ================================================================
+const PAYMENT_CONFIG = {
+  bank: {
+    bankId: 'TPB',            // Mã ngân hàng VietQR (TPBank = TPB)
+    accountNo: '07330649701', // Số TK không có khoảng trắng
+    accountName: 'PHAN QUOC ANH',
+    displayName: 'TPBank',
+    displayNo: '0733 0649 701'
+  },
+  momo: {
+    phone: '0987153876',
+    name: 'PHAN QUOC ANH'
   }
-  
-  const list = document.getElementById('checkoutItemsList');
-  const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
-  const shipping = subtotal >= 500000 ? 0 : 30000;
-  const total = subtotal + shipping;
-  
-  list.innerHTML = cartData.map(item => `
-    <div class="summary-item">
-      <img src="${item.image}" alt="">
-      <div class="summary-item-info">
-        <div class="summary-item-name">${item.name}</div>
-        <div class="summary-item-qty">SL: ${item.qty}</div>
-      </div>
-      <div class="summary-item-price">${(item.price * item.qty).toLocaleString('vi-VN')}đ</div>
-    </div>
-  `).join('');
-  
-  document.getElementById('coSubtotal').textContent = subtotal.toLocaleString('vi-VN') + 'đ';
-  document.getElementById('coShipping').innerHTML = shipping === 0 ? '<i class="fas fa-check-circle"></i> Miễn phí' : shipping.toLocaleString('vi-VN') + 'đ';
-  document.getElementById('coTotal').textContent = total.toLocaleString('vi-VN') + 'đ';
-  
-  // Highlight selected PM option
-  document.querySelectorAll('input[name="paymentMethod"]').forEach(el => {
-    el.addEventListener('change', function() {
-      document.querySelectorAll('.pm-option').forEach(opt => opt.classList.remove('pm-active'));
-      if (this.checked) this.closest('.pm-option').classList.add('pm-active');
-    });
-  });
-});
+};
 
-function toggleBankInfo() {
-  const selected = document.querySelector('input[name="paymentMethod"]:checked').value;
-  const bankBox = document.getElementById('bankInfoBox');
-  const momoBox = document.getElementById('momoQrBox');
-  const bankList = document.getElementById('bankList');
-  const atmInfo = document.getElementById('atmInfoBox');
-  
-  // Hide all first
-  bankBox.style.display = 'none';
-  momoBox.style.display = 'none';
-  bankList.style.display = 'none';
-  atmInfo.style.display = 'none';
-  
-  // Show only selected
-  if (selected === 'Transfer') {
-    bankBox.style.display = 'block';
-    bankBox.classList.add('show');
-  } else if (selected === 'MoMo') {
-    momoBox.style.display = 'block';
-    momoBox.classList.add('show');
-  } else if (selected === 'ATM') {
-    bankList.style.display = 'grid';
-    bankList.classList.add('show');
-    atmInfo.style.display = 'block';
-    atmInfo.classList.add('show');
-  }
+// ================================================================
+// GENERATE VIETQR URL — https://img.vietqr.io/image/
+// Format: /image/{BANK_ID}-{ACCOUNT_NO}-{TEMPLATE}.png
+//         ?amount={AMOUNT}&addInfo={DESCRIPTION}&accountName={NAME}
+// ================================================================
+function buildVietQrUrl(amount, description) {
+  const { bankId, accountNo, accountName } = PAYMENT_CONFIG.bank;
+  const template = 'compact2'; // compact | compact2 | print | qr_only
+  const encoded = encodeURIComponent(description);
+  const encodedName = encodeURIComponent(accountName);
+  return `https://img.vietqr.io/image/${bankId}-${accountNo}-${template}.png?amount=${amount}&addInfo=${encoded}&accountName=${encodedName}`;
 }
 
-function selectBank(bankCode) {
-  const bankNames = {
-    'vietcombank': 'Vietcombank',
-    'acb': 'ACB',
-    'mbbank': 'MB Bank',
-    'techcombank': 'Techcombank',
-    'agribank': 'Agribank',
-    'bidv': 'BIDV',
-    'shb': 'SHB',
-    'vib': 'VIB',
-    'hdbank': 'HDBank',
-    'lpbank': 'LPBank'
-  };
-
-  // Highlight selected bank
-  document.querySelectorAll('.bank-option').forEach(el => el.classList.remove('selected'));
-  event.target.closest('.bank-option').classList.add('selected');
-
-  // Update info box (mặc định chuyển tới TP Bank, nhưng có thể mở rộng)
-  const bankName = bankNames[bankCode] || 'Ngân hàng';
-  const atmInfo = document.getElementById('atmInfoBox');
-  atmInfo.innerHTML = `
-    <div style="margin-bottom: 15px;">
-      <strong style="color: var(--primary);">💳 Chuyển khoản tới TP Bank:</strong><br><br>
-      - Ngân hàng: <strong>TP Bank</strong><br>
-      - Số tài khoản: <strong>0733 0649 701</strong><br>
-      - Chủ tài khoản: <strong>PHAN QUỐC ANH</strong><br>
-      - Nội dung: <strong>[SĐT của bạn]</strong><br>
-      <br>
-      <em style="font-size: 12px; color: var(--text-muted);">✓ Bạn có thể chuyển từ ${bankName} hoặc bất kỳ ngân hàng nào qua hệ thống chuyển khoản liên ngân hàng.</em>
-    </div>
-    <div style="margin-top: 12px; font-size: 12px; color: var(--text-muted);">
-      ✓ Sau khi chuyển khoản, hệ thống sẽ tự động cập nhật trong vòng 30 phút.
-    </div>
-  `;
-}
+// ================================================================
+// CART & ORDER
+// ================================================================
+let cartData = [];
+let orderTotal = 0;
+let orderCode = '';
 
 function genOrderCode() {
   const now = new Date();
@@ -868,27 +1014,155 @@ function genOrderCode() {
   return `CS${ymd}${rand}`;
 }
 
+// Generate order code early (so QR can use it before form submit)
+orderCode = genOrderCode();
+
+function renderSummary() {
+  cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+
+  if (cartData.length === 0) {
+    window.location.href = 'gio-hang.html';
+    return;
+  }
+
+  const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
+  const shipping = subtotal >= 500000 ? 0 : 30000;
+  orderTotal = subtotal + shipping;
+
+  const list = document.getElementById('checkoutItemsList');
+  list.innerHTML = cartData.map(item => `
+    <div class="summary-item">
+      <img src="${item.image}" alt="${item.name}" onerror="this.src='images/product-1.png'" loading="lazy">
+      <div style="flex:1;">
+        <div class="summary-item-name">${item.name}</div>
+        <div class="summary-item-qty">SL: ${item.qty}</div>
+      </div>
+      <div class="summary-item-price">${(item.price * item.qty).toLocaleString('vi-VN')}đ</div>
+    </div>`).join('');
+
+  document.getElementById('coSubtotal').textContent = subtotal.toLocaleString('vi-VN') + 'đ';
+  document.getElementById('coShipping').innerHTML = shipping === 0
+    ? '<span style="color:var(--primary);font-weight:700;"><i class="fas fa-check-circle"></i> Miễn phí</span>'
+    : shipping.toLocaleString('vi-VN') + 'đ';
+  document.getElementById('coTotal').textContent = orderTotal.toLocaleString('vi-VN') + 'đ';
+
+  const fsBanner = document.getElementById('freeShipBanner');
+  if (subtotal < 500000) fsBanner.style.display = 'flex';
+
+  // Pre-generate VietQR
+  updatePaymentQr(orderCode);
+}
+
+// ================================================================
+// PAYMENT METHOD SWITCH
+// ================================================================
+function onPmChange(method) {
+  // Update card styles
+  ['COD', 'Bank', 'Momo'].forEach(id => {
+    const card = document.getElementById('pm' + id);
+    if (card) card.classList.remove('active');
+  });
+  const idMap = { COD: 'pmCOD', Transfer: 'pmBank', MoMo: 'pmMomo' };
+  if (idMap[method]) document.getElementById(idMap[method])?.classList.add('active');
+
+  // Show correct detail panel
+  ['COD', 'Bank', 'Momo'].forEach(id => {
+    document.getElementById('detail' + id)?.classList.remove('show');
+  });
+  const panelMap = { COD: 'detailCOD', Transfer: 'detailBank', MoMo: 'detailMomo' };
+  if (panelMap[method]) document.getElementById(panelMap[method])?.classList.add('show');
+
+  updatePaymentQr(orderCode);
+}
+
+// ================================================================
+// UPDATE DYNAMIC QR — Called when PM changes or on page load
+// ================================================================
+function updatePaymentQr(code) {
+  const description = `${code} CHAU SON SHOP`;
+
+  // VietQR
+  const qrImg = document.getElementById('vietQrImg');
+  const amtBadge = document.getElementById('vqAmountBadge');
+  const contentBadge = document.getElementById('vqContentBadge');
+  if (qrImg && orderTotal > 0) {
+    qrImg.src = buildVietQrUrl(orderTotal, description);
+    qrImg.alt = `QR TPBank ${orderTotal.toLocaleString('vi-VN')}đ`;
+  }
+  if (amtBadge) amtBadge.textContent = orderTotal.toLocaleString('vi-VN') + 'đ';
+  if (contentBadge) contentBadge.textContent = description;
+
+  // MoMo (amount display only, static QR)
+  const momoAmt = document.getElementById('momoAmountBadge');
+  const momoContent = document.getElementById('momoContentBadge');
+  if (momoAmt) momoAmt.textContent = orderTotal.toLocaleString('vi-VN') + 'đ';
+  if (momoContent) momoContent.textContent = description;
+}
+
+// ================================================================
+// COPY ACCOUNT NUMBER
+// ================================================================
+function copyAccNum() {
+  const accNo = PAYMENT_CONFIG.bank.accountNo;
+  navigator.clipboard.writeText(accNo).then(() => {
+    const btn = document.getElementById('copyBtn');
+    btn.innerHTML = '<i class="fas fa-check"></i> Đã sao chép!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-copy"></i> Sao chép';
+      btn.classList.remove('copied');
+    }, 2200);
+  }).catch(() => {
+    // Fallback for older browsers
+    const el = document.createElement('textarea');
+    el.value = accNo;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    const btn = document.getElementById('copyBtn');
+    btn.innerHTML = '<i class="fas fa-check"></i> Đã sao chép!';
+    btn.classList.add('copied');
+    setTimeout(() => {
+      btn.innerHTML = '<i class="fas fa-copy"></i> Sao chép';
+      btn.classList.remove('copied');
+    }, 2200);
+  });
+}
+
+// ================================================================
+// CHECKOUT SUBMIT
+// ================================================================
 async function handleCheckout(e) {
   e.preventDefault();
 
-  // Validate done by HTML5 required attributes. If it reaches here, it's valid.
-  const submitBtn = e.target.querySelector('.btn-complete');
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.style.opacity = 0.6; }
+  const name = document.getElementById('custName').value.trim();
+  const phone = document.getElementById('custPhone').value.trim();
+  const address = document.getElementById('custAddress').value.trim();
 
-  const cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
+  if (!name) { alert('Vui lòng nhập họ và tên!'); document.getElementById('custName').focus(); return; }
+  if (!phone || phone.length < 9) { alert('Vui lòng nhập số điện thoại hợp lệ!'); document.getElementById('custPhone').focus(); return; }
+  if (!address) { alert('Vui lòng nhập địa chỉ nhận hàng!'); document.getElementById('custAddress').focus(); return; }
+
+  const submitBtn = document.getElementById('submitBtn');
+  const submitText = document.getElementById('submitBtnText');
+  submitBtn.disabled = true;
+  submitText.textContent = 'Đang xử lý...';
+  submitBtn.querySelector('i').className = 'fas fa-spinner fa-spin';
+
+  cartData = JSON.parse(localStorage.getItem('chausonCart') || '[]');
   const subtotal = cartData.reduce((s, i) => s + i.price * i.qty, 0);
   const shipping = subtotal >= 500000 ? 0 : 30000;
   const total = subtotal + shipping;
-  const paymentMethod = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'COD';
-  const orderCode = genOrderCode();
+  const paymentMethod = document.querySelector('input[name="pm"]:checked')?.value || 'COD';
 
   try {
     const { data: order, error: orderErr } = await sb.from('orders').insert({
       order_code: orderCode,
-      customer_name: document.getElementById('custName').value,
-      customer_phone: document.getElementById('custPhone').value,
+      customer_name: name,
+      customer_phone: phone,
       customer_email: document.getElementById('custEmail').value || null,
-      customer_address: document.getElementById('custAddress').value,
+      customer_address: address,
       note: document.getElementById('custNote').value || null,
       payment_method: paymentMethod,
       status: 'pending',
@@ -908,31 +1182,72 @@ async function handleCheckout(e) {
       image: item.image
     }));
     const { error: itemsErr } = await sb.from('order_items').insert(items);
-    if (itemsErr) throw itemsErr;
+    if (itemsErr) console.warn('Chi tiết đơn lỗi:', itemsErr.message);
 
-    if (typeof trackEvent === 'function') {
-      trackEvent('order_placed', { orderCode, total });
-    }
+    if (typeof trackEvent === 'function') trackEvent('order_placed', { orderCode, total });
+
   } catch (err) {
-    console.error('[checkout] Lỗi khi lưu đơn hàng:', err.message);
-    // Vẫn cho khách thấy đặt hàng thành công để không chặn trải nghiệm,
-    // nhưng ghi log lỗi để admin kiểm tra sau (đơn có thể cần liên hệ tay).
+    console.error('[checkout]', err.message);
+    // Vẫn hiển thị thành công (không chặn UX)
   }
 
-  // Show success popup with order code
-  document.getElementById('successOrderCode').textContent = `Mã đơn: ${orderCode}`;
-  document.getElementById('successOverlay').classList.add('show');
+  // Show success modal
+  showSuccessModal(paymentMethod);
 
   // Clear cart
   localStorage.setItem('chausonCart', '[]');
   if (typeof updateCartUI === 'function') updateCartUI();
-
-  // Redirect to home after 4 seconds
-  setTimeout(() => {
-    window.location.href = 'index.html';
-  }, 4000);
 }
-</script>
 
+// ================================================================
+// SUCCESS MODAL
+// ================================================================
+let countdownTimer;
+
+function showSuccessModal(paymentMethod) {
+  document.getElementById('modalOrderCode').textContent = orderCode;
+
+  // Payment-specific note
+  const note = document.getElementById('modalPayNote');
+  const noteText = document.getElementById('modalPayNoteText');
+  if (paymentMethod === 'Transfer') {
+    noteText.innerHTML = `⚠️ Vui lòng chuyển khoản <strong>${orderTotal.toLocaleString('vi-VN')}đ</strong> đến TPBank <strong>0733 0649 701</strong> với nội dung <strong>${orderCode} CHAU SON SHOP</strong> để đơn được xác nhận sớm.`;
+    note.classList.add('show');
+  } else if (paymentMethod === 'MoMo') {
+    noteText.innerHTML = `⚠️ Vui lòng chuyển <strong>${orderTotal.toLocaleString('vi-VN')}đ</strong> qua MoMo số <strong>0987 153 876</strong> với nội dung <strong>${orderCode}</strong>.`;
+    note.classList.add('show');
+  }
+
+  document.getElementById('successModal').classList.add('show');
+
+  // Countdown
+  let count = 6;
+  document.getElementById('countdownText').textContent = `Tự động về trang chủ sau ${count} giây...`;
+  countdownTimer = setInterval(() => {
+    count--;
+    if (count <= 0) {
+      clearInterval(countdownTimer);
+      goHome();
+    } else {
+      document.getElementById('countdownText').textContent = `Tự động về trang chủ sau ${count} giây...`;
+    }
+  }, 1000);
+}
+
+function goHome() {
+  clearInterval(countdownTimer);
+  window.location.href = 'index.html';
+}
+
+function goShop() {
+  clearInterval(countdownTimer);
+  window.location.href = 'san-pham.html';
+}
+
+// ================================================================
+// INIT
+// ================================================================
+document.addEventListener('DOMContentLoaded', renderSummary);
+</script>
 </body>
 </html>
