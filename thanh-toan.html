@@ -1372,7 +1372,7 @@ function showSuccessModal(paymentMethod) {
     // Show Manual Confirmation Button instead of countdown
     countdownBox.style.display = 'none';
     actionsBox.innerHTML = `
-      <button class="btn-modal-primary" onclick="goHome()" style="background:#f59e0b; font-size:15px;"><i class="fas fa-check-double"></i> TÔI ĐÃ CHUYỂN KHOẢN XONG</button>
+      <button id="confirmTransferBtn" class="btn-modal-primary" onclick="confirmTransferAndGoHome()" style="background:#f59e0b; font-size:15px;"><i class="fas fa-check-double"></i> TÔI ĐÃ CHUYỂN KHOẢN XONG</button>
     `;
   } else {
     // COD Flow
@@ -1406,6 +1406,24 @@ function showSuccessModal(paymentMethod) {
 function goHome() {
   clearInterval(countdownTimer);
   window.location.href = 'index.html';
+}
+
+async function confirmTransferAndGoHome() {
+  const btn = document.getElementById('confirmTransferBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác nhận...';
+  }
+  
+  try {
+    // Gọi RPC function trên Supabase để chuyển trạng thái sang confirmed
+    const { error } = await sb.rpc('confirm_order_payment', { p_order_code: orderCode });
+    if (error) console.error('Lỗi khi xác nhận đơn:', error);
+  } catch (err) {
+    console.error('Lỗi kết nối khi xác nhận:', err);
+  }
+  
+  goHome();
 }
 
 function goShop() {
