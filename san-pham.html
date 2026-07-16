@@ -550,7 +550,7 @@ onProductsReady(() => {
         <div class="product-img-wrap">
           ${p.badge ? `<span class="p-badge ${badgeClass}">${p.badge}</span>` : ''}
           ${disc > 0 ? `<div class="discount-badge">-${disc}%</div>` : ''}
-          <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+          <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='images/product-1.png'">
           <div class="product-actions">
             <button class="action-btn add-cart" onclick="addToCart('${p.id}')">
               <i class="fas fa-cart-plus"></i> Thêm vào giỏ

@@ -10,6 +10,29 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://chausonshop.vercel.app/" />
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Châu Sơn Shop - Chuyên Hàng Ngoại Nhập Chính Hãng" />
+  <meta property="og:description" content="Chuyên phân phối hàng ngoại nhập chính hãng: Collagen, Sữa ong chúa, Mỹ phẩm Nhật, Úc, Mỹ. Giá đại lý." />
+  <meta property="og:url" content="https://chausonshop.vercel.app/" />
+  <meta property="og:type" content="website" />
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Châu Sơn Shop",
+    "url": "https://chausonshop.vercel.app/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://chausonshop.vercel.app/san-pham.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  }
+  </script>
 </head>
 <body>
 
@@ -524,7 +547,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="product-img-wrap">
           ${p.badge ? `<span class="p-badge ${badgeClass}">${p.badge}</span>` : ''}
           ${disc > 0 ? `<div class="discount-badge">-${disc}%</div>` : ''}
-          <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+          <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='images/product-1.png'">
           <div class="product-actions">
             <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart('${p.id}')">
               <i class="fas fa-cart-plus"></i> Thêm vào giỏ
@@ -569,7 +592,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const pct = Math.round((sold / 600) * 100);
         return `
           <div class="flash-product-card" onclick="addToCart('${p.id}')">
-            <img src="${p.image}" alt="${p.name}" onerror="this.src='images/product-1.png'">
+            <img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.src='images/product-1.png'">
             <div class="fp-name">${p.name}</div>
             <div class="fp-price">${p.price.toLocaleString('vi-VN')}đ</div>
             ${p.originalPrice ? `<div class="fp-original">${p.originalPrice.toLocaleString('vi-VN')}đ</div>` : ''}

@@ -7,6 +7,15 @@
   <meta name="description" content="Xem chi tiết sản phẩm hàng ngoại nhập chính hãng tại Châu Sơn Shop.">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="canonical" href="https://chausonshop.vercel.app/chi-tiet-san-pham.html" />
+  
+  <meta property="og:title" id="ogTitle" content="Chi Tiết Sản Phẩm - Châu Sơn Shop" />
+  <meta property="og:description" id="ogDesc" content="Xem chi tiết sản phẩm hàng ngoại nhập chính hãng tại Châu Sơn Shop." />
+  <meta property="og:image" id="ogImage" content="" />
+  <meta property="og:type" content="product" />
   <style>
     .product-detail-layout {
       display: grid;
@@ -413,6 +422,19 @@ onProductsReady(() => {
   document.getElementById('breadcrumbName').textContent = currentProduct.name.slice(0, 50) + '...';
 
   const p = currentProduct;
+
+  // Dynamic SEO Update
+  document.title = `${p.name} - Châu Sơn Shop`;
+  const descTag = document.querySelector('meta[name="description"]');
+  if (descTag) descTag.content = p.name + " chính hãng. Giao hàng toàn quốc.";
+  
+  const ogTitle = document.getElementById('ogTitle');
+  const ogDesc = document.getElementById('ogDesc');
+  const ogImage = document.getElementById('ogImage');
+  if (ogTitle) ogTitle.content = p.name;
+  if (ogDesc) ogDesc.content = "Giá tốt nhất tại Châu Sơn Shop. Đặt hàng ngay!";
+  if (ogImage) ogImage.content = p.image;
+
   const disc = p.originalPrice ? Math.round((1 - p.price/p.originalPrice)*100) : 0;
   const savings = p.originalPrice ? p.originalPrice - p.price : 0;
   const stars = '★'.repeat(Math.floor(p.rating||4)) + '☆'.repeat(5-Math.floor(p.rating||4));
@@ -569,7 +591,7 @@ onProductsReady(() => {
           <div class="product-img-wrap">
             ${rp.badge ? `<span class="p-badge hot">${rp.badge}</span>` : ''}
             ${rdisc > 0 ? `<div class="discount-badge">-${rdisc}%</div>` : ''}
-            <img src="${rp.image}" alt="${rp.name}" onerror="this.src='images/product-1.png'">
+            <img src="${rp.image}" alt="${rp.name}" loading="lazy" onerror="this.src='images/product-1.png'">
             <div class="product-actions">
               <button class="action-btn add-cart" onclick="event.stopPropagation();addToCart('${rp.id}')">
                 <i class="fas fa-cart-plus"></i> Thêm vào giỏ
