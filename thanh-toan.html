@@ -677,9 +677,31 @@
                 <input type="email" id="custEmail" placeholder="email@example.com" autocomplete="email">
               </div>
             </div>
-            <div class="form-group">
-              <label>Địa chỉ nhận hàng <span class="req">*</span></label>
-              <input type="text" id="custAddress" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" required autocomplete="street-address">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tỉnh/Thành phố <span class="req">*</span></label>
+                <select id="custProvince" required>
+                  <option value="">Chọn Tỉnh/Thành phố</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Quận/Huyện <span class="req">*</span></label>
+                <select id="custDistrict" required disabled>
+                  <option value="">Chọn Quận/Huyện</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Phường/Xã <span class="req">*</span></label>
+                <select id="custWard" required disabled>
+                  <option value="">Chọn Phường/Xã</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Địa chỉ cụ thể <span class="req">*</span></label>
+                <input type="text" id="custStreet" placeholder="Số nhà, đường..." required autocomplete="street-address">
+              </div>
             </div>
             <div class="form-group" style="margin-bottom:0;">
               <label>Ghi chú <small style="color:#aaa;font-weight:400;">(tùy chọn)</small></label>
@@ -1167,11 +1189,29 @@ async function handleCheckout(e) {
 
   const name = document.getElementById('custName').value.trim();
   const phone = document.getElementById('custPhone').value.trim();
-  const address = document.getElementById('custAddress').value.trim();
+
+  const provinceOpt = document.getElementById('custProvince').selectedOptions[0];
+  const districtOpt = document.getElementById('custDistrict').selectedOptions[0];
+  const wardOpt = document.getElementById('custWard').selectedOptions[0];
+  const street = document.getElementById('custStreet').value.trim();
+
+  const provinceName = provinceOpt && provinceOpt.value ? provinceOpt.dataset.name : '';
+  const districtName = districtOpt && districtOpt.value ? districtOpt.dataset.name : '';
+  const wardName = wardOpt && wardOpt.value ? wardOpt.dataset.name : '';
 
   if (!name) { alert('Vui lòng nhập họ và tên!'); document.getElementById('custName').focus(); return; }
   if (!phone || phone.length < 9) { alert('Vui lòng nhập số điện thoại hợp lệ!'); document.getElementById('custPhone').focus(); return; }
-  if (!address) { alert('Vui lòng nhập địa chỉ nhận hàng!'); document.getElementById('custAddress').focus(); return; }
+  
+  if (!provinceName || !districtName || !wardName || !street) {
+    alert('Vui lòng nhập đầy đủ địa chỉ nhận hàng!');
+    if (!provinceName) document.getElementById('custProvince').focus();
+    else if (!districtName) document.getElementById('custDistrict').focus();
+    else if (!wardName) document.getElementById('custWard').focus();
+    else document.getElementById('custStreet').focus();
+    return;
+  }
+
+  const address = `${street}, ${wardName}, ${districtName}, ${provinceName}`;
 
   const submitBtn = document.getElementById('submitBtn');
   const submitText = document.getElementById('submitBtnText');
@@ -1274,9 +1314,85 @@ function goShop() {
 }
 
 // ================================================================
+// VIETNAM PROVINCES API
+// ================================================================
+async function loadProvinces() {
+  try {
+    const res = await fetch('https://provinces.open-api.vn/api/p/');
+    const data = await res.json();
+    const provinceSelect = document.getElementById('custProvince');
+    data.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.code;
+      opt.textContent = p.name;
+      opt.dataset.name = p.name;
+      provinceSelect.appendChild(opt);
+    });
+  } catch (err) {
+    console.error('Error loading provinces', err);
+  }
+}
+
+document.getElementById('custProvince').addEventListener('change', async function() {
+  const code = this.value;
+  const districtSelect = document.getElementById('custDistrict');
+  const wardSelect = document.getElementById('custWard');
+  
+  districtSelect.innerHTML = '<option value="">Chọn Quận/Huyện</option>';
+  wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+  districtSelect.disabled = true;
+  wardSelect.disabled = true;
+
+  if (!code) return;
+
+  try {
+    const res = await fetch(`https://provinces.open-api.vn/api/p/${code}?depth=2`);
+    const data = await res.json();
+    data.districts.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d.code;
+      opt.textContent = d.name;
+      opt.dataset.name = d.name;
+      districtSelect.appendChild(opt);
+    });
+    districtSelect.disabled = false;
+  } catch (err) {
+    console.error('Error loading districts', err);
+  }
+});
+
+document.getElementById('custDistrict').addEventListener('change', async function() {
+  const code = this.value;
+  const wardSelect = document.getElementById('custWard');
+  
+  wardSelect.innerHTML = '<option value="">Chọn Phường/Xã</option>';
+  wardSelect.disabled = true;
+
+  if (!code) return;
+
+  try {
+    const res = await fetch(`https://provinces.open-api.vn/api/d/${code}?depth=2`);
+    const data = await res.json();
+    data.wards.forEach(w => {
+      const opt = document.createElement('option');
+      opt.value = w.code;
+      opt.textContent = w.name;
+      opt.dataset.name = w.name;
+      wardSelect.appendChild(opt);
+    });
+    wardSelect.disabled = false;
+  } catch (err) {
+    console.error('Error loading wards', err);
+  }
+});
+
+// ================================================================
 // INIT
 // ================================================================
-document.addEventListener('DOMContentLoaded', renderSummary);
+document.addEventListener('DOMContentLoaded', () => {
+  renderSummary();
+  loadProvinces();
+});
 </script>
 </body>
 </html>
