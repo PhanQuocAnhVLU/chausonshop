@@ -1369,18 +1369,11 @@ function showSuccessModal(paymentMethod) {
     `;
     qrContainer.style.display = 'block';
 
-    // Show Loading/Polling message
+    // Show Manual Confirmation Button instead of countdown
     countdownBox.style.display = 'none';
     actionsBox.innerHTML = `
-      <div style="text-align:center; width:100%; padding: 15px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px;">
-        <i class="fas fa-circle-notch fa-spin" style="color:#f59e0b; font-size: 24px; margin-bottom: 10px;"></i>
-        <p style="margin:0; font-size:14px; color:#92400e; font-weight:600;">Đang chờ thanh toán...</p>
-        <p style="margin:5px 0 0 0; font-size:12px; color:#92400e;">Hệ thống sẽ tự động xác nhận và chuyển trang sau khi nhận được tiền.</p>
-      </div>
+      <button id="confirmTransferBtn" class="btn-modal-primary" onclick="confirmTransferAndGoHome()" style="background:#f59e0b; font-size:15px;"><i class="fas fa-check-double"></i> TÔI ĐÃ CHUYỂN KHOẢN XONG</button>
     `;
-    
-    // Start polling to check order status
-    startOrderPolling();
   } else {
     // COD Flow
     countdownBox.style.display = 'flex';
@@ -1415,51 +1408,24 @@ function goHome() {
   window.location.href = 'index.html';
 }
 
-let pollingInterval;
-
-function startOrderPolling() {
-  pollingInterval = setInterval(async () => {
-    try {
-      const { data, error } = await sb
-        .from('orders')
-        .select('status')
-        .eq('order_code', orderCode)
-        .single();
-        
-      if (!error && data && data.status === 'confirmed') {
-        clearInterval(pollingInterval);
-        showPaymentSuccessUI();
-      }
-    } catch (err) {
-      console.error('Polling error:', err);
-    }
-  }, 3000); // Kiểm tra mỗi 3 giây
+async function confirmTransferAndGoHome() {
+  const btn = document.getElementById('confirmTransferBtn');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xác nhận...';
+  }
+  
+  try {
+    // Gọi RPC function trên Supabase để chuyển trạng thái sang confirmed
+    const { error } = await sb.rpc('confirm_order_payment', { p_order_code: orderCode });
+    if (error) console.error('Lỗi khi xác nhận đơn:', error);
+  } catch (err) {
+    console.error('Lỗi kết nối khi xác nhận:', err);
+  }
+  
+  goHome();
 }
 
-function showPaymentSuccessUI() {
-  const actionsBox = document.getElementById('modalActionsBox');
-  actionsBox.innerHTML = `
-    <div style="text-align:center; width:100%; padding: 15px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px;">
-      <i class="fas fa-check-circle" style="color:#22c55e; font-size: 32px; margin-bottom: 10px;"></i>
-      <p style="margin:0; font-size:16px; color:#166534; font-weight:700;">Thanh toán thành công!</p>
-      <p style="margin:5px 0 0 0; font-size:13px; color:#15803d;">Cảm ơn bạn. Đơn hàng đã được xác nhận.</p>
-    </div>
-  `;
-  
-  let count = 4;
-  const countdownBox = document.getElementById('countdownHintBox');
-  countdownBox.style.display = 'flex';
-  document.getElementById('countdownText').textContent = \`Tự động về trang chủ sau \${count} giây...\`;
-  
-  countdownTimer = setInterval(() => {
-    count--;
-    if (count <= 0) {
-      goHome();
-    } else {
-      document.getElementById('countdownText').textContent = \`Tự động về trang chủ sau \${count} giây...\`;
-    }
-  }, 1000);
-}
 function goShop() {
   clearInterval(countdownTimer);
   window.location.href = 'san-pham.html';
