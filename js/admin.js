@@ -379,12 +379,27 @@ function renderOrdersTable() {
                 ${Object.entries(STATUS_LABELS).map(([k, v]) => `<option value="${k}" ${o.status === k ? 'selected' : ''}>${v}</option>`).join('')}
               </select>
             </td>
-            <td><button class="btn btn-outline btn-sm" onclick="viewOrderDetail('${o.id}')">Chi tiết</button></td>
+            <td style="display:flex; gap:6px;">
+              <button class="btn btn-outline btn-sm" onclick="viewOrderDetail('${o.id}')">Chi tiết</button>
+              <button class="btn btn-sm" style="background:#fee2e2;color:#dc2626;border:1px solid #fca5a5;" onclick="deleteOrder('${o.id}', '${o.order_code}')"><i class="fas fa-trash"></i> Xóa</button>
+            </td>
           </tr>
         `).join('')}
       </tbody>
     </table>
   `;
+}
+
+async function deleteOrder(orderId, orderCode) {
+  const confirmed = confirm(`Bạn có chắc chắn muốn XÓA đơn hàng ${orderCode} không?\n\nHành động này không thể hoàn tác!`);
+  if (!confirmed) return;
+
+  const { error } = await sb.from('orders').delete().eq('id', orderId);
+  if (error) {
+    alert('Lỗi khi xóa đơn: ' + error.message);
+    return;
+  }
+  loadOrders();
 }
 
 async function updateOrderStatus(orderId, status) {
