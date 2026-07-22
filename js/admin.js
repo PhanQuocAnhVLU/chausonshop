@@ -440,8 +440,50 @@ async function viewOrderDetail(orderId) {
     <div style="display:flex;justify-content:space-between;font-weight:700;">
       <span>Tổng cộng</span><span>${formatCurrency(o.total)}</span>
     </div>
-    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">Đóng</button></div>
+
+    <!-- UPDATE TRACKING SECTION -->
+    <hr style="margin:14px 0;border:none;border-top:1px solid #eee;">
+    <h4 style="margin:0 0 10px 0; font-size:14px;">📍 Cập nhật vị trí / Tracking</h4>
+    <div style="background:#f9fafb; padding:12px; border-radius:8px; border:1px solid #e5e7eb;">
+      <div style="margin-bottom:8px;">
+        <input type="text" id="trackLocation_${o.id}" placeholder="Vị trí (VD: Kho Tân Bình, Đang giao...)" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:13px; margin-bottom:6px;">
+        <input type="text" id="trackNote_${o.id}" placeholder="Ghi chú thêm (Không bắt buộc)" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:6px; font-size:13px;">
+      </div>
+      <button class="btn btn-sm" style="width:100%; background:#10b981; color:white;" onclick="updateOrderTracking('${o.id}', '${o.order_code}', '${o.status}')">
+        <i class="fas fa-paper-plane"></i> Cập nhật Tracking
+      </button>
+    </div>
+
+    <div class="modal-actions" style="margin-top:20px;"><button class="btn btn-outline" onclick="closeModal()">Đóng</button></div>
   `);
+}
+
+async function updateOrderTracking(orderId, orderCode, currentStatus) {
+  const locInput = document.getElementById(`trackLocation_${orderId}`);
+  const noteInput = document.getElementById(`trackNote_${orderId}`);
+  const location = locInput.value.trim();
+  const note = noteInput.value.trim();
+
+  if (!location && !note) {
+    alert("Vui lòng nhập Vị trí hoặc Ghi chú để cập nhật.");
+    return;
+  }
+
+  const { error } = await sb.from('order_tracking').insert([{
+    order_id: orderId,
+    order_code: orderCode,
+    status: currentStatus,
+    location: location || null,
+    note: note || 'Cập nhật trạng thái thủ công từ Admin'
+  }]);
+
+  if (error) {
+    alert('Lỗi cập nhật tracking: ' + error.message);
+  } else {
+    alert('Đã cập nhật vị trí / tracking thành công!');
+    locInput.value = '';
+    noteInput.value = '';
+  }
 }
 
 // ========================= PRODUCTS =========================

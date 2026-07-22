@@ -4,278 +4,662 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tra Cứu Đơn Hàng - Châu Sơn Shop</title>
-  <meta name="description" content="Tra cứu tình trạng đơn hàng của bạn tại Châu Sơn Shop nhanh chóng và dễ dàng.">
+  <meta name="description" content="Tra cứu tình trạng và vị trí đơn hàng của bạn tại Châu Sơn Shop theo thời gian thực.">
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
-    .tracking-container {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 30px;
-      background: #fff;
-      border-radius: 12px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+    :root {
+      --primary: #4caf50;
+      --primary-dark: #388e3c;
+      --bg: #f5f7fa;
+      --card: #fff;
+      --text: #1a1a2e;
+      --text-muted: #6b7280;
+      --border: #e5e7eb;
+      --shadow: 0 4px 24px rgba(0,0,0,0.07);
     }
-    .tracking-header {
+
+    body { background: var(--bg); font-family: 'Inter', sans-serif; color: var(--text); }
+
+    /* ── SEARCH SECTION ── */
+    .track-hero {
+      background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 50%, #388e3c 100%);
+      padding: 60px 20px 80px;
       text-align: center;
-      margin-bottom: 30px;
+      position: relative;
+      overflow: hidden;
     }
-    .tracking-header h1 {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 10px;
+    .track-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Ccircle cx='30' cy='30' r='20'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
     }
-    .tracking-header p {
-      color: var(--text-muted);
-      font-size: 15px;
+    .track-hero h1 { color: #fff; font-size: 32px; font-weight: 800; margin-bottom: 10px; position: relative; }
+    .track-hero p { color: rgba(255,255,255,0.8); font-size: 16px; margin-bottom: 0; position: relative; }
+
+    .search-card {
+      max-width: 560px;
+      margin: -40px auto 40px;
+      background: var(--card);
+      border-radius: 20px;
+      padding: 36px 32px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+      position: relative;
+      z-index: 10;
     }
-    
-    .tracking-form .form-group {
+    .search-card h2 { font-size: 18px; font-weight: 700; margin-bottom: 24px; color: var(--text); text-align: center; }
+    .search-field { margin-bottom: 16px; }
+    .search-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+    .search-field input {
+      width: 100%; padding: 13px 16px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: inherit; font-size: 15px;
+      transition: all .2s; box-sizing: border-box;
+    }
+    .search-field input:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(76,175,80,.1); }
+    .btn-search {
+      width: 100%; padding: 15px;
+      background: linear-gradient(135deg, #2e7d32, #4caf50);
+      color: #fff; border: none; border-radius: 12px;
+      font-size: 16px; font-weight: 700; cursor: pointer;
+      font-family: inherit; transition: all .3s;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-top: 8px;
+    }
+    .btn-search:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(46,125,50,.4); }
+    .btn-search:disabled { opacity: .7; cursor: wait; transform: none; }
+
+    /* ── ERROR / EMPTY ── */
+    .track-error {
+      max-width: 560px; margin: 0 auto 40px;
+      background: #fff5f5; border: 1px solid #fecaca;
+      border-radius: 14px; padding: 20px 24px;
+      color: #dc2626; font-size: 14px; display: none;
+      align-items: center; gap: 12px;
+    }
+    .track-error.show { display: flex; }
+
+    /* ── RESULT CARD ── */
+    .result-wrapper { max-width: 700px; margin: 0 auto 60px; padding: 0 16px; display: none; }
+    .result-wrapper.show { display: block; animation: fadeUp .4s ease; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+
+    /* Order summary */
+    .order-summary-card {
+      background: var(--card); border-radius: 16px;
+      padding: 24px 28px; box-shadow: var(--shadow);
       margin-bottom: 20px;
     }
-    .tracking-form label {
-      display: block;
-      margin-bottom: 8px;
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text);
+    .order-summary-top {
+      display: flex; justify-content: space-between; align-items: flex-start;
+      flex-wrap: wrap; gap: 12px; margin-bottom: 20px;
     }
-    .tracking-form input {
-      width: 100%;
-      padding: 12px 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-family: inherit;
-      font-size: 15px;
-      transition: all 0.3s ease;
-    }
-    .tracking-form input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(104,159,56,0.1);
-      outline: none;
-    }
-    .btn-track {
-      width: 100%;
-      background: var(--primary);
-      color: white;
-      border: none;
-      padding: 14px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 10px;
-      transition: background 0.3s;
-    }
-    .btn-track:hover { background: var(--primary-dark); }
-    
-    .tracking-result {
-      margin-top: 30px;
-      display: none;
-    }
-    .result-card {
-      background: #f8fafc;
-      border: 1px solid #e2e8f0;
-      border-radius: 8px;
-      padding: 20px;
-    }
+    .order-code-big { font-size: 22px; font-weight: 800; color: var(--primary-dark); font-family: monospace; letter-spacing: 2px; }
     .order-status-badge {
-      display: inline-block;
-      padding: 6px 12px;
-      border-radius: 50px;
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 15px;
+      padding: 6px 14px; border-radius: 30px;
+      font-size: 13px; font-weight: 700;
     }
-    .status-pending { background: #fff3e0; color: #f57c00; }
-    .status-confirmed { background: #e3f2fd; color: #1976d2; }
-    .status-shipping { background: #e8f5e9; color: #2e7d32; }
-    .status-completed { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
-    .status-cancelled { background: #fee2e2; color: #991b1b; }
-    
-    .order-info-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 15px;
+    .badge-pending   { background: #fef3c7; color: #92400e; }
+    .badge-confirmed { background: #dbeafe; color: #1e40af; }
+    .badge-shipping  { background: #ede9fe; color: #6d28d9; }
+    .badge-completed { background: #dcfce7; color: #166534; }
+    .badge-cancelled { background: #fee2e2; color: #991b1b; }
+
+    .order-meta-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; font-size: 14px;
+    }
+    .meta-item { display: flex; flex-direction: column; gap: 3px; }
+    .meta-label { color: var(--text-muted); font-size: 12px; text-transform: uppercase; letter-spacing: .5px; }
+    .meta-value { font-weight: 600; color: var(--text); }
+
+    /* Progress bar */
+    .progress-card {
+      background: var(--card); border-radius: 16px;
+      padding: 28px 28px 20px; box-shadow: var(--shadow);
       margin-bottom: 20px;
-      font-size: 14px;
     }
-    .order-info-item span { display: block; color: var(--text-muted); font-size: 12px; margin-bottom: 4px; }
-    .order-info-item strong { color: var(--text); }
-    
-    .order-items-list {
-      border-top: 1px solid #e2e8f0;
-      padding-top: 15px;
+    .progress-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 24px; color: var(--text); }
+    .progress-steps {
+      display: flex; align-items: flex-start;
+      position: relative; margin-bottom: 8px;
     }
-    .track-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 8px 0;
-      font-size: 14px;
-      border-bottom: 1px dashed #e2e8f0;
+    .progress-steps::before {
+      content: '';
+      position: absolute; top: 20px; left: 20px; right: 20px; height: 3px;
+      background: var(--border); z-index: 0;
     }
-    .track-item:last-child { border-bottom: none; }
-    .track-total {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 15px;
-      font-size: 16px;
-      font-weight: 800;
-      color: var(--sale-red);
+    .progress-fill {
+      position: absolute; top: 20px; left: 20px; height: 3px;
+      background: linear-gradient(90deg, #4caf50, #66bb6a);
+      z-index: 1; transition: width .6s ease;
     }
-    .error-msg {
-      color: #dc2626;
-      background: #fef2f2;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-top: 15px;
-      display: none;
-      text-align: center;
+    .step-item {
+      flex: 1; display: flex; flex-direction: column;
+      align-items: center; gap: 8px; position: relative; z-index: 2;
+    }
+    .step-dot {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--border); color: #9ca3af;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; transition: all .3s;
+    }
+    .step-dot.done { background: var(--primary); color: #fff; }
+    .step-dot.active { background: var(--primary); color: #fff; box-shadow: 0 0 0 5px rgba(76,175,80,.2); animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%,100% { box-shadow: 0 0 0 5px rgba(76,175,80,.2); } 50% { box-shadow: 0 0 0 10px rgba(76,175,80,.05); } }
+    .step-label { font-size: 11px; font-weight: 600; color: var(--text-muted); text-align: center; }
+    .step-label.active { color: var(--primary-dark); }
+
+    /* Current location banner */
+    .location-banner {
+      background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+      border: 1.5px solid #a5d6a7; border-radius: 14px;
+      padding: 16px 20px; margin-bottom: 20px;
+      display: none; align-items: center; gap: 14px;
+    }
+    .location-banner.show { display: flex; }
+    .location-icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--primary); color: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; flex-shrink: 0;
+    }
+    .location-content { flex: 1; }
+    .location-label { font-size: 11px; color: var(--primary-dark); font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
+    .location-text { font-size: 15px; font-weight: 700; color: var(--text); }
+    .location-time { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .live-dot { display: inline-block; width: 8px; height: 8px; background: #22c55e; border-radius: 50%; margin-right: 5px; animation: livepulse 1.5s infinite; }
+    @keyframes livepulse { 0%,100%{opacity:1;} 50%{opacity:.3;} }
+
+    /* Timeline */
+    .timeline-card {
+      background: var(--card); border-radius: 16px;
+      padding: 24px 28px; box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .timeline-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 20px; color: var(--text); }
+    .timeline { position: relative; padding-left: 28px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 7px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .timeline-item { position: relative; margin-bottom: 24px; }
+    .timeline-item:last-child { margin-bottom: 0; }
+    .timeline-dot {
+      position: absolute; left: -28px; top: 2px;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--primary); border: 3px solid #fff;
+      box-shadow: 0 0 0 2px var(--primary);
+    }
+    .timeline-dot.muted { background: #d1d5db; box-shadow: 0 0 0 2px #d1d5db; }
+    .timeline-time { font-size: 11px; color: var(--text-muted); margin-bottom: 4px; }
+    .timeline-title { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+    .timeline-note { font-size: 13px; color: var(--text-muted); }
+    .timeline-location {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 600; color: var(--primary-dark);
+      background: #e8f5e9; border-radius: 20px;
+      padding: 3px 10px; margin-top: 6px;
+    }
+
+    /* Auto refresh hint */
+    .refresh-hint {
+      text-align: center; font-size: 12px; color: var(--text-muted);
+      padding: 12px; display: flex; align-items: center; justify-content: center; gap: 6px;
+    }
+
+    /* Products list */
+    .products-card {
+      background: var(--card); border-radius: 16px;
+      padding: 24px 28px; box-shadow: var(--shadow);
+      margin-bottom: 20px;
+    }
+    .products-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 16px; color: var(--text); }
+    .product-row {
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 0; border-bottom: 1px solid var(--border);
+    }
+    .product-row:last-child { border-bottom: none; }
+    .product-img { width: 52px; height: 52px; border-radius: 8px; object-fit: cover; background: #f3f4f6; flex-shrink: 0; }
+    .product-name { font-size: 14px; font-weight: 600; flex: 1; }
+    .product-qty { font-size: 13px; color: var(--text-muted); }
+    .product-price { font-size: 14px; font-weight: 700; color: var(--primary-dark); white-space: nowrap; }
+
+    /* Back button */
+    .btn-back {
+      display: flex; align-items: center; gap: 8px;
+      color: var(--primary-dark); font-weight: 600; font-size: 14px;
+      cursor: pointer; background: none; border: none;
+      margin: 0 auto 20px; padding: 10px 16px;
+      border-radius: 8px; font-family: inherit;
+      transition: background .2s;
+    }
+    .btn-back:hover { background: #e8f5e9; }
+
+    @media (max-width: 600px) {
+      .search-card { padding: 24px 18px; margin: -30px 16px 30px; }
+      .track-hero { padding: 50px 16px 70px; }
+      .track-hero h1 { font-size: 24px; }
+      .order-meta-grid { grid-template-columns: 1fr; }
+      .order-summary-card, .timeline-card, .progress-card, .products-card { padding: 18px 16px; }
+      .step-label { font-size: 10px; }
     }
   </style>
 </head>
 <body>
 
-<!-- HEADER (thực tế sẽ được render qua js hoặc dùng chung file) -->
-<!-- Giữ nguyên cấu trúc header cơ bản -->
+<!-- NAV -->
+<div class="top-bar">
+  <div class="container">
+    <div class="top-bar-left">
+      <span><i class="fas fa-shipping-fast"></i> Miễn phí vận chuyển đơn từ 500k</span>
+    </div>
+    <div class="top-bar-right">
+      <a href="tel:0987153876"><i class="fas fa-phone-alt"></i> 0987.153.876</a>
+    </div>
+  </div>
+</div>
 <header class="main-header">
   <div class="container">
     <div class="header-inner">
       <div class="logo-wrap">
         <a href="index.html" class="logo-link">
           <div class="logo-icon">🌿</div>
-          <div class="logo-text">
-            <h1>CHÂU SƠN</h1>
-            <span>Chuyên hàng nhập</span>
-          </div>
+          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
         </a>
+      </div>
+      <nav class="main-nav" id="mainNav">
+        <a href="index.html">Trang Chủ</a>
+        <a href="san-pham.html">Tất Cả Sản Phẩm</a>
+        <a href="tra-cuu.html" class="active">Tra Cứu Đơn Hàng</a>
+        <a href="chinh-sach.html">Chính Sách</a>
+      </nav>
+      <div class="header-actions">
+        <button class="hamburger" id="hamburger" onclick="document.getElementById('mainNav').classList.toggle('open')">
+          <i class="fas fa-bars"></i>
+        </button>
+        <a href="gio-hang.html" class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a>
       </div>
     </div>
   </div>
 </header>
-<nav class="main-nav">
-  <div class="container">
-    <ul class="nav-list">
-      <li><a href="index.html">Trang Chủ</a></li>
-      <li><a href="san-pham.html">Tất Cả Sản Phẩm</a></li>
-      <li><a href="tra-cuu.html" class="active">Tra Cứu Đơn Hàng</a></li>
-      <li><a href="chinh-sach.html">Chính Sách</a></li>
-    </ul>
-  </div>
-</nav>
 
-<div class="container">
-  <div class="tracking-container">
-    <div class="tracking-header">
-      <h1>Tra Cứu Đơn Hàng</h1>
-      <p>Nhập thông tin để xem trạng thái đơn hàng của bạn</p>
+<!-- HERO -->
+<div class="track-hero">
+  <h1><i class="fas fa-map-marker-alt"></i> Tra Cứu Đơn Hàng</h1>
+  <p>Nhập thông tin để xem trạng thái và vị trí đơn hàng theo thời gian thực</p>
+</div>
+
+<!-- SEARCH CARD -->
+<div style="padding: 0 16px;">
+  <div class="search-card">
+    <h2>🔍 Tìm đơn hàng của bạn</h2>
+    <div class="search-field">
+      <label for="searchCode">Mã Đơn Hàng</label>
+      <input type="text" id="searchCode" placeholder="VD: CS20260722XXXX" style="text-transform:uppercase;" oninput="this.value=this.value.toUpperCase()">
     </div>
-    
-    <form class="tracking-form" id="trackingForm">
-      <div class="form-group">
-        <label>Mã Đơn Hàng</label>
-        <input type="text" id="trackOrderCode" placeholder="VD: CS2025..." required>
+    <div class="search-field">
+      <label for="searchPhone">Số Điện Thoại Mua Hàng</label>
+      <input type="tel" id="searchPhone" placeholder="Nhập số điện thoại đặt hàng">
+    </div>
+    <button class="btn-search" id="searchBtn" onclick="trackOrder()">
+      <i class="fas fa-search"></i> Tra Cứu Ngay
+    </button>
+  </div>
+</div>
+
+<!-- ERROR -->
+<div class="track-error" id="trackError" style="max-width:560px; margin: 0 auto 30px;">
+  <i class="fas fa-exclamation-circle" style="font-size:20px;flex-shrink:0;"></i>
+  <span id="trackErrorText">Không tìm thấy đơn hàng. Vui lòng kiểm tra lại mã đơn hàng và số điện thoại.</span>
+</div>
+
+<!-- RESULT -->
+<div class="result-wrapper" id="resultWrapper">
+  <div style="text-align:center;">
+    <button class="btn-back" onclick="resetSearch()">
+      <i class="fas fa-arrow-left"></i> Tra cứu đơn khác
+    </button>
+  </div>
+
+  <!-- Summary -->
+  <div class="order-summary-card">
+    <div class="order-summary-top">
+      <div>
+        <div style="font-size:12px;color:var(--text-muted);margin-bottom:4px;">MÃ ĐƠN HÀNG</div>
+        <div class="order-code-big" id="resCode">—</div>
       </div>
-      <div class="form-group">
-        <label>Số Điện Thoại Mua Hàng</label>
-        <input type="tel" id="trackPhone" placeholder="Nhập số điện thoại" required>
+      <div id="resBadge" class="order-status-badge badge-pending">Chờ xử lý</div>
+    </div>
+    <div class="order-meta-grid">
+      <div class="meta-item">
+        <span class="meta-label">Khách hàng</span>
+        <span class="meta-value" id="resName">—</span>
       </div>
-      <button type="submit" class="btn-track" id="btnTrack">
-        <i class="fas fa-search"></i> Tra Cứu Ngay
-      </button>
-      <div class="error-msg" id="trackError"></div>
-    </form>
-    
-    <div class="tracking-result" id="trackingResult">
-      <!-- Kết quả sẽ render vào đây -->
+      <div class="meta-item">
+        <span class="meta-label">Tổng tiền</span>
+        <span class="meta-value" id="resTotal" style="color:var(--primary-dark);">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Địa chỉ giao</span>
+        <span class="meta-value" id="resAddress">—</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Ngày đặt</span>
+        <span class="meta-value" id="resDate">—</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Progress Bar -->
+  <div class="progress-card">
+    <h3><i class="fas fa-route" style="color:var(--primary);margin-right:8px;"></i>Tiến trình đơn hàng</h3>
+    <div class="progress-steps" id="progressSteps">
+      <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      <div class="step-item">
+        <div class="step-dot" id="step0"><i class="fas fa-shopping-cart"></i></div>
+        <div class="step-label" id="stepLabel0">Đặt hàng</div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot" id="step1"><i class="fas fa-check-circle"></i></div>
+        <div class="step-label" id="stepLabel1">Xác nhận</div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot" id="step2"><i class="fas fa-truck"></i></div>
+        <div class="step-label" id="stepLabel2">Đang giao</div>
+      </div>
+      <div class="step-item">
+        <div class="step-dot" id="step3"><i class="fas fa-home"></i></div>
+        <div class="step-label" id="stepLabel3">Hoàn thành</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Current Location Banner -->
+  <div class="location-banner" id="locationBanner">
+    <div class="location-icon"><i class="fas fa-map-marker-alt"></i></div>
+    <div class="location-content">
+      <div class="location-label"><span class="live-dot"></span>Vị trí hiện tại</div>
+      <div class="location-text" id="currentLocation">—</div>
+      <div class="location-time" id="locationTime">—</div>
+    </div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-card">
+    <h3><i class="fas fa-history" style="color:var(--primary);margin-right:8px;"></i>Lịch sử cập nhật</h3>
+    <div class="timeline" id="trackingTimeline">
+      <div style="color:var(--text-muted);font-size:14px;">Chưa có dữ liệu cập nhật.</div>
+    </div>
+    <div class="refresh-hint" id="refreshHint" style="display:none;">
+      <i class="fas fa-sync-alt fa-spin" style="color:var(--primary);"></i>
+      Tự động làm mới sau <span id="refreshCountdown">15</span> giây
+    </div>
+  </div>
+
+  <!-- Products -->
+  <div class="products-card" id="productsCard" style="display:none;">
+    <h3><i class="fas fa-box-open" style="color:var(--primary);margin-right:8px;"></i>Sản phẩm trong đơn</h3>
+    <div id="productsList"></div>
+    <div style="text-align:right; font-size:15px; font-weight:800; color:var(--primary-dark); margin-top:14px; padding-top:14px; border-top:1px solid var(--border);">
+      Tổng cộng: <span id="resTotal2">—</span>
     </div>
   </div>
 </div>
 
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-bottom"><p>© 2025 Châu Sơn Shop — Hàng ngoại nhập chính hãng.</p></div>
+  </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/supabase-client.js"></script>
+<script src="js/cart.js"></script>
 <script>
-  const STATUS_MAP = {
-    pending: { label: 'Chờ xác nhận', class: 'status-pending' },
-    confirmed: { label: 'Đã xác nhận', class: 'status-confirmed' },
-    shipping: { label: 'Đang giao hàng', class: 'status-shipping' },
-    completed: { label: 'Giao thành công', class: 'status-completed' },
-    cancelled: { label: 'Đã hủy', class: 'status-cancelled' }
-  };
+// ── STATUS CONFIG ──────────────────────────────────────────────
+const STATUS_CONFIG = {
+  pending:   { label: 'Chờ xử lý',     badge: 'badge-pending',   step: 0 },
+  confirmed: { label: 'Đã xác nhận',   badge: 'badge-confirmed', step: 1 },
+  shipping:  { label: 'Đang giao hàng',badge: 'badge-shipping',  step: 2 },
+  completed: { label: 'Hoàn thành',    badge: 'badge-completed', step: 3 },
+  cancelled: { label: 'Đã hủy',        badge: 'badge-cancelled', step: -1 },
+};
 
-  document.getElementById('trackingForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = document.getElementById('btnTrack');
-    const err = document.getElementById('trackError');
-    const resEl = document.getElementById('trackingResult');
-    
-    const code = document.getElementById('trackOrderCode').value.trim();
-    const phone = document.getElementById('trackPhone').value.trim();
-    
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tra cứu...';
-    btn.disabled = true;
-    err.style.display = 'none';
-    resEl.style.display = 'none';
+const STEP_FILL = { 0: '8%', 1: '38%', 2: '68%', 3: '97%' };
+const STATUS_ICONS = { pending: '🛒', confirmed: '✅', shipping: '🚚', completed: '🎉', cancelled: '❌' };
 
-    try {
-      const { data, error } = await sb.rpc('get_order_status', { 
-        p_order_code: code, 
-        p_phone: phone 
-      });
+let currentOrderCode = '';
+let autoRefreshTimer;
+let countdownInterval;
 
-      if (error) throw error;
-      if (!data || data.length === 0) {
-        throw new Error('Không tìm thấy đơn hàng. Vui lòng kiểm tra lại mã đơn và số điện thoại.');
-      }
+// ── TRACK ORDER ──────────────────────────────────────────────
+async function trackOrder() {
+  const code  = document.getElementById('searchCode').value.trim().toUpperCase();
+  const phone = document.getElementById('searchPhone').value.trim();
 
-      const order = data[0];
-      const st = STATUS_MAP[order.status] || STATUS_MAP.pending;
-      
-      let itemsHtml = '';
-      if (order.items && order.items.length > 0) {
-        itemsHtml = order.items.map(it => `
-          <div class="track-item">
-            <span>${it.qty} x ${it.product_name}</span>
-            <span>${Number(it.price * it.qty).toLocaleString('vi-VN')}đ</span>
-          </div>
-        `).join('');
-      }
+  if (!code || !phone) {
+    showError('Vui lòng nhập đầy đủ Mã đơn hàng và Số điện thoại.');
+    return;
+  }
 
-      resEl.innerHTML = `
-        <div class="result-card">
-          <div class="order-status-badge ${st.class}">${st.label}</div>
-          <div class="order-info-grid">
-            <div class="order-info-item"><span>Mã Đơn:</span> <strong>${order.order_code}</strong></div>
-            <div class="order-info-item"><span>Ngày Đặt:</span> <strong>${new Date(order.created_at).toLocaleDateString('vi-VN')}</strong></div>
-            <div class="order-info-item"><span>Người Nhận:</span> <strong>${order.customer_name}</strong></div>
-            <div class="order-info-item"><span>Giao Đến:</span> <strong>${order.customer_address}</strong></div>
-          </div>
-          <div class="order-items-list">
-            ${itemsHtml}
-            <div class="track-total">
-              <span>Tổng Tiền</span>
-              <span>${Number(order.total).toLocaleString('vi-VN')}đ</span>
-            </div>
-          </div>
-        </div>
-      `;
-      resEl.style.display = 'block';
-    } catch (error) {
-      err.textContent = error.message;
-      err.style.display = 'block';
-    } finally {
-      btn.innerHTML = '<i class="fas fa-search"></i> Tra Cứu Ngay';
-      btn.disabled = false;
+  const btn = document.getElementById('searchBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tìm kiếm...';
+  hideError();
+
+  try {
+    // Gọi RPC get_order_status để tra cứu an toàn
+    const { data, error } = await sb.rpc('get_order_status', { p_order_code: code, p_phone: phone });
+
+    if (error || !data || data.length === 0) {
+      showError('Không tìm thấy đơn hàng. Vui lòng kiểm tra lại mã đơn hàng và số điện thoại.');
+      return;
     }
+
+    const order = data[0];
+    currentOrderCode = code;
+    renderResult(order);
+    await loadTrackingHistory(code, order.status);
+
+  } catch (err) {
+    showError('Đã xảy ra lỗi kết nối. Vui lòng thử lại sau.');
+    console.error(err);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-search"></i> Tra Cứu Ngay';
+  }
+}
+
+// ── RENDER RESULT ────────────────────────────────────────────
+function renderResult(order) {
+  const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
+  const stepIdx = cfg.step;
+
+  // Summary
+  document.getElementById('resCode').textContent  = order.order_code;
+  document.getElementById('resName').textContent  = order.customer_name || '—';
+  document.getElementById('resTotal').textContent = formatVND(order.total);
+  document.getElementById('resTotal2').textContent= formatVND(order.total);
+  document.getElementById('resAddress').textContent = order.customer_address || '—';
+  document.getElementById('resDate').textContent  = formatDateTime(order.created_at);
+
+  // Badge
+  const badge = document.getElementById('resBadge');
+  badge.textContent = cfg.label;
+  badge.className = 'order-status-badge ' + cfg.badge;
+
+  // Progress
+  updateProgress(stepIdx, order.status);
+
+  // Products
+  if (order.items && order.items.length > 0) {
+    const list = document.getElementById('productsList');
+    list.innerHTML = order.items.map(item => `
+      <div class="product-row">
+        <img class="product-img" src="${item.image || 'images/product-1.png'}" alt="${item.product_name}" onerror="this.src='images/product-1.png'">
+        <div class="product-name">${item.product_name}</div>
+        <div class="product-qty">x${item.qty}</div>
+        <div class="product-price">${formatVND(item.price * item.qty)}</div>
+      </div>`).join('');
+    document.getElementById('productsCard').style.display = 'block';
+  }
+
+  document.getElementById('resultWrapper').classList.add('show');
+  document.getElementById('resultWrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Auto-refresh if still in transit
+  if (['pending','confirmed','shipping'].includes(order.status)) {
+    startAutoRefresh();
+  }
+}
+
+// ── PROGRESS BAR ────────────────────────────────────────────
+function updateProgress(stepIdx, status) {
+  if (status === 'cancelled') {
+    [0,1,2,3].forEach(i => {
+      document.getElementById('step'+i).className = 'step-dot muted';
+      document.getElementById('stepLabel'+i).className = 'step-label';
+    });
+    document.getElementById('progressFill').style.width = '0%';
+    return;
+  }
+  [0,1,2,3].forEach(i => {
+    const dot = document.getElementById('step'+i);
+    const lbl = document.getElementById('stepLabel'+i);
+    if (i < stepIdx) { dot.className='step-dot done'; lbl.className='step-label'; }
+    else if (i === stepIdx) { dot.className='step-dot active'; lbl.className='step-label active'; }
+    else { dot.className='step-dot'; lbl.className='step-label'; }
   });
+  document.getElementById('progressFill').style.width = STEP_FILL[stepIdx] || '8%';
+}
+
+// ── LOAD TRACKING HISTORY ─────────────────────────────────────
+async function loadTrackingHistory(orderCode, currentStatus) {
+  const { data: history, error } = await sb
+    .from('order_tracking')
+    .select('*')
+    .eq('order_code', orderCode)
+    .order('created_at', { ascending: false });
+
+  const timeline = document.getElementById('trackingTimeline');
+
+  if (error || !history || history.length === 0) {
+    timeline.innerHTML = '<div style="color:var(--text-muted);font-size:14px;">Chưa có lịch sử cập nhật.</div>';
+    return;
+  }
+
+  // Show latest location banner
+  const latestWithLocation = history.find(h => h.location);
+  if (latestWithLocation) {
+    document.getElementById('currentLocation').textContent = latestWithLocation.location;
+    document.getElementById('locationTime').textContent = 'Cập nhật lúc ' + formatDateTime(latestWithLocation.created_at);
+    document.getElementById('locationBanner').classList.add('show');
+  } else {
+    document.getElementById('locationBanner').classList.remove('show');
+  }
+
+  // Build timeline
+  timeline.innerHTML = history.map((item, idx) => {
+    const icon = STATUS_ICONS[item.status] || '📦';
+    const cfg  = STATUS_CONFIG[item.status] || {};
+    const isLatest = idx === 0;
+    return `
+      <div class="timeline-item">
+        <div class="timeline-dot ${isLatest ? '' : 'muted'}"></div>
+        <div class="timeline-time">${formatDateTime(item.created_at)}</div>
+        <div class="timeline-title">${icon} ${cfg.label || item.status}</div>
+        ${item.note ? `<div class="timeline-note">${item.note}</div>` : ''}
+        ${item.location ? `<div class="timeline-location"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>` : ''}
+      </div>`;
+  }).join('');
+
+  // Show refresh hint for active orders
+  const hint = document.getElementById('refreshHint');
+  if (['pending','confirmed','shipping'].includes(currentStatus)) {
+    hint.style.display = 'flex';
+  }
+}
+
+// ── AUTO REFRESH ─────────────────────────────────────────────
+function startAutoRefresh() {
+  clearInterval(autoRefreshTimer);
+  clearInterval(countdownInterval);
+
+  let seconds = 15;
+  document.getElementById('refreshCountdown').textContent = seconds;
+
+  countdownInterval = setInterval(() => {
+    seconds--;
+    document.getElementById('refreshCountdown').textContent = seconds;
+    if (seconds <= 0) seconds = 15;
+  }, 1000);
+
+  autoRefreshTimer = setInterval(async () => {
+    if (!currentOrderCode) return;
+    const phone = document.getElementById('searchPhone').value.trim();
+    try {
+      const { data } = await sb.rpc('get_order_status', { p_order_code: currentOrderCode, p_phone: phone });
+      if (data && data.length > 0) {
+        const order = data[0];
+        const cfg = STATUS_CONFIG[order.status] || STATUS_CONFIG.pending;
+        updateProgress(cfg.step, order.status);
+        const badge = document.getElementById('resBadge');
+        badge.textContent = cfg.label;
+        badge.className = 'order-status-badge ' + cfg.badge;
+        await loadTrackingHistory(currentOrderCode, order.status);
+
+        if (order.status === 'completed' || order.status === 'cancelled') {
+          clearInterval(autoRefreshTimer);
+          clearInterval(countdownInterval);
+          document.getElementById('refreshHint').style.display = 'none';
+        }
+      }
+    } catch(e) {}
+  }, 15000);
+}
+
+// ── RESET ────────────────────────────────────────────────────
+function resetSearch() {
+  clearInterval(autoRefreshTimer);
+  clearInterval(countdownInterval);
+  currentOrderCode = '';
+  document.getElementById('resultWrapper').classList.remove('show');
+  document.getElementById('productsCard').style.display = 'none';
+  document.getElementById('locationBanner').classList.remove('show');
+  document.getElementById('refreshHint').style.display = 'none';
+  hideError();
+  document.getElementById('searchCode').value = '';
+  document.getElementById('searchPhone').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showError(msg) {
+  document.getElementById('trackErrorText').textContent = msg;
+  document.getElementById('trackError').classList.add('show');
+}
+function hideError() { document.getElementById('trackError').classList.remove('show'); }
+
+// ── UTILS ────────────────────────────────────────────────────
+function formatVND(n) { return new Intl.NumberFormat('vi-VN').format(n || 0) + 'đ'; }
+function formatDateTime(str) {
+  if (!str) return '—';
+  const d = new Date(str);
+  return d.toLocaleString('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', hour:'2-digit', minute:'2-digit', day:'2-digit', month:'2-digit', year:'numeric' });
+}
+
+// Enter key support
+document.getElementById('searchCode').addEventListener('keydown', e => { if (e.key==='Enter') trackOrder(); });
+document.getElementById('searchPhone').addEventListener('keydown', e => { if (e.key==='Enter') trackOrder(); });
+
+// Pre-fill from URL params
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('code')) document.getElementById('searchCode').value = urlParams.get('code').toUpperCase();
+if (urlParams.get('phone')) document.getElementById('searchPhone').value = urlParams.get('phone');
+if (urlParams.get('code') && urlParams.get('phone')) trackOrder();
 </script>
 </body>
 </html>
