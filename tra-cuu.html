@@ -250,41 +250,79 @@
 </head>
 <body>
 
-<!-- NAV -->
+<!-- TOP BAR -->
 <div class="top-bar">
   <div class="container">
     <div class="top-bar-left">
-      <span><i class="fas fa-shipping-fast"></i> Miễn phí vận chuyển đơn từ 500k</span>
+      <span><i class="fas fa-shipping-fast"></i> Giao hàng toàn quốc 2–4 ngày</span>
+      <span><i class="fas fa-shield-alt"></i> Hàng chính hãng 100%</span>
+      <span><i class="fas fa-undo-alt"></i> Đổi trả 30 ngày</span>
     </div>
     <div class="top-bar-right">
-      <a href="tel:0987153876"><i class="fas fa-phone-alt"></i> 0987.153.876</a>
+      <a href="lien-he.html"><i class="fas fa-envelope"></i> nhutu5556@gmail.com</a>
+      <a href="https://www.facebook.com/chuyenbanhangxachtay2025" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
+      <a href="#"><i class="fab fa-tiktok"></i> TikTok</a>
     </div>
   </div>
 </div>
+
+<!-- MAIN HEADER -->
 <header class="main-header">
   <div class="container">
     <div class="header-inner">
       <div class="logo-wrap">
         <a href="index.html" class="logo-link">
           <div class="logo-icon">🌿</div>
-          <div class="logo-text"><h1>CHÂU SƠN</h1><span>Chuyên hàng nhập</span></div>
+          <div class="logo-text">
+            <h1>CHÂU SƠN</h1>
+            <span>Chuyên hàng nhập</span>
+          </div>
         </a>
       </div>
-      <nav class="main-nav" id="mainNav">
-        <a href="index.html">Trang Chủ</a>
-        <a href="san-pham.html">Tất Cả Sản Phẩm</a>
-        <a href="tra-cuu.html" class="active">Tra Cứu Đơn Hàng</a>
-        <a href="chinh-sach.html">Chính Sách</a>
-      </nav>
-      <div class="header-actions">
-        <button class="hamburger" id="hamburger" onclick="document.getElementById('mainNav').classList.toggle('open')">
-          <i class="fas fa-bars"></i>
-        </button>
-        <a href="gio-hang.html" class="cart-btn"><i class="fas fa-shopping-cart"></i><span class="cart-count" id="cartCount">0</span></a>
+      <div class="search-wrap">
+        <form class="search-form" onsubmit="doSearch(event)">
+          <input type="text" id="searchInput" placeholder="Tìm kiếm: collagen, vitamin C, sữa ong chúa...">
+          <button type="submit"><i class="fas fa-search"></i></button>
+        </form>
       </div>
+      <div class="header-info">
+        <div class="info-item">
+          <div class="info-icon"><i class="fas fa-phone-alt"></i></div>
+          <div class="info-item-text">
+            <strong>0987.153.876</strong>
+            <small>Hotline bán hàng</small>
+          </div>
+        </div>
+      </div>
+      <button class="cart-btn" id="cartToggleBtn" onclick="toggleCart()">
+        <i class="fas fa-shopping-cart"></i>
+        <span>Giỏ hàng</span>
+        <span class="cart-badge" id="cartBadge">0</span>
+      </button>
     </div>
   </div>
 </header>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="container">
+    <div class="navbar-inner">
+      <div class="cat-all" id="catAllBtn">
+        <i class="fas fa-bars"></i>
+        <span>DANH MỤC SẢN PHẨM</span>
+        <i class="fas fa-chevron-down"></i>
+        <ul class="mega-dropdown" id="megaDropdown"></ul>
+      </div>
+      <div class="nav-links">
+        <a href="index.html">Trang chủ</a>
+        <a href="san-pham.html">Sản phẩm</a>
+        <a href="tin-tuc.html">Tin tức & Tư vấn</a>
+        <a href="tra-cuu.html" class="active">🔍 Tra cứu đơn</a>
+        <a href="lien-he.html">Liên hệ</a>
+      </div>
+    </div>
+  </div>
+</nav>
 
 <!-- HERO -->
 <div class="track-hero">
@@ -570,10 +608,12 @@ async function loadTrackingHistory(orderCode, currentStatus) {
     return `
       <div class="timeline-item">
         <div class="timeline-dot ${isLatest ? '' : 'muted'}"></div>
-        <div class="timeline-time">${formatDateTime(item.created_at)}</div>
         <div class="timeline-title">${icon} ${cfg.label || item.status}</div>
+        <div class="timeline-time" style="font-size:12px; font-weight:600; color:var(--primary-dark); margin: 6px 0;">
+          <i class="far fa-clock"></i> ${formatDateTime(item.created_at)}
+        </div>
         ${item.note ? `<div class="timeline-note">${item.note}</div>` : ''}
-        ${item.location ? `<div class="timeline-location"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>` : ''}
+        ${item.location ? `<div class="timeline-location" style="margin-top:10px;"><i class="fas fa-map-marker-alt"></i> ${item.location}</div>` : ''}
       </div>`;
   }).join('');
 
